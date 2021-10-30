@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:nk_global_ft/model/login_model.dart';
 import 'package:nk_global_ft/model/common_model.dart';
+import 'package:nk_global_ft/model/mainSchedule_model.dart';
+import 'package:nk_global_ft/model/master_model.dart';
 import 'package:nk_global_ft/model/schedule_model.dart';
 
 class APIService {
@@ -23,6 +25,14 @@ class APIService {
         final response = await http.post(url, body: sBody, headers: headers);
         result = UserResultModel.fromJson(json.decode(response.body));
         break;
+      case "MAIN_S1":
+        final response = await http.post(url, body: sBody, headers: headers);
+        result = MainSchResultModel.fromJson(json.decode(response.body));
+        break;
+      case "MASTER_S1":
+        final response = await http.post(url, body: sBody, headers: headers);
+        result = MasterResultModel.fromJson(json.decode(response.body));
+        break;
       default:
         break;
     }
@@ -36,6 +46,10 @@ class APIService {
     var headers = {'Content-Type': "application/json"};
 
     switch (sFunctionName) {
+      case "FILE_I1":
+        final response = await http.post(url, body: sBody, headers: headers);
+        result = resultModel.fromJson(json.decode(response.body));
+        break;
       default:
         break;
     }
@@ -49,6 +63,10 @@ class APIService {
     var headers = {'Content-Type': "application/json"};
 
     switch (sFunctionName) {
+      case "BOARD_U1":
+        final response = await http.post(url, body: sBody, headers: headers);
+        result = resultModel.fromJson(json.decode(response.body));
+        break;
       case "MASTER_U1":
         final response = await http.post(url, body: sBody, headers: headers);
         result = resultModel.fromJson(json.decode(response.body));

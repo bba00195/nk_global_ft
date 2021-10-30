@@ -7,6 +7,7 @@ import 'package:nk_global_ft/common/common.dart';
 import 'package:nk_global_ft/login.dart';
 import 'package:nk_global_ft/calendar_schedule.dart';
 import 'package:nk_global_ft/qulifyPage.dart';
+import 'package:nk_global_ft/schedule.dart';
 
 class NkAppBar extends StatelessWidget implements PreferredSizeWidget {
   final GlobalKey<ScaffoldState> globalKey;
@@ -24,7 +25,7 @@ class NkAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return new AppBar(
       actions: [],
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       bottomOpacity: 0.0,
       elevation: 0.0,
       centerTitle: true,
@@ -32,11 +33,12 @@ class NkAppBar extends StatelessWidget implements PreferredSizeWidget {
         icon: Icon(
           Icons.menu,
           color: Colors.grey,
-          size: 45,
+          size: 34,
         ),
         onPressed: () => globalKey.currentState!.openDrawer(),
       ),
       title: Container(
+        alignment: Alignment.centerLeft,
         height: 70,
         child: TextButton(
           onPressed: () {},
@@ -44,7 +46,7 @@ class NkAppBar extends StatelessWidget implements PreferredSizeWidget {
             menuName,
             style: TextStyle(
               color: Colors.black,
-              fontSize: 18,
+              fontSize: 24,
               fontFamily: 'NotosansKR',
               fontWeight: FontWeight.bold,
             ),
@@ -181,7 +183,7 @@ class NkDrawer extends StatelessWidget implements PreferredSizeWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomePage(member: member),
+                        builder: (context) => Schedule(member: member),
                       ),
                     );
                   },
@@ -192,7 +194,7 @@ class NkDrawer extends StatelessWidget implements PreferredSizeWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => certPage(member: member),
@@ -206,7 +208,7 @@ class NkDrawer extends StatelessWidget implements PreferredSizeWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
@@ -214,9 +216,9 @@ class NkDrawer extends StatelessWidget implements PreferredSizeWidget {
                   },
                   child: menuRow('Qulify Management', Icons.chevron_right),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                // SizedBox(
+                //   height: 20,
+                // ),
                 // InkWell(
                 //   onTap: () {
                 //     Navigator.pushReplacement(
@@ -233,6 +235,128 @@ class NkDrawer extends StatelessWidget implements PreferredSizeWidget {
           )
         ],
       ),
+    );
+  }
+
+  @override
+  Size get preferredSize => new Size.fromHeight(kToolbarHeight);
+}
+
+// ignore: must_be_immutable
+class nkNaviBottomBar extends StatelessWidget implements PreferredSizeWidget {
+  final GlobalKey<ScaffoldState> globalKey;
+  final UserManager member;
+  final int selectedIndex;
+
+  nkNaviBottomBar({
+    Key? key,
+    required this.globalKey,
+    required this.member,
+    required this.selectedIndex,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    int _selectedIndex = selectedIndex;
+    return Container(
+      decoration: BoxDecoration(),
+      child:
+          // Column(
+          //   mainAxisAlignment: MainAxisAlignment.end,
+          //   crossAxisAlignment: CrossAxisAlignment.end,
+          //   children: [
+          Container(
+        height: 70,
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.white,
+          selectedItemColor: Color.fromRGBO(66, 91, 168, 1),
+          unselectedItemColor: Color.fromRGBO(198, 198, 198, 1),
+          selectedFontSize: 14,
+          unselectedFontSize: 14,
+          currentIndex: _selectedIndex, //현재 선택된 Index
+          onTap: (int index) {
+            // if (_selectedIndex != index && index == 0) {
+            //   globalKey.currentState.openDrawer();
+            // } else if (index == 1 && pageName != 'home') {
+            //   Navigator.of(context)
+            //     ..pushReplacement(
+            //       CupertinoPageRoute(
+            //         builder: (context) => HomePage(
+            //           id: id,
+            //           pass: pass,
+            //           member: member,
+            //         ),
+            //       ),
+            //     );
+            //   _selectedIndex = index;
+            // } else if (_selectedIndex != index && index == 2) {
+            //   Navigator.of(context)
+            //     ..pushReplacement(
+            //       CupertinoPageRoute(
+            //         builder: (context) => ProfilePage(
+            //           id: id,
+            //           pass: pass,
+            //           member: member,
+            //         ),
+            //       ),
+            //     );
+            //   _selectedIndex = index;
+            // }
+          },
+          items: [
+            BottomNavigationBarItem(
+              label: 'Main',
+              icon: Icon(
+                Icons.home_filled,
+                size: 24,
+              ),
+            ),
+            BottomNavigationBarItem(
+              label: 'History',
+              icon: Icon(
+                Icons.history,
+                size: 24,
+              ),
+            ),
+            BottomNavigationBarItem(
+              label: 'Schedule',
+              icon: Icon(
+                Icons.calendar_today_outlined,
+                size: 24,
+              ),
+            ),
+            BottomNavigationBarItem(
+              label: 'Cert',
+              icon: Icon(
+                Icons.assignment_ind,
+                size: 24,
+              ),
+            ),
+          ],
+        ),
+      ),
+      //   Container(
+      //     alignment: Alignment.center,
+      //     decoration: BoxDecoration(
+      //       color: Colors.white,
+      //       border: Border(
+      //         top: BorderSide(
+      //           color: Color.fromRGBO(244, 244, 244, 1.0),
+      //           width: 1.0,
+      //         ),
+      //       ),
+      //     ),
+      //     height: 50,
+      //     child: Text(
+      //       'Copyright ⓒ 2021 KULS All right reserved.',
+      //       style: TextStyle(
+      //         color: Color.fromARGB(255, 175, 175, 175),
+      //         fontSize: 12,
+      //       ),
+      //     ),
+      //   ),
+      // ],
+      // ),
     );
   }
 

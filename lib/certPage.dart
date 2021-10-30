@@ -87,38 +87,38 @@ class _certPageState extends State<certPage> {
                 ),
                 child: const PDF().cachedFromUrl(url),
               ),
-              Container(
-                margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                height: 40,
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: Colors.black, width: 1),
-                    left: BorderSide(color: Colors.black, width: 1),
-                    right: BorderSide(color: Colors.black, width: 1),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    IconButton(
-                      icon: Icon(CupertinoIcons.chevron_left_2),
-                      onPressed: () {},
-                    ), //onpress , ontap 구현해야함
-                    IconButton(
-                      icon: Icon(CupertinoIcons.chevron_left),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(CupertinoIcons.chevron_right),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(CupertinoIcons.chevron_right_2),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ),
+              // Container(
+              //   margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              //   height: 40,
+              //   decoration: BoxDecoration(
+              //     border: Border(
+              //       bottom: BorderSide(color: Colors.black, width: 1),
+              //       left: BorderSide(color: Colors.black, width: 1),
+              //       right: BorderSide(color: Colors.black, width: 1),
+              //     ),
+              //   ),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //     children: [
+              //       IconButton(
+              //         icon: Icon(CupertinoIcons.chevron_left_2),
+              //         onPressed: () {},
+              //       ), //onpress , ontap 구현해야함
+              //       IconButton(
+              //         icon: Icon(CupertinoIcons.chevron_left),
+              //         onPressed: () {},
+              //       ),
+              //       IconButton(
+              //         icon: Icon(CupertinoIcons.chevron_right),
+              //         onPressed: () {},
+              //       ),
+              //       IconButton(
+              //         icon: Icon(CupertinoIcons.chevron_right_2),
+              //         onPressed: () {},
+              //       ),
+              //     ],
+              //   ),
+              // ),
               SizedBox(
                 height: 10,
               ),

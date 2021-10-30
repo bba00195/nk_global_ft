@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:nk_global_ft/home_page.dart';
 import 'package:nk_global_ft/common/common.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
-
 import 'package:sizer/sizer.dart';
 import 'package:pdf/pdf.dart';
 import 'package:bluetooth_print/bluetooth_print.dart';
