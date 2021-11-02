@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nk_global_ft/asdetail.dart';
+import 'package:nk_global_ft/history.dart';
 import 'package:nk_global_ft/home_page.dart';
 import 'package:nk_global_ft/certPage.dart';
 import 'package:nk_global_ft/common/common.dart';
@@ -216,20 +217,34 @@ class NkDrawer extends StatelessWidget implements PreferredSizeWidget {
                   },
                   child: menuRow('Qulify Management', Icons.chevron_right),
                 ),
-                // SizedBox(
-                //   height: 20,
-                // ),
-                // InkWell(
-                //   onTap: () {
-                //     Navigator.pushReplacement(
-                //       context,
-                //       MaterialPageRoute(
-                //         builder: (context) => ASmanagement(member: member),
-                //       ),
-                //     );
-                //   },
-                //   child: menuRow('AS Management', Icons.chevron_right),
-                // ),
+                SizedBox(
+                  height: 20,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HistoryPage(member: member),
+                      ),
+                    );
+                  },
+                  child: menuRow('History', Icons.chevron_right),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Schedule(member: member),
+                      ),
+                    );
+                  },
+                  child: menuRow('Schedule', Icons.chevron_right),
+                ),
               ],
             ),
           )
@@ -275,6 +290,25 @@ class nkNaviBottomBar extends StatelessWidget implements PreferredSizeWidget {
           unselectedFontSize: 14,
           currentIndex: _selectedIndex, //현재 선택된 Index
           onTap: (int index) {
+            if (index == 0) {
+              Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (context) => HomePage(
+                            member: member,
+                          )));
+            } else if (index == 1) {
+              Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (context) => HistoryPage(member: member)));
+            } else if (index == 2) {
+              Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (context) => Schedule(member: member)));
+            }
+
             // if (_selectedIndex != index && index == 0) {
             //   globalKey.currentState.openDrawer();
             // } else if (index == 1 && pageName != 'home') {
