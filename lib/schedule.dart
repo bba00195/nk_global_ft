@@ -386,6 +386,45 @@ class _ScheduleState extends State<Schedule> {
     );
   }
 
+  boardCancelUpdate(String reqNo) async {
+    List<String> sParam = [
+      reqNo,
+      member.user.userId,
+    ];
+    await apiService.getUpdate("BOARD_U1", sParam).then((value) {
+      setState(() {
+        if (value.result.isNotEmpty) {
+          if (value.result.elementAt(0).rsCode == "E") {
+            showDialog(
+              context: context,
+              builder: (_) {
+                Navigator.of(context).pop(true);
+                return Show(message: value.result.elementAt(0).rsMsg);
+              },
+            );
+          } else {
+            Navigator.of(context).pop(true);
+            showDialog(
+              context: context,
+              builder: (_) {
+                return Show(message: "Cancellation complete");
+              },
+            );
+          }
+        } else {
+          showDialog(
+            context: context,
+            builder: (_) {
+              Navigator.of(context).pop(true);
+              return Show(message: "Fail to cancellation");
+            },
+          );
+        }
+      });
+    });
+    await scheduleSearch();
+  }
+
   btnScheduleList(
       int mgtStatusVal, List<Event> value, int index, BuildContext context) {
     String sText = "Onboard";
@@ -397,7 +436,7 @@ class _ScheduleState extends State<Schedule> {
       sText = "Proceeding";
       sColor = Colors.green;
     } else {
-      sText = "modify";
+      sText = "Finish";
       sColor = Colors.grey;
     }
 
@@ -429,21 +468,56 @@ class _ScheduleState extends State<Schedule> {
                 );
               });
         } else if (sText == "Proceeding") {
-          Navigator.push(
-              context,
-              CupertinoPageRoute(
-                  builder: (context) => ASmanagement2(
-                        member: member,
-                        reqNo: reqNo,
-                      )));
-        } else if (sText == "modify") {
-          Navigator.push(
-              context,
-              CupertinoPageRoute(
-                  builder: (context) => ASmanagement2(
-                        member: member,
-                        reqNo: reqNo,
-                      )));
+          showDialog(
+              context: context,
+              builder: (context) {
+                return CupertinoAlertDialog(
+                  title: Text("Cancel the on board? Or A/S Report register"),
+                  actions: [
+                    CupertinoDialogAction(
+                      child: Text("Cancel onboard"),
+                      onPressed: () {
+                        boardCancelUpdate(reqNo);
+                      },
+                    ),
+                    CupertinoDialogAction(
+                      child: Text("Register"),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) => ASmanagement2(
+                                    member: member, reqNo: reqNo)));
+                      },
+                    )
+                  ],
+                );
+              });
+          // Navigator.push(
+          //     context,
+          //     CupertinoPageRoute(
+          //         builder: (context) => ASmanagement2(
+          //               member: member,
+          //               reqNo: reqNo,
+          //             )));
+        } else if (sText == "Finish") {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return CupertinoAlertDialog(
+                  title: Text("Delete or Modify?"),
+                  actions: [
+                    CupertinoDialogAction(
+                      child: Text("Delete"),
+                      onPressed: () {},
+                    ), // 삭제
+                    CupertinoDialogAction(
+                      child: Text("Modify"),
+                      onPressed: () {}, // 수정
+                    ),
+                  ],
+                );
+              });
         }
       },
       child: Text(sText),
@@ -458,12 +532,14 @@ class _ScheduleState extends State<Schedule> {
       appBar: NkAppBar(
         globalKey: scaffoldKey,
         member: member,
-        menuName: '',
+        menuName: 'Sceduler',
       ),
       drawer: NkDrawer(
         globalKey: scaffoldKey,
         member: member,
       ),
+      bottomNavigationBar: nkNaviBottomBar(
+          globalKey: scaffoldKey, member: member, selectedIndex: 2),
       body: Column(
         children: [
           ValueListenableBuilder<DateTime>(

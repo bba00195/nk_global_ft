@@ -28,13 +28,15 @@ class _certPageState extends State<certPage> {
   late UserManager member;
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   var pdf = pw.Document();
-  String engName = 'sezairi';
+
+  String engName = "";
   late String url = 'https://www.kuls.co.kr/NK/thema/print.php?name=$engName';
 
   @override
   void initState() {
     super.initState();
     member = widget.member;
+    engName = member.user.userName;
   }
 
   @override
