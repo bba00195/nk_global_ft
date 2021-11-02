@@ -33,6 +33,14 @@ class APIService {
         final response = await http.post(url, body: sBody, headers: headers);
         result = MasterResultModel.fromJson(json.decode(response.body));
         break;
+      case "HISTORY_S1":
+        final response = await http.post(url, body: sBody, headers: headers);
+        result = MainSchResultModel.fromJson(json.decode(response.body));
+        break;
+      case "HISTORY_S2":
+        final response = await http.post(url, body: sBody, headers: headers);
+        result = MainSchResultModel.fromJson(json.decode(response.body));
+        break;
       default:
         break;
     }

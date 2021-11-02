@@ -39,13 +39,16 @@ class MainSchResponseModel {
 class MainSchResultModel {
   List<MainSchResponseModel> mainSch;
 
-  MainSchResultModel({required this.mainSch});
+  MainSchResultModel({
+    required this.mainSch,
+  });
 
   factory MainSchResultModel.fromJson(Map<String, dynamic> json) {
     var list = json['RESULT'] != null ? json['RESULT'] as List : [];
     // print(list.runtimeType);
     List<MainSchResponseModel> mainSchList =
         list.map((i) => MainSchResponseModel.fromJson(i)).toList();
+
     return MainSchResultModel(mainSch: mainSchList);
   }
 }
