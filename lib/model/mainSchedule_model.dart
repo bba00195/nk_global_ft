@@ -49,6 +49,8 @@ class MainSchResultModel {
     List<MainSchResponseModel> mainSchList =
         list.map((i) => MainSchResponseModel.fromJson(i)).toList();
 
-    return MainSchResultModel(mainSch: mainSchList);
+    return MainSchResultModel(
+      mainSch: mainSchList,
+    );
   }
 }

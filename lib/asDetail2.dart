@@ -1,13 +1,17 @@
 import 'dart:convert';
 import 'dart:ui' as ui;
 import 'dart:io';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:nk_global_ft/home_page.dart';
+import 'package:nk_global_ft/model/master_model.dart';
 import 'package:nk_global_ft/model/common_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
@@ -36,6 +40,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
   List<responseModel> result = [];
   String _error = 'No Error Dectected';
   APIService apiService = new APIService();
+
   late UserManager member;
   late String reqNo;
   late String filename = '';
@@ -60,6 +65,13 @@ class _ASmanagementState2 extends State<ASmanagement2> {
   late String imageName2;
   bool _isChoosed = false;
 
+  List<MasterResponseModel> masterList = [];
+  String reqName = '';
+  String shipCust = '';
+  String vesselName = '';
+  String mmsiNo = '';
+  String reqComment = '';
+
   String errmsg = 'Error Uploading Image';
   String uri = 'http://www.kuls.co.kr/NK/flutter/DBHelper.php';
 
@@ -75,6 +87,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
     super.initState();
     member = widget.member;
     reqNo = widget.reqNo;
+    selectMaster();
   }
 
   @override
@@ -118,65 +131,6 @@ class _ASmanagementState2 extends State<ASmanagement2> {
           );
         });
   }
-
-  // Widget ConfirmCheck(BuildContext context) => IconButton(
-  //       iconSize: 20,
-  //       icon: Icon(Icons.check, color: Colors.red),
-  //       onPressed: () async {
-  //         if (_controller.isNotEmpty) {
-  //           final Uint8List? data = await _controller.toPngBytes();
-  //           if (data != null) {}
-  //         }
-  //       },
-  //     );
-
-  // Future<void> loadAsset() async {
-  //   List<Asset> resultList = <Asset>[];
-  //   String error = ' Error Detected';
-  //   try {
-  //     resultList = await MultiImagePicker.pickImages(
-  //       maxImages: 20,
-  //       enableCamera: true,
-  //       selectedAssets: Imagelist!,
-  //       cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
-  //       materialOptions: MaterialOptions(
-  //         actionBarColor: "#abcdef",
-  //         actionBarTitle: "Photo",
-  //         allViewTitle: "All photos",
-  //         useDetailsView: false,
-  //         selectCircleStrokeColor: "#000000",
-  //       ),
-  //     );
-  //   } on NoImagesSelectedException catch (e) {
-  //     error = e.toString();
-  //     return;
-  //   } on Exception catch (e) {
-  //     print(e);
-  //   }
-
-  //   if (!mounted) return;
-
-  //   setState(() {
-  //     Imagelist = resultList;
-  //     _error = error;
-  //   });
-  // }
-
-  // _saveImage() async {
-  //   if (Imagelist != null) {
-  //     for (var i = 0; i < Imagelist!.length; i++) {
-  //       ByteData byteData = await Imagelist![i].getByteData();
-  //       List<int> ImagelistData = byteData.buffer.asUint8List();
-
-  //       MultipartFile multipartFile = new MultipartFile.fromBytes(
-  //         ImagelistData,
-  //         filename: Imagelist![i].name,
-  //         contentType: MediaType('image', 'jpg'),
-  //       );
-  //       mImageList.add(multipartFile);
-  //     }
-  //   }
-  // }
 
   completeTaskAlert(String reqNo, String userid, String filetype,
       String filename, var filesrc) {
@@ -233,6 +187,40 @@ class _ASmanagementState2 extends State<ASmanagement2> {
       });
     });
   }
+
+  selectMaster() async {
+    List<String> sParam = [
+      reqNo,
+    ];
+    await apiService.getSelect("MASTER_S1", sParam).then((value) {
+      setState(() {
+        if (value.master.isNotEmpty) {
+          masterList = value.master;
+
+          reqName = masterList.elementAt(0).reqName;
+          shipCust = masterList.elementAt(0).shipCust;
+          vesselName = masterList.elementAt(0).vesselName;
+          mmsiNo = masterList.elementAt(0).mmsiNo;
+          reqComment = masterList.elementAt(0).reqComment;
+        } else {
+          print('fail');
+        }
+      });
+    });
+  }
+
+  // mainSchSearch() async {
+  //   List<String> sParam = [
+  //     member.user.userId,
+  //   ];
+  //   await apiService.getSelect("HISTORY_S1", sParam).then((value) {
+  //     setState(() {
+  //       if (value.mainSch.isNotEmpty) {
+  //         mainSchList = value.mainSch;
+  //       } else {}
+  //     });
+  //   });
+  // }
 
   as_Signature_upload(String reqNo, String filetype, String userid,
       String signname, String filesrc) async {
@@ -408,146 +396,117 @@ class _ASmanagementState2 extends State<ASmanagement2> {
           ));
 
   //Information
-  final asTable = Padding(
-      padding: EdgeInsets.all(0),
-      child: Table(
-        columnWidths: {
-          0: FlexColumnWidth(5),
-          1: FlexColumnWidth(5),
-        },
-        border: TableBorder.all(
-            color: Colors.grey, style: BorderStyle.solid, width: 1),
-        children: [
-          TableRow(children: [
-            Container(
-              padding: EdgeInsets.only(left: 5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("작성자",
-                      style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold)),
-                  Text(
-                    "홍길동",
-                    style: TextStyle(
-                        color: Colors.grey, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(left: 5),
-              child: Column(
+  Widget asTable(String reqName, String shipCust, String vesselName,
+      String mmsiNo, String reqComment) {
+    return Padding(
+        padding: EdgeInsets.all(0),
+        child: Table(
+          columnWidths: {
+            0: FlexColumnWidth(5),
+            1: FlexColumnWidth(5),
+          },
+          border: TableBorder.all(
+              color: Colors.grey, style: BorderStyle.solid, width: 1),
+          children: [
+            TableRow(children: [
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("작성일자",
+                    Text("작성자",
                         style: TextStyle(
                             color: Colors.black, fontWeight: FontWeight.bold)),
-                    Text("2021-08-08",
-                        style: TextStyle(
-                            color: Colors.grey, fontWeight: FontWeight.bold)),
-                  ]),
-            )
-          ]),
-          TableRow(children: [
-            Container(
-              padding: EdgeInsets.only(left: 5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("선주",
+                    Text(
+                      member.user.userName,
                       style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold)),
-                  Text("MARAN",
-                      style: TextStyle(
-                          color: Colors.grey, fontWeight: FontWeight.bold)),
-                ],
+                          color: Colors.grey, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.only(left: 5),
-              child: Column(
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("작성일자",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold)),
+                      Text("2021-08-08",
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.bold)),
+                    ]),
+              )
+            ]),
+            TableRow(children: [
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("조선소",
+                    Text("선주",
                         style: TextStyle(
                             color: Colors.black, fontWeight: FontWeight.bold)),
-                    Text("DSME",
+                    Text("MARAN",
                         style: TextStyle(
                             color: Colors.grey, fontWeight: FontWeight.bold)),
-                  ]),
-            )
-          ]),
-          TableRow(children: [
-            Container(
-              padding: EdgeInsets.only(left: 5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("선명",
-                      style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold)),
-                  Text("MARAN GAS SPETSES",
-                      style: TextStyle(
-                          color: Colors.grey, fontWeight: FontWeight.bold)),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.only(left: 5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "호선NO.",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "H2458",
-                    style: TextStyle(
-                        color: Colors.grey, fontWeight: FontWeight.bold),
-                  )
-                ],
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("조선소",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold)),
+                      Text("DSME",
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.bold)),
+                    ]),
+              )
+            ]),
+            TableRow(children: [
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("선명",
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold)),
+                    Text(vesselName,
+                        style: TextStyle(
+                            color: Colors.grey, fontWeight: FontWeight.bold)),
+                  ],
+                ),
               ),
-            )
-          ]),
-          TableRow(children: [
-            Container(
-              padding: EdgeInsets.only(left: 5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("수주",
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "호선NO.",
                       style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold)),
-                  Text("85103",
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      mmsiNo,
                       style: TextStyle(
-                          color: Colors.grey, fontWeight: FontWeight.bold)),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(left: 5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Calling Port.",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "Singapore",
-                    style: TextStyle(
-                        color: Colors.grey, fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-            )
-          ]),
-        ],
-      ));
+                          color: Colors.grey, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              )
+            ]),
+          ],
+        ));
+  }
 
   final bigo = Container(
     child: Table(
@@ -581,13 +540,105 @@ class _ASmanagementState2 extends State<ASmanagement2> {
     ),
   );
 
-  final contentTable = Container(
-    decoration: BoxDecoration(
-        border: Border.all(
-      width: 2,
-      color: Colors.grey,
-    )),
-  );
+  Widget detailContainer(String reqNo, String categoryName, String type,
+      String quantity, String vesselName, String imono) {
+    return Container(
+      padding: EdgeInsets.all(15),
+      margin: EdgeInsets.only(bottom: 15),
+      decoration: BoxDecoration(
+        color: Colors.white,
+      ),
+      constraints: BoxConstraints(
+        minWidth: MediaQuery.of(context).size.width,
+        minHeight: 120,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: AutoSizeText(
+                      vesselName,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      minFontSize: 18,
+                      maxLines: 1,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: AutoSizeText(
+                      "$reqNo   /  $imono",
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromRGBO(169, 169, 169, 1.0),
+                      ),
+                      minFontSize: 12,
+                      maxLines: 1,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  AutoSizeText(
+                    categoryName,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromRGBO(169, 169, 169, 1.0),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 8,
+                    child: AutoSizeText(
+                      type,
+                      textAlign: ui.TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: AutoSizeText(
+                      quantity,
+                      textAlign: TextAlign.end,
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  )
+                ],
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -622,8 +673,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
-                  asTable, //infomation
-                  bigo, // 비고
+                  asTable(reqName, shipCust, vesselName, mmsiNo, reqComment),
                   SizedBox(
                     height: 15,
                   ),

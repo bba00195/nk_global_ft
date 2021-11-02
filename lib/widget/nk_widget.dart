@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nk_global_ft/asModify.dart';
 import 'package:nk_global_ft/asdetail.dart';
 import 'package:nk_global_ft/history.dart';
 import 'package:nk_global_ft/home_page.dart';
