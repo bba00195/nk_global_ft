@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
+import 'package:nk_global_ft/imageConfirm.dart';
 import 'package:nk_global_ft/model/mainSchedule_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:nk_global_ft/asDetail2.dart';
@@ -508,6 +509,11 @@ class _HistoryPageState extends State<HistoryPage> {
                       flex: 5,
                       child: InkWell(
                         onTap: () async {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) => ImageConfirm()),
+                          );
                           //////Modify()//////
                         },
                         child: Container(
@@ -524,7 +530,7 @@ class _HistoryPageState extends State<HistoryPage> {
                             minHeight: 35,
                           ),
                           child: AutoSizeText(
-                            "Modifiy",
+                            "Modify",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 20,
