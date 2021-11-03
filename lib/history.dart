@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
+import 'package:nk_global_ft/imageConfirm.dart';
 import 'package:nk_global_ft/model/mainSchedule_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:nk_global_ft/asDetail2.dart';
@@ -14,6 +15,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:intl/intl.dart';
 
 import 'common/common.dart';
+import 'model/common_model.dart';
 
 class HistoryPage extends StatefulWidget {
   final UserManager member;
@@ -34,6 +36,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   List<MainSchResponseModel> mainSchList = [];
   List<MainSchResponseModel> mainDateSchList = [];
+  List<responseModel> result = [];
 
   DateFormat df = DateFormat('yyyy-MM-dd');
   DateTime selDate1 = DateTime.now();
@@ -80,6 +83,25 @@ class _HistoryPageState extends State<HistoryPage> {
         selDate2 = picked2;
         spdate2 = df.format(selDate2);
       });
+  }
+
+  histroyDelete(String reqNo) async {
+    List<String> sParam = [reqNo, member.user.userId];
+
+    await apiService.getDelete("HISTORY_APP_D1", sParam).then((value) {
+      setState(() {
+        if (value.result.isNotEmpty) {
+          result = value.result;
+          if (value.result.elementAt(0).rsCode == "E") {
+            Show(message: value.result.elementAt(0).rsMsg);
+          } else {
+            Show(message: "Success Delete.");
+          }
+        } else {
+          Show(message: "Fail to Delete");
+        }
+      });
+    });
   }
 
   mainSchSearch() async {
@@ -362,7 +384,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     ),
                     SizedBox(width: 10),
                     Expanded(
-                      flex: 3,
+                      flex: 5,
                       child: InkWell(
                         onTap: () {
                           Navigator.of(context).pop(true);
@@ -509,10 +531,13 @@ class _HistoryPageState extends State<HistoryPage> {
                       child: InkWell(
                         onTap: () async {
                           Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  builder: (context) => ASmanagement2(
-                                      member: member, reqNo: reqNo)));
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) => ImageConfirm(
+                                      reqNo: reqNo,
+                                    )),
+                          );
+                          //////Modify()//////
                         },
                         child: Container(
                           alignment: Alignment.center,
@@ -528,7 +553,7 @@ class _HistoryPageState extends State<HistoryPage> {
                             minHeight: 35,
                           ),
                           child: AutoSizeText(
-                            "Modifiy",
+                            "A/S Result",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 20,
@@ -546,7 +571,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       flex: 3,
                       child: InkWell(
                         onTap: () async {
-                          /////Delete();
+                          histroyDelete(reqNo);
                         },
                         child: Container(
                           alignment: Alignment.center,
