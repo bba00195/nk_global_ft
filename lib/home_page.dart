@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
+import 'package:nk_global_ft/asDetail2.dart';
 import 'package:nk_global_ft/model/mainSchedule_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -266,29 +267,38 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(width: 10),
                     Expanded(
                       flex: 3,
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: Color.fromRGBO(247, 247, 247, 1.0),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(5),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => ASmanagement2(
+                                      member: member, reqNo: reqNo)));
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Color.fromRGBO(247, 247, 247, 1.0),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5),
+                            ),
                           ),
-                        ),
-                        constraints: BoxConstraints(
-                          minHeight: 35,
-                        ),
-                        child: AutoSizeText(
-                          "Work",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromRGBO(111, 111, 111, 1.0),
+                          constraints: BoxConstraints(
+                            minHeight: 35,
                           ),
-                          minFontSize: 14,
-                          maxLines: 1,
+                          child: AutoSizeText(
+                            "Work",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromRGBO(111, 111, 111, 1.0),
+                            ),
+                            minFontSize: 14,
+                            maxLines: 1,
+                          ),
                         ),
                       ),
                     ),

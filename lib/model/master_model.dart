@@ -4,6 +4,7 @@ class MasterResponseModel {
   final String vesselName;
   final String mmsiNo;
   final String reqComment;
+  final String reqDate;
 
   MasterResponseModel({
     required this.reqName,
@@ -11,17 +12,20 @@ class MasterResponseModel {
     required this.vesselName,
     required this.mmsiNo,
     required this.reqComment,
+    required this.reqDate,
   });
 
   factory MasterResponseModel.fromJson(Map<String, dynamic> json) {
     return MasterResponseModel(
-        reqName: json['REQ_NAME'] != null ? json['REQ_NAME'] as String : "",
-        shipCust: json['SHIP_CUST'] != null ? json['SHIP_CUST'] as String : "",
-        vesselName:
-            json['VESSEL_NAME'] != null ? json['VESSEL_NAME'] as String : "",
-        mmsiNo: json['MMSI_NO'] != null ? json['MMSI_NO'] as String : "",
-        reqComment:
-            json['REQ_COMMENT'] != null ? json['REQ_COMMENT'] as String : "");
+      reqName: json['REQ_NAME'] != null ? json['REQ_NAME'] as String : "",
+      shipCust: json['SHIP_CUST'] != null ? json['SHIP_CUST'] as String : "",
+      vesselName:
+          json['VESSEL_NAME'] != null ? json['VESSEL_NAME'] as String : "",
+      mmsiNo: json['MMSI_NO'] != null ? json['MMSI_NO'] as String : "",
+      reqComment:
+          json['REQ_COMMENT'] != null ? json['REQ_COMMENT'] as String : "",
+      reqDate: json['REQ_DATE'] != null ? json['REQ_DATE'] as String : "",
+    );
   }
 }
 

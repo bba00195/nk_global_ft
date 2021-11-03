@@ -38,6 +38,7 @@ class _ASmodifyState extends State<ASmodify> {
   List<Asset>? Imagelist = <Asset>[];
   List<Asset>? Imagelist2 = <Asset>[];
 
+  base64ToImage(String base64string) {}
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {

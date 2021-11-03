@@ -71,6 +71,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
   String vesselName = '';
   String mmsiNo = '';
   String reqComment = '';
+  String reqDate = '';
 
   String errmsg = 'Error Uploading Image';
   String uri = 'http://www.kuls.co.kr/NK/flutter/DBHelper.php';
@@ -202,6 +203,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
           vesselName = masterList.elementAt(0).vesselName;
           mmsiNo = masterList.elementAt(0).mmsiNo;
           reqComment = masterList.elementAt(0).reqComment;
+          reqDate = masterList.elementAt(0).reqDate;
         } else {
           print('fail');
         }
@@ -397,7 +399,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
 
   //Information
   Widget asTable(String reqName, String shipCust, String vesselName,
-      String mmsiNo, String reqComment) {
+      String mmsiNo, String reqComment, String reqDate) {
     return Padding(
         padding: EdgeInsets.all(0),
         child: Table(
@@ -430,11 +432,11 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("작성일자",
+                      Text("Date",
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold)),
-                      Text("2021-08-08",
+                      Text(reqDate,
                           style: TextStyle(
                               color: Colors.grey, fontWeight: FontWeight.bold)),
                     ]),
@@ -449,7 +451,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                     Text("선주",
                         style: TextStyle(
                             color: Colors.black, fontWeight: FontWeight.bold)),
-                    Text("MARAN",
+                    Text(shipCust,
                         style: TextStyle(
                             color: Colors.grey, fontWeight: FontWeight.bold)),
                   ],
@@ -460,11 +462,11 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("조선소",
+                      Text("Req Name",
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold)),
-                      Text("DSME",
+                      Text(reqName,
                           style: TextStyle(
                               color: Colors.grey, fontWeight: FontWeight.bold)),
                     ]),
@@ -491,7 +493,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "호선NO.",
+                      "MMSI NO.",
                       style: TextStyle(
                           color: Colors.black, fontWeight: FontWeight.bold),
                     ),
@@ -508,37 +510,40 @@ class _ASmanagementState2 extends State<ASmanagement2> {
         ));
   }
 
-  final bigo = Container(
-    child: Table(
-      columnWidths: {
-        0: FlexColumnWidth(10),
-      },
-      border: TableBorder.all(
-          color: Colors.grey, style: BorderStyle.solid, width: 1),
-      children: [
-        TableRow(children: [
-          Container(
-            padding: EdgeInsets.only(left: 5),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "비고",
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "2020.10.25 onboared Singapore",
-                  style: TextStyle(
-                      color: Colors.grey, fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-          )
-        ])
-      ],
-    ),
-  );
+  Widget bigo(String reqComment) {
+    return Container(
+      child: Table(
+        columnWidths: {
+          0: FlexColumnWidth(10),
+        },
+        border: TableBorder.all(
+            color: Colors.grey, style: BorderStyle.solid, width: 1),
+        children: [
+          TableRow(children: [
+            Container(
+              padding: EdgeInsets.only(left: 5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Comment",
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    reqComment,
+                    style: TextStyle(
+                        color: Colors.grey, fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+            )
+          ])
+        ],
+      ),
+    );
+  }
 
   Widget detailContainer(String reqNo, String categoryName, String type,
       String quantity, String vesselName, String imono) {
@@ -673,7 +678,9 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
-                  asTable(reqName, shipCust, vesselName, mmsiNo, reqComment),
+                  asTable(reqName, shipCust, vesselName, mmsiNo, reqComment,
+                      reqDate),
+                  bigo(reqComment),
                   SizedBox(
                     height: 15,
                   ),

@@ -308,6 +308,11 @@ class nkNaviBottomBar extends StatelessWidget implements PreferredSizeWidget {
                   context,
                   CupertinoPageRoute(
                       builder: (context) => Schedule(member: member)));
+            } else if (index == 3) {
+              Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (context) => certPage(member: member)));
             }
 
             // if (_selectedIndex != index && index == 0) {

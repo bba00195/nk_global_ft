@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'package:nk_global_ft/model/image_model.dart';
 import 'dart:convert';
 
 import 'package:nk_global_ft/model/login_model.dart';
@@ -40,6 +41,10 @@ class APIService {
       case "HISTORY_S2":
         final response = await http.post(url, body: sBody, headers: headers);
         result = MainSchResultModel.fromJson(json.decode(response.body));
+        break;
+      case "IMAGE_S1":
+        final response = await http.post(url, body: sBody, headers: headers);
+        result = ImageResultModel.fromJson(json.decode(response.body));
         break;
       default:
         break;
@@ -96,6 +101,10 @@ class APIService {
     var headers = {'Content-Type': "application/json"};
 
     switch (sFunctionName) {
+      case "HISTORY_APP_D1":
+        final response = await http.post(url, body: sBody, headers: headers);
+        result = resultModel.fromJson(json.decode(response.body));
+        break;
       default:
         break;
     }

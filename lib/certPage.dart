@@ -75,6 +75,11 @@ class _certPageState extends State<certPage> {
             globalKey: scaffoldKey,
             member: member,
           ),
+          bottomNavigationBar: nkNaviBottomBar(
+            selectedIndex: 3,
+            globalKey: scaffoldKey,
+            member: member,
+          ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -83,7 +88,7 @@ class _certPageState extends State<certPage> {
               ),
               Container(
                 margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                height: 70.h,
+                height: 65.h,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black, width: 1),
                 ),

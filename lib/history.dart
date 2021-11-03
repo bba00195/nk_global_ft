@@ -508,7 +508,11 @@ class _HistoryPageState extends State<HistoryPage> {
                       flex: 5,
                       child: InkWell(
                         onTap: () async {
-                          //////Modify()//////
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => ASmanagement2(
+                                      member: member, reqNo: reqNo)));
                         },
                         child: Container(
                           alignment: Alignment.center,
