@@ -9,16 +9,22 @@
 </array>
 	<key>NSPhotoLibraryUsageDescription</key>
 <string>Allow access to photo library</string>
- <key>NSBluetoothAlwaysUsageDescription</key>  
-	    <string>Need BLE permission</string>  
-	    <key>NSBluetoothPeripheralUsageDescription</key>  
-	    <string>Need BLE permission</string>  
-	    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>  
-	    <string>Need Location permission</string>  
-	    <key>NSLocationAlwaysUsageDescription</key>  
-	    <string>Need Location permission</string>  
-	    <key>NSLocationWhenInUseUsageDescription</key>  
-	    <string>Need Location permission</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Used to demonstrate image picker plugin</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Used to capture audio for image picker plugin</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Used to demonstrate image picker plugin</string>
+<key>NSBluetoothAlwaysUsageDescription</key>  
+	<string>Need BLE permission</string>  
+	<key>NSBluetoothPeripheralUsageDescription</key>  
+	<string>Need BLE permission</string>  
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>  
+	<string>Need Location permission</string>  
+	<key>NSLocationAlwaysUsageDescription</key>  
+	<string>Need Location permission</string>  
+	<key>NSLocationWhenInUseUsageDescription</key>  
+	<string>Need Location permission</string>
 <key>NSCameraUsageDescription</key>
 <string>Allow access to camera to capture photos</string>
 

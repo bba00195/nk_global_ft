@@ -23,16 +23,16 @@ import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'common/common.dart';
 import 'model/image_model.dart';
 
-class ASmanagement2 extends StatefulWidget {
+class AsEditor extends StatefulWidget {
   final UserManager member;
   final String reqNo;
 
-  ASmanagement2({required this.member, required this.reqNo});
+  AsEditor({required this.member, required this.reqNo});
   @override
-  _ASmanagementState2 createState() => _ASmanagementState2();
+  _AsEditorState2 createState() => _AsEditorState2();
 }
 
-class _ASmanagementState2 extends State<ASmanagement2> {
+class _AsEditorState2 extends State<AsEditor> {
   List<Asset>? Imagelist = <Asset>[];
   List<Asset>? Imagelist2 = <Asset>[];
   List<Uint8List> imgs = [];

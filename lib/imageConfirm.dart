@@ -31,8 +31,8 @@ class _ImageConfirmState extends State<ImageConfirm> {
   APIService apiService = new APIService();
   List<ImageResponseModel> imgVal = [];
   List<ImageResponseModel> imgVal2 = [];
-  List<Asset> Imagelist = <Asset>[];
-  List<Asset> Imagelist2 = <Asset>[];
+  List<Asset>? Imagelist = <Asset>[];
+  List<Asset>? Imagelist2 = <Asset>[];
   String imgB = "";
   String imgF = "";
   List<String> BList = [];
@@ -314,13 +314,21 @@ class _ImageConfirmState extends State<ImageConfirm> {
   testImage(int seq) {
     imgs = BList[seq];
     if (imgs != "") {
-      return Container(
-          child: Image.memory(
-        Uri.parse(imgs).data!.contentAsBytes(),
-        fit: BoxFit.cover,
-        height: 200,
-        width: 200,
-      ));
+      return Row(
+        children: [
+          ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.memory(
+                Uri.parse(imgs).data!.contentAsBytes(),
+                fit: BoxFit.cover,
+                height: 200,
+                width: 200,
+              )),
+          SizedBox(
+            width: 10,
+          ),
+        ],
+      );
     } else {
       return Container();
     }
@@ -329,13 +337,21 @@ class _ImageConfirmState extends State<ImageConfirm> {
   testImage2(int seq) {
     imgs2 = FList[seq];
     if (imgs2 != "") {
-      return Container(
-          child: Image.memory(
-        Uri.parse(imgs2).data!.contentAsBytes(),
-        fit: BoxFit.cover,
-        height: 200,
-        width: 200,
-      ));
+      return Row(
+        children: [
+          ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.memory(
+                Uri.parse(imgs2).data!.contentAsBytes(),
+                fit: BoxFit.cover,
+                height: 200,
+                width: 200,
+              )),
+          SizedBox(
+            width: 10,
+          ),
+        ],
+      );
     } else {
       return Container();
     }
@@ -399,34 +415,13 @@ class _ImageConfirmState extends State<ImageConfirm> {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          BList.isEmpty
-                              ? Container(
-                                  height: 200,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: DottedBorder(
-                                    child: Container(
-                                      child: Center(
-                                        child: IconButton(
-                                          onPressed: () {
-                                            getImage2();
-                                          },
-                                          icon: Icon(CupertinoIcons.camera),
-                                        ),
-                                      ),
-                                    ),
-                                    color: Colors.grey,
-                                    dashPattern: [5, 3],
-                                    borderType: BorderType.RRect,
-                                    radius: Radius.circular(10),
-                                  ),
-                                )
-                              : Row(
-                                  children: [
-                                    if (BList.length > 0)
-                                      for (int i = 0; i < BList.length; i++)
-                                        testImage(i),
-                                  ],
-                                )
+                          Row(
+                            children: [
+                              if (BList.length > 0)
+                                for (int i = 0; i < BList.length; i++)
+                                  testImage(i),
+                            ],
+                          )
                         ],
                       ),
                     ),
@@ -442,34 +437,13 @@ class _ImageConfirmState extends State<ImageConfirm> {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          BList.isEmpty
-                              ? Container(
-                                  height: 200,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: DottedBorder(
-                                    child: Container(
-                                      child: Center(
-                                        child: IconButton(
-                                          onPressed: () {
-                                            getImage2();
-                                          },
-                                          icon: Icon(CupertinoIcons.camera),
-                                        ),
-                                      ),
-                                    ),
-                                    color: Colors.grey,
-                                    dashPattern: [5, 3],
-                                    borderType: BorderType.RRect,
-                                    radius: Radius.circular(10),
-                                  ),
-                                )
-                              : Row(
-                                  children: [
-                                    if (FList.length > 0)
-                                      for (int i = 0; i < FList.length; i++)
-                                        testImage2(i),
-                                  ],
-                                )
+                          Row(
+                            children: [
+                              if (FList.length > 0)
+                                for (int i = 0; i < FList.length; i++)
+                                  testImage2(i),
+                            ],
+                          )
                         ],
                       ),
                     ),
