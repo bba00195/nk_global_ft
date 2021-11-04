@@ -535,6 +535,7 @@ class _HistoryPageState extends State<HistoryPage> {
                             CupertinoPageRoute(
                                 builder: (context) => ImageConfirm(
                                       reqNo: reqNo,
+                                      member: member,
                                     )),
                           );
                           //////Modify()//////

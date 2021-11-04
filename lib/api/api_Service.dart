@@ -46,6 +46,10 @@ class APIService {
         final response = await http.post(url, body: sBody, headers: headers);
         result = ImageResultModel.fromJson(json.decode(response.body));
         break;
+      case "IMAGE_S2":
+        final response = await http.post(url, body: sBody, headers: headers);
+        result = ImageResultModel.fromJson(json.decode(response.body));
+        break;
       default:
         break;
     }

@@ -1,6 +1,14 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dotted_border/dotted_border.dart';
+import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
 import 'package:nk_global_ft/common/common.dart';
 import 'package:nk_global_ft/model/image_model.dart';
+import 'package:nk_global_ft/model/master_model.dart';
+import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:sizer/sizer.dart';
 
 import 'package:flutter/material.dart';
@@ -8,25 +16,45 @@ import 'package:flutter/cupertino.dart';
 
 class ImageConfirm extends StatefulWidget {
   final String reqNo;
+  final UserManager member;
 
-  ImageConfirm({required this.reqNo});
+  ImageConfirm({required this.reqNo, required this.member});
   @override
   _ImageConfirmState createState() => _ImageConfirmState();
 }
 
 class _ImageConfirmState extends State<ImageConfirm> {
   late String reqNo;
+  late UserManager member;
 
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   APIService apiService = new APIService();
   List<ImageResponseModel> imgVal = [];
-  String img = "";
-  List<String> imgList = [];
-  List<String> testList = [];
+  List<ImageResponseModel> imgVal2 = [];
+  List<Asset> Imagelist = <Asset>[];
+  List<Asset> Imagelist2 = <Asset>[];
+  String imgB = "";
+  String imgF = "";
+  List<String> BList = [];
+  List<String> FList = [];
+  late Uint8List _bytes;
+  List<MasterResponseModel> masterList = [];
   String imgs = "";
+  String imgs2 = "";
+  String reqName = "";
+  String shipCust = "";
+  String mmsiNo = "";
+  String vesselName = "";
+  String reqComment = "";
+  String reqDate = "";
+
   @override
   void initState() {
     reqNo = widget.reqNo;
+    member = widget.member;
     mainSchSearch();
+    mainSch2Search();
+    selectMaster();
     super.initState();
   }
 
@@ -42,8 +70,8 @@ class _ImageConfirmState extends State<ImageConfirm> {
         if (value.image.isNotEmpty) {
           imgVal = value.image;
           for (int i = 0; i < imgVal.length; i++) {
-            img = imgVal.elementAt(i).fileSrc;
-            imgList.add(img);
+            imgB = imgVal.elementAt(i).fileSrc;
+            BList.add(imgB);
           }
 
           // img = value.imageList.elementAt(0).fileSrc;
@@ -52,39 +80,438 @@ class _ImageConfirmState extends State<ImageConfirm> {
     });
   }
 
-  // var image = BASE64.
+  mainSch2Search() async {
+    List<String> sParam = [reqNo];
+    await apiService.getSelect("IMAGE_S2", sParam).then((value) {
+      setState(() {
+        if (value.image.isNotEmpty) {
+          imgVal2 = value.image;
+          for (int i = 0; i < imgVal2.length; i++) {
+            imgF = imgVal2.elementAt(i).fileSrc;
+            FList.add(imgF);
+          }
 
-  testImage() {
-    for (int i = 0; i < imgList.length; i++) {
-      imgs = imgList[i];
-      return Image.memory(Uri.parse(imgs).data!.contentAsBytes());
-    }
-    return Container();
+          // img = value.imageList.elementAt(0).fileSrc;
+        } else {}
+      });
+    });
   }
 
-  setImage() {
-    if (img != "") {
-      return Image.memory(Uri.parse(img).data!.contentAsBytes());
+  getImage() async {
+    List<Asset> resultList = <Asset>[];
+    String err = "error";
+    try {
+      resultList =
+          await MultiImagePicker.pickImages(maxImages: 10, enableCamera: true);
+    } on NoImagesSelectedException catch (e) {
+      err = e.toString();
+    }
+
+    setState(() {
+      Imagelist = resultList;
+    });
+  }
+
+  clearImage() async {
+    setState(() {
+      Imagelist!.clear();
+    });
+  }
+
+  getImage2() async {
+    List<Asset> resultList2 = <Asset>[];
+    String err = "error";
+    try {
+      resultList2 =
+          await MultiImagePicker.pickImages(maxImages: 10, enableCamera: true);
+    } on NoImagesSelectedException catch (e) {
+      err = e.toString();
+      return;
+    }
+
+    setState(() {
+      Imagelist2 = resultList2;
+    });
+  }
+
+  clearImage2() async {
+    setState(() {
+      Imagelist2!.clear();
+    });
+  }
+
+  selectMaster() async {
+    List<String> sParam = [
+      reqNo,
+    ];
+    await apiService.getSelect("MASTER_S1", sParam).then((value) {
+      setState(() {
+        if (value.master.isNotEmpty) {
+          masterList = value.master;
+
+          reqName = masterList.elementAt(0).reqName;
+          shipCust = masterList.elementAt(0).shipCust;
+          vesselName = masterList.elementAt(0).vesselName;
+          mmsiNo = masterList.elementAt(0).mmsiNo;
+          reqComment = masterList.elementAt(0).reqComment;
+          reqDate = masterList.elementAt(0).reqDate;
+        } else {
+          print('fail');
+        }
+      });
+    });
+  }
+
+  Widget asTable(String reqName, String shipCust, String vesselName,
+      String mmsiNo, String reqComment, String reqDate) {
+    return Padding(
+        padding: EdgeInsets.all(0),
+        child: Table(
+          columnWidths: {
+            0: FlexColumnWidth(5),
+            1: FlexColumnWidth(5),
+          },
+          border: TableBorder.all(
+              color: Colors.grey, style: BorderStyle.solid, width: 1),
+          children: [
+            TableRow(children: [
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("작성자",
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold)),
+                    Text(
+                      member.user.userName,
+                      style: TextStyle(
+                          color: Colors.grey, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Date",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold)),
+                      Text(reqDate,
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.bold)),
+                    ]),
+              )
+            ]),
+            TableRow(children: [
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("선주",
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold)),
+                    Text(shipCust,
+                        style: TextStyle(
+                            color: Colors.grey, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Req Name",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold)),
+                      Text(reqName,
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.bold)),
+                    ]),
+              )
+            ]),
+            TableRow(children: [
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("선명",
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold)),
+                    Text(vesselName,
+                        style: TextStyle(
+                            color: Colors.grey, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "MMSI NO.",
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      mmsiNo,
+                      style: TextStyle(
+                          color: Colors.grey, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              )
+            ]),
+          ],
+        ));
+  }
+
+  Widget bigo(String reqComment) {
+    return Container(
+      child: Table(
+        columnWidths: {
+          0: FlexColumnWidth(10),
+        },
+        border: TableBorder.all(
+            color: Colors.grey, style: BorderStyle.solid, width: 1),
+        children: [
+          TableRow(children: [
+            Container(
+              padding: EdgeInsets.only(left: 5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Comment",
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    reqComment,
+                    style: TextStyle(
+                        color: Colors.grey, fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+            )
+          ])
+        ],
+      ),
+    );
+  }
+
+  // var image = BASE64.
+
+  testImage(int seq) {
+    imgs = BList[seq];
+    if (imgs != "") {
+      return Container(
+          child: Image.memory(
+        Uri.parse(imgs).data!.contentAsBytes(),
+        fit: BoxFit.cover,
+        height: 200,
+        width: 200,
+      ));
     } else {
       return Container();
     }
   }
 
+  testImage2(int seq) {
+    imgs2 = FList[seq];
+    if (imgs2 != "") {
+      return Container(
+          child: Image.memory(
+        Uri.parse(imgs2).data!.contentAsBytes(),
+        fit: BoxFit.cover,
+        height: 200,
+        width: 200,
+      ));
+    } else {
+      return Container();
+    }
+  }
+
+  // setImage() {
+  //   if (img != "") {
+  //     return Image.memory(Uri.parse(img).data!.contentAsBytes());
+  //   } else {
+  //     return Container();
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
       return Scaffold(
+        key: scaffoldKey,
         backgroundColor: Color.fromRGBO(255, 255, 255, 1.0),
+        appBar: NkAppBar(
+            globalKey: scaffoldKey, member: member, menuName: "A/S Result"),
+        drawer: NkDrawer(globalKey: scaffoldKey, member: member),
         body: GestureDetector(
           child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(),
-            child: Column(
-              children: [],
-            ),
-          ),
-          onTap: () {},
+              padding: EdgeInsets.symmetric(),
+              child: Container(
+                margin: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                    border: Border(
+                        top: BorderSide(color: Colors.grey, width: 2.0))),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.fromLTRB(3, 2, 0, 1),
+                      height: 20,
+                      width: 100.w,
+                      color: Colors.grey,
+                      child: Text(
+                        "Information",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    asTable(reqName, shipCust, vesselName, mmsiNo, reqComment,
+                        reqDate),
+                    bigo(reqComment),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Center(
+                      child: Text(
+                        "A/S Before",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          BList.isEmpty
+                              ? Container(
+                                  height: 200,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: DottedBorder(
+                                    child: Container(
+                                      child: Center(
+                                        child: IconButton(
+                                          onPressed: () {
+                                            getImage2();
+                                          },
+                                          icon: Icon(CupertinoIcons.camera),
+                                        ),
+                                      ),
+                                    ),
+                                    color: Colors.grey,
+                                    dashPattern: [5, 3],
+                                    borderType: BorderType.RRect,
+                                    radius: Radius.circular(10),
+                                  ),
+                                )
+                              : Row(
+                                  children: [
+                                    if (BList.length > 0)
+                                      for (int i = 0; i < BList.length; i++)
+                                        testImage(i),
+                                  ],
+                                )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Center(
+                      child: Text("A/S After",
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          BList.isEmpty
+                              ? Container(
+                                  height: 200,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: DottedBorder(
+                                    child: Container(
+                                      child: Center(
+                                        child: IconButton(
+                                          onPressed: () {
+                                            getImage2();
+                                          },
+                                          icon: Icon(CupertinoIcons.camera),
+                                        ),
+                                      ),
+                                    ),
+                                    color: Colors.grey,
+                                    dashPattern: [5, 3],
+                                    borderType: BorderType.RRect,
+                                    radius: Radius.circular(10),
+                                  ),
+                                )
+                              : Row(
+                                  children: [
+                                    if (FList.length > 0)
+                                      for (int i = 0; i < FList.length; i++)
+                                        testImage2(i),
+                                  ],
+                                )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            child: Text("Delete"),
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.indigo),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Expanded(
+                          flex: 5,
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            child: Text("Edit"),
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.indigo),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              )),
         ),
       );
     });
   }
 }
+
+
+
+
+// if (imgList.length > 0)
+//                   for (int i = 0; i < imgList.length; i++) testImage(i),

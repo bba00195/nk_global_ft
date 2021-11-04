@@ -20,6 +20,7 @@ import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 import 'package:http/http.dart' as http;
 import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'common/common.dart';
+import 'model/image_model.dart';
 
 class ASmanagement2 extends StatefulWidget {
   final UserManager member;
@@ -38,6 +39,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
   List<MultipartFile> mImageList = [];
   Dio dio = Dio();
   List<responseModel> result = [];
+  List<ImageResponseModel> imgVal = [];
   String _error = 'No Error Dectected';
   APIService apiService = new APIService();
 
@@ -95,6 +97,23 @@ class _ASmanagementState2 extends State<ASmanagement2> {
   void dispose() {
     super.dispose();
   }
+
+  // mainSchImg() async {
+  //   List<String> sParam = [reqNo];
+  //   await apiService.getSelect("IMAGE_S1", sParam).then((value) {
+  //     setState(() {
+  //       if (value.image.isNotEmpty) {
+  //         imgVal = value.image;
+  //         for (int i = 0; i < imgVal.length; i++) {
+  //           img = imgVal.elementAt(i).fileSrc;
+
+  //         }
+
+  //         // img = value.imageList.elementAt(0).fileSrc;
+  //       } else {}
+  //     });
+  //   });
+  // }
 
   Future writeToFile(ByteData data, String path) {
     final buffer = data.buffer;
