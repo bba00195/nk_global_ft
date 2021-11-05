@@ -5,12 +5,16 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
+import 'package:nk_global_ft/asModify.dart';
 import 'package:nk_global_ft/common/common.dart';
+import 'package:nk_global_ft/model/common_model.dart';
+import 'package:nk_global_ft/history.dart';
+import 'package:nk_global_ft/main.dart';
 import 'package:nk_global_ft/model/image_model.dart';
 import 'package:nk_global_ft/model/master_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:sizer/sizer.dart';
-
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -23,7 +27,8 @@ class ImageConfirm extends StatefulWidget {
   _ImageConfirmState createState() => _ImageConfirmState();
 }
 
-class _ImageConfirmState extends State<ImageConfirm> {
+class _ImageConfirmState extends State<ImageConfirm>
+    with TickerProviderStateMixin {
   late String reqNo;
   late UserManager member;
 
@@ -31,6 +36,7 @@ class _ImageConfirmState extends State<ImageConfirm> {
   APIService apiService = new APIService();
   List<ImageResponseModel> imgVal = [];
   List<ImageResponseModel> imgVal2 = [];
+  List<responseModel> result = [];
   List<Asset>? Imagelist = <Asset>[];
   List<Asset>? Imagelist2 = <Asset>[];
   String imgB = "";
@@ -48,12 +54,13 @@ class _ImageConfirmState extends State<ImageConfirm> {
   String reqComment = "";
   String reqDate = "";
 
+  late AnimationController controller;
+
   @override
   void initState() {
     reqNo = widget.reqNo;
     member = widget.member;
-    mainSchSearch();
-    mainSch2Search();
+    _init();
     selectMaster();
     super.initState();
   }
@@ -61,6 +68,42 @@ class _ImageConfirmState extends State<ImageConfirm> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void _init() async {
+    mainSchSearch();
+    mainSch2Search();
+  }
+
+  // void loadData() async {
+  //   try {
+  //     EasyLoading.show(status: 'Loading...');
+  //     mainSchSearch();
+  //     mainSch2Search();
+  //     EasyLoading.dismiss();
+  //   } catch (e) {
+  //     EasyLoading.showError(e.toString());
+  //     print(e);
+  //   }
+  // }
+
+  histroyDelete(String reqNo) async {
+    List<String> sParam = [reqNo, member.user.userId];
+
+    await apiService.getDelete("HISTORY_APP_D1", sParam).then((value) {
+      setState(() {
+        if (value.result.isNotEmpty) {
+          result = value.result;
+          if (value.result.elementAt(0).rsCode == "E") {
+            Show(message: value.result.elementAt(0).rsMsg);
+          } else {
+            Show(message: "Success Delete.");
+          }
+        } else {
+          Show(message: "Fail to Delete");
+        }
+      });
+    });
   }
 
   mainSchSearch() async {
@@ -402,10 +445,17 @@ class _ImageConfirmState extends State<ImageConfirm> {
                       height: 15,
                     ),
                     Center(
-                      child: Text(
-                        "A/S Before",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Text(
+                          "A/S Before",
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -429,9 +479,19 @@ class _ImageConfirmState extends State<ImageConfirm> {
                       height: 20,
                     ),
                     Center(
-                      child: Text("A/S After",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Text("A/S After",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
                     ),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -448,31 +508,69 @@ class _ImageConfirmState extends State<ImageConfirm> {
                       ),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                     Row(
                       children: [
                         Expanded(
                           flex: 5,
                           child: ElevatedButton(
-                            onPressed: () {},
-                            child: Text("Delete"),
+                            onPressed: () async {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return CupertinoAlertDialog(
+                                      title: Text("Waring!!!"),
+                                      content:
+                                          Text("업로드된 서명과 사진을 새로 등록하시겠습니까?"),
+                                      actions: [
+                                        CupertinoDialogAction(
+                                          child: Text("yes"),
+                                          onPressed: () async {
+                                            histroyDelete(reqNo);
+                                            Navigator.pushReplacement(
+                                                context,
+                                                CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        ASmodify(
+                                                            member: member,
+                                                            reqNo: reqNo)));
+                                          },
+                                        ),
+                                        CupertinoDialogAction(
+                                          child: Text("No"),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            },
+                            child: Text("re-upload"),
                             style: ElevatedButton.styleFrom(
                                 primary: Colors.indigo),
                           ),
                         ),
                         SizedBox(
-                          width: 5,
+                          width: 10,
                         ),
                         Expanded(
                           flex: 5,
                           child: ElevatedButton(
-                            onPressed: () {},
-                            child: Text("Edit"),
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => HistoryPage(
+                                            member: member,
+                                          )));
+                            },
+                            child: Text("Go Back"),
                             style: ElevatedButton.styleFrom(
                                 primary: Colors.indigo),
                           ),
-                        )
+                        ),
                       ],
                     )
                   ],

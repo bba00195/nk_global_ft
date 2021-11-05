@@ -813,10 +813,15 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                         }
                                         Asset asset = Imagelist2![index - 1];
                                         return Stack(children: [
-                                          AssetThumb(
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                            child: AssetThumb(
                                               asset: asset,
                                               width: 200,
-                                              height: 200),
+                                              height: 200,
+                                            ),
+                                          ),
                                           Positioned(
                                               right: -2,
                                               top: -9,
@@ -896,10 +901,14 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                             }
                                             Asset asset = Imagelist![index - 1];
                                             return Stack(children: [
-                                              AssetThumb(
-                                                  asset: asset,
-                                                  width: 200,
-                                                  height: 200),
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                                child: AssetThumb(
+                                                    asset: asset,
+                                                    width: 200,
+                                                    height: 200),
+                                              ),
                                               Positioned(
                                                   right: -2,
                                                   top: -9,
@@ -915,7 +924,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                                           Imagelist!.removeAt(
                                                               index - 1);
                                                         });
-                                                      }))
+                                                      })),
                                             ]);
                                           },
                                         ),

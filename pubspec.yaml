@@ -54,6 +54,8 @@ dependencies:
   auto_size_text: ^3.0.0
   flutter_signature_pad: ^3.0.0
   carousel_slider: ^4.0.0
+  flutter_easyloading: ^3.0.3
+  exif: ^3.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
