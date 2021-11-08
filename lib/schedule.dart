@@ -343,7 +343,7 @@ class _ScheduleState extends State<Schedule> {
       sColor = Colors.indigo;
     } else if (mgtStatusVal == 30) {
       sIcon = Icons.build_rounded;
-      sColor = Colors.red;
+      sColor = Colors.green;
     } else {
       sIcon = Icons.construction;
       sColor = Colors.grey;
@@ -366,7 +366,7 @@ class _ScheduleState extends State<Schedule> {
       sColor = Colors.indigo;
     } else if (mgtStatusVal == 30) {
       sText = "        Proceeding  ";
-      sColor = Colors.red;
+      sColor = Colors.green;
     } else {
       sText = "        Finish task  ";
       sColor = Colors.grey;
@@ -532,7 +532,7 @@ class _ScheduleState extends State<Schedule> {
       appBar: NkAppBar(
         globalKey: scaffoldKey,
         member: member,
-        menuName: 'Sceduler',
+        menuName: 'Schedule',
       ),
       drawer: NkDrawer(
         globalKey: scaffoldKey,

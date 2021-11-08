@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
+import 'package:loading_overlay/loading_overlay.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:multi_image_picker2/multi_image_picker2.dart';
@@ -53,6 +53,7 @@ class _ImageConfirmState extends State<ImageConfirm>
   String vesselName = "";
   String reqComment = "";
   String reqDate = "";
+  bool state1 = false;
 
   late AnimationController controller;
 
@@ -60,6 +61,7 @@ class _ImageConfirmState extends State<ImageConfirm>
   void initState() {
     reqNo = widget.reqNo;
     member = widget.member;
+
     _init();
     selectMaster();
     super.initState();
@@ -467,6 +469,21 @@ class _ImageConfirmState extends State<ImageConfirm>
                         children: [
                           Row(
                             children: [
+                              // FutureBuilder(
+                              //   future: mainSchSearch(),
+                              //   builder: (context, snapshot) {
+                              //     if (snapshot.hasData) {
+                              //      for(int i =0; i< BList.length; i++){
+                              //        testImage(i);
+                              //      }
+
+                              //     } else if (snapshot.hasError) {
+                              //       return Text("error");
+                              //     }
+                              //     return CircularProgressIndicator();
+                              //   },
+
+                              // )
                               if (BList.length > 0)
                                 for (int i = 0; i < BList.length; i++)
                                   testImage(i),

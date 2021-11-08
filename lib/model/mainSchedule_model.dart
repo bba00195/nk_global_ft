@@ -7,6 +7,7 @@ class MainSchResponseModel {
   final String vesselName;
   final String reqStatus;
   final String mgtStatus;
+  final String reqport;
 
   MainSchResponseModel(
       {required this.reqNo,
@@ -16,23 +17,23 @@ class MainSchResponseModel {
       required this.custCode,
       required this.vesselName,
       required this.reqStatus,
-      required this.mgtStatus});
+      required this.mgtStatus,
+      required this.reqport});
 
   factory MainSchResponseModel.fromJson(Map<String, dynamic> json) {
     return MainSchResponseModel(
-        reqNo: json['REQ_NO'] != null ? json['REQ_NO'] as String : "",
-        userId: json['USER_ID'] != null ? json['USER_ID'] as String : "",
-        startDate:
-            json['START_DATE'] != null ? json['START_DATE'] as String : "",
-        endDate: json['END_DATE'] != null ? json['END_DATE'] as String : "",
-        custCode: json['CUST_CODE'] != null ? json['CUST_CODE'] as String : "",
-        vesselName: json['REQ_VESSEL_NAME'] != null
-            ? json['REQ_VESSEL_NAME'] as String
-            : "",
-        reqStatus:
-            json['REQ_STATUS'] != null ? json['REQ_STATUS'] as String : "",
-        mgtStatus:
-            json['MGT_STATUS'] != null ? json['MGT_STATUS'] as String : "");
+      reqNo: json['REQ_NO'] != null ? json['REQ_NO'] as String : "",
+      userId: json['USER_ID'] != null ? json['USER_ID'] as String : "",
+      startDate: json['START_DATE'] != null ? json['START_DATE'] as String : "",
+      endDate: json['END_DATE'] != null ? json['END_DATE'] as String : "",
+      custCode: json['CUST_CODE'] != null ? json['CUST_CODE'] as String : "",
+      vesselName: json['REQ_VESSEL_NAME'] != null
+          ? json['REQ_VESSEL_NAME'] as String
+          : "",
+      reqStatus: json['REQ_STATUS'] != null ? json['REQ_STATUS'] as String : "",
+      mgtStatus: json['MGT_STATUS'] != null ? json['MGT_STATUS'] as String : "",
+      reqport: json['REQ_PORT'] != null ? json['REQ_PORT'] as String : "",
+    );
   }
 }
 

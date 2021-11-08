@@ -56,6 +56,10 @@ dependencies:
   carousel_slider: ^4.0.0
   flutter_easyloading: ^3.0.3
   exif: ^3.0.1
+  rounded_expansion_tile: ^0.0.13
+  flutter_progress_hud: ^2.0.0
+  loading_overlay: ^0.3.0
+  flutter_image_compress: ^1.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

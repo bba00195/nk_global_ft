@@ -12,7 +12,7 @@ import 'package:nk_global_ft/model/mainSchedule_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:intl/intl.dart';
-
+import 'package:rounded_expansion_tile/rounded_expansion_tile.dart';
 import 'common/common.dart';
 
 class HomePage extends StatefulWidget {
@@ -242,7 +242,7 @@ class _HomePageState extends State<HomePage> {
                           padding:
                               EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                           decoration: BoxDecoration(
-                            color: Color.fromRGBO(247, 247, 247, 1.0),
+                            color: Colors.indigo,
                             borderRadius: BorderRadius.all(
                               Radius.circular(5),
                             ),
@@ -254,10 +254,9 @@ class _HomePageState extends State<HomePage> {
                             "Cancel the ride",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromRGBO(111, 111, 111, 1.0),
-                            ),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                             minFontSize: 14,
                             maxLines: 1,
                           ),
@@ -280,7 +279,7 @@ class _HomePageState extends State<HomePage> {
                           padding:
                               EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                           decoration: BoxDecoration(
-                            color: Color.fromRGBO(247, 247, 247, 1.0),
+                            color: Colors.indigo,
                             borderRadius: BorderRadius.all(
                               Radius.circular(5),
                             ),
@@ -294,7 +293,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Color.fromRGBO(111, 111, 111, 1.0),
+                              color: Colors.white,
                             ),
                             minFontSize: 14,
                             maxLines: 1,
@@ -314,7 +313,7 @@ class _HomePageState extends State<HomePage> {
                           padding:
                               EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                           decoration: BoxDecoration(
-                            color: Color.fromRGBO(247, 247, 247, 1.0),
+                            color: Colors.indigo,
                             borderRadius: BorderRadius.all(
                               Radius.circular(5),
                             ),
@@ -328,7 +327,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Color.fromRGBO(111, 111, 111, 1.0),
+                              color: Colors.white,
                             ),
                             minFontSize: 14,
                             maxLines: 1,
@@ -347,7 +346,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget schContainer(String reqNo, String vesselName, String startDate,
-      String endDate, String mgtStatus) {
+      String endDate, String mgtStatus, String reqport) {
     String statusName = "Wait on board";
     Color sColor = Colors.green;
     late Function sFunc;
@@ -360,123 +359,180 @@ class _HomePageState extends State<HomePage> {
       sColor = Color.fromRGBO(63, 198, 68, 1.0);
     }
 
-    return Container(
-      padding: EdgeInsets.all(15),
-      margin: EdgeInsets.only(bottom: 15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-      ),
-      constraints: BoxConstraints(
-        minWidth: MediaQuery.of(context).size.width,
-        minHeight: 120,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 5,
-                child: AutoSizeText(
-                  vesselName,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  minFontSize: 18,
-                  maxLines: 1,
-                ),
-              ),
-              Expanded(
-                flex: 5,
-                child: AutoSizeText(
-                  "$startDate ~ $endDate",
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(169, 169, 169, 1.0),
-                  ),
-                  minFontSize: 12,
-                  maxLines: 1,
-                ),
-              ),
-            ],
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: RoundedExpansionTile(
+          leading: CircleAvatar(
+            backgroundColor: sColor,
           ),
-          Container(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                width: 22,
-                height: 22,
-                decoration: BoxDecoration(
-                  color: sColor,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(15),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 4,
-                child: AutoSizeText(
-                  statusName,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  minFontSize: 18,
-                  maxLines: 1,
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: SizedBox(),
-              ),
-              Expanded(
-                flex: 3,
-                child: InkWell(
-                  onTap: () async {
-                    if (mgtStatus == "20") {
-                      await masterUpdate(reqNo);
-                    } else if (mgtStatus == "30") {
-                      mainSchPopup(
-                          reqNo, vesselName, startDate, endDate, mgtStatus);
-                    }
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(247, 247, 247, 1.0),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15),
-                      ),
-                    ),
-                    constraints: BoxConstraints(
-                      minHeight: 35,
-                    ),
-                    child: AutoSizeText(
-                      "Progress",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromRGBO(111, 111, 111, 1.0),
-                      ),
-                      minFontSize: 16,
-                      maxLines: 1,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+          title: Text(
+            vesselName,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-        ],
-      ),
+          subtitle: Text(
+            statusName,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+          children: [
+            Container(
+              padding: EdgeInsets.all(15),
+              margin: EdgeInsets.only(bottom: 15, left: 10, right: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              constraints: BoxConstraints(
+                minWidth: MediaQuery.of(context).size.width,
+                minHeight: 120,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Icon(Icons.confirmation_number),
+                      ),
+                      Expanded(
+                          flex: 8,
+                          child: AutoSizeText(
+                            reqNo,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            minFontSize: 18,
+                            maxLines: 1,
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Icon(
+                          Icons.calendar_today,
+                          size: 18,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 8,
+                        child: AutoSizeText(
+                          startDate + " ~ " + endDate,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          minFontSize: 18,
+                          maxLines: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Icon(Icons.anchor),
+                      ),
+                      Expanded(
+                        flex: 8,
+                        child: AutoSizeText(
+                          reqport,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          minFontSize: 18,
+                          maxLines: 3,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.indigo,
+                        ),
+                        child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 15),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: AutoSizeText(
+                              "Progress",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              minFontSize: 18,
+                              maxLines: 1,
+                            )),
+                        onPressed: () async {
+                          if (mgtStatus == "20") {
+                            await masterUpdate(reqNo);
+                          } else if (mgtStatus == "30") {
+                            mainSchPopup(reqNo, vesselName, startDate, endDate,
+                                mgtStatus);
+                          }
+                        },
+                      ),
+                      // InkWell(
+                      //   onTap: () async {
+                      //     if (mgtStatus == "20") {
+                      //       await masterUpdate(reqNo);
+                      //     } else if (mgtStatus == "30") {
+                      //       mainSchPopup(reqNo, vesselName, startDate, endDate,
+                      //           mgtStatus);
+                      //     }
+                      //   },
+                      //   child: Container(
+                      //     padding:
+                      //         EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                      //     decoration: BoxDecoration(
+                      //       color: Color.fromRGBO(160, 160, 160, 1.0),
+                      //       borderRadius: BorderRadius.all(
+                      //         Radius.circular(15),
+                      //       ),
+                      //     ),
+                      //     constraints: BoxConstraints(
+                      //       minHeight: 35,
+                      //     ),
+                      //     child: AutoSizeText(
+                      //       "Progress",
+                      //       textAlign: TextAlign.center,
+                      //       style: TextStyle(
+                      //         fontSize: 20,
+                      //         fontWeight: FontWeight.bold,
+                      //         color: Colors.white,
+                      //       ),
+                      //       minFontSize: 16,
+                      //       maxLines: 1,
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ]),
     );
   }
 
@@ -523,7 +579,8 @@ class _HomePageState extends State<HomePage> {
                       mainSchList.elementAt(i).vesselName,
                       mainSchList.elementAt(i).startDate,
                       mainSchList.elementAt(i).endDate,
-                      mainSchList.elementAt(i).mgtStatus),
+                      mainSchList.elementAt(i).mgtStatus,
+                      mainSchList.elementAt(i).reqport),
               ],
             ),
           ),

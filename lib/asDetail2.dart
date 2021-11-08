@@ -1024,7 +1024,8 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                                   i++) {
                                                 ByteData byteData2 =
                                                     await Imagelist2![i]
-                                                        .getByteData();
+                                                        .getByteData(
+                                                            quality: 20);
                                                 List<int> imgData2 = byteData2
                                                     .buffer
                                                     .asUint8List();
@@ -1046,7 +1047,8 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                                   i++) {
                                                 ByteData byteData =
                                                     await Imagelist![i]
-                                                        .getByteData();
+                                                        .getByteData(
+                                                            quality: 20);
                                                 List<int> imgData = byteData
                                                     .buffer
                                                     .asUint8List();

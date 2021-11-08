@@ -13,7 +13,7 @@ import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:nk_global_ft/asDetail2.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:intl/intl.dart';
-
+import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'common/common.dart';
 import 'model/common_model.dart';
 
@@ -545,7 +545,7 @@ class _HistoryPageState extends State<HistoryPage> {
                           padding:
                               EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                           decoration: BoxDecoration(
-                            color: Color.fromRGBO(247, 247, 247, 1.0),
+                            color: Colors.indigo,
                             borderRadius: BorderRadius.all(
                               Radius.circular(5),
                             ),
@@ -559,41 +559,7 @@ class _HistoryPageState extends State<HistoryPage> {
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: Color.fromRGBO(111, 111, 111, 1.0),
-                            ),
-                            minFontSize: 14,
-                            maxLines: 1,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      flex: 3,
-                      child: InkWell(
-                        onTap: () async {
-                          histroyDelete(reqNo);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding:
-                              EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                          decoration: BoxDecoration(
-                            color: Color.fromRGBO(247, 247, 247, 1.0),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(5),
-                            ),
-                          ),
-                          constraints: BoxConstraints(
-                            minHeight: 35,
-                          ),
-                          child: AutoSizeText(
-                            "Delete",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromRGBO(111, 111, 111, 1.0),
+                              color: Colors.white,
                             ),
                             minFontSize: 14,
                             maxLines: 1,
@@ -613,7 +579,7 @@ class _HistoryPageState extends State<HistoryPage> {
                           padding:
                               EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                           decoration: BoxDecoration(
-                            color: Color.fromRGBO(247, 247, 247, 1.0),
+                            color: Colors.indigo,
                             borderRadius: BorderRadius.all(
                               Radius.circular(5),
                             ),
@@ -625,10 +591,9 @@ class _HistoryPageState extends State<HistoryPage> {
                             "Close",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromRGBO(111, 111, 111, 1.0),
-                            ),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                             minFontSize: 14,
                             maxLines: 1,
                           ),
