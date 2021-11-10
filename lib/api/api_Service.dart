@@ -6,6 +6,7 @@ import 'package:nk_global_ft/model/login_model.dart';
 import 'package:nk_global_ft/model/common_model.dart';
 import 'package:nk_global_ft/model/mainSchedule_model.dart';
 import 'package:nk_global_ft/model/master_model.dart';
+import 'package:nk_global_ft/model/portlist_model.dart';
 import 'package:nk_global_ft/model/schedule_model.dart';
 
 class APIService {
@@ -52,7 +53,7 @@ class APIService {
         break;
       case "MAIN_S2":
         final response = await http.post(url, body: sBody, headers: headers);
-        result = MainSchResultModel.fromJson(json.decode(response.body));
+        result = PortlistResultModel.fromJson(json.decode(response.body));
         break;
       default:
         break;

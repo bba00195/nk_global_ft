@@ -54,6 +54,9 @@ class _ImageConfirmState extends State<ImageConfirm>
   String vesselName = "";
   String reqComment = "";
   String reqDate = "";
+  String reqtype = '';
+  String reqport = '';
+  String reqquantity = '';
   bool state1 = false;
 
   late AnimationController controller;
@@ -201,6 +204,9 @@ class _ImageConfirmState extends State<ImageConfirm>
           mmsiNo = masterList.elementAt(0).mmsiNo;
           reqComment = masterList.elementAt(0).reqComment;
           reqDate = masterList.elementAt(0).reqDate;
+          reqport = masterList.elementAt(0).reqport;
+          reqtype = masterList.elementAt(0).reqtype;
+          reqquantity = masterList.elementAt(0).reqquantity;
         } else {
           print('fail');
         }
@@ -226,14 +232,16 @@ class _ImageConfirmState extends State<ImageConfirm>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("작성자",
+                    Text("ENGINEER NAME",
                         style: TextStyle(
                             color: Colors.black, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 5),
                     Text(
                       member.user.userName,
                       style: TextStyle(
                           color: Colors.grey, fontWeight: FontWeight.bold),
                     ),
+                    SizedBox(height: 5),
                   ],
                 ),
               ),
@@ -242,13 +250,15 @@ class _ImageConfirmState extends State<ImageConfirm>
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Date",
+                      Text("Req Date",
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold)),
+                      SizedBox(height: 5),
                       Text(reqDate,
                           style: TextStyle(
                               color: Colors.grey, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 5),
                     ]),
               )
             ]),
@@ -258,12 +268,14 @@ class _ImageConfirmState extends State<ImageConfirm>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("선주",
+                    Text("Owner",
                         style: TextStyle(
                             color: Colors.black, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 5),
                     Text(shipCust,
                         style: TextStyle(
                             color: Colors.grey, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 5),
                   ],
                 ),
               ),
@@ -276,9 +288,11 @@ class _ImageConfirmState extends State<ImageConfirm>
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold)),
+                      SizedBox(height: 5),
                       Text(reqName,
                           style: TextStyle(
                               color: Colors.grey, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 5),
                     ]),
               )
             ]),
@@ -288,12 +302,14 @@ class _ImageConfirmState extends State<ImageConfirm>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("선명",
+                    Text("Vessel Name",
                         style: TextStyle(
                             color: Colors.black, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 5),
                     Text(vesselName,
                         style: TextStyle(
                             color: Colors.grey, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 5),
                   ],
                 ),
               ),
@@ -307,13 +323,49 @@ class _ImageConfirmState extends State<ImageConfirm>
                       style: TextStyle(
                           color: Colors.black, fontWeight: FontWeight.bold),
                     ),
+                    SizedBox(height: 5),
                     Text(
                       mmsiNo,
                       style: TextStyle(
                           color: Colors.grey, fontWeight: FontWeight.bold),
-                    )
+                    ),
+                    SizedBox(height: 5),
                   ],
                 ),
+              )
+            ]),
+            TableRow(children: [
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Port",
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 5),
+                    Text(reqport,
+                        style: TextStyle(
+                            color: Colors.grey, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 5),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Service",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold)),
+                      SizedBox(height: 5),
+                      Text(reqtype,
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 5),
+                    ]),
               )
             ]),
           ],
@@ -336,7 +388,7 @@ class _ImageConfirmState extends State<ImageConfirm>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Comment",
+                    "Cust Comment",
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),

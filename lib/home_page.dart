@@ -10,9 +10,11 @@ import 'package:flutter/rendering.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
 import 'package:nk_global_ft/asDetail2.dart';
 import 'package:nk_global_ft/model/mainSchedule_model.dart';
+import 'package:nk_global_ft/model/portlist_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:intl/intl.dart';
+import 'package:multiselect/multiselect.dart';
 import 'package:rounded_expansion_tile/rounded_expansion_tile.dart';
 import 'common/common.dart';
 
@@ -35,7 +37,11 @@ class _HomePageState extends State<HomePage> {
       RefreshController(initialRefresh: false);
 
   List<MainSchResponseModel> mainSchList = [];
+  List<PortlistResponseModel> portlist = [];
 
+  List<String> portdrop = [];
+  String selport = 'select port';
+  String port1 = "";
   @override
   void initState() {
     super.initState();
@@ -59,6 +65,21 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  portlistSch(String reqNo) async {
+    List<String> sParam = [member.user.userId, reqNo];
+    await apiService.getSelect("MAIN_S2", sParam).then((value) {
+      setState(() {
+        if (value.port.isNotEmpty) {
+          portlist = value.port;
+          for (int i = 0; i < portlist.length; i++) {
+            port1 = portlist.elementAt(i).reqport;
+            portdrop.add(port1);
+          }
+        } else {}
+      });
+    });
+  }
+
   masterUpdate(String reqNo) async {
     List<String> sParam = [
       reqNo,
@@ -75,17 +96,17 @@ class _HomePageState extends State<HomePage> {
               },
             );
           } else {
-            CoolAlert.show(
-                text: "select Port",
-                context: context,
-                type: CoolAlertType.custom,
-                widget: DropdownButtonFormField(items: []));
-            // showDialog(
-            //   context: context,
-            //   builder: (_) {
-            //     return Show(message: "Success on the board.");
-            //   },
-            // );
+            // CoolAlert.show(
+            //     text: "select Port",
+            //     context: context,
+            //     type: CoolAlertType.custom,
+            //     widget: DropdownButtonFormField(items: []));
+            showDialog(
+              context: context,
+              builder: (_) {
+                return Show(message: "Success on the board.");
+              },
+            );
           }
         } else {
           showDialog(
@@ -382,12 +403,12 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: sColor,
           ),
           title: Text(
-            vesselName,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            statusName,
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
           subtitle: Text(
-            statusName,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            vesselName,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           children: [
             Container(
@@ -426,6 +447,10 @@ class _HomePageState extends State<HomePage> {
                           maxLines: 1,
                         ),
                       ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(""),
+                      ),
                     ],
                   ),
                   SizedBox(
@@ -450,6 +475,10 @@ class _HomePageState extends State<HomePage> {
                           maxLines: 3,
                         ),
                       ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(""),
+                      ),
                     ],
                   ),
                   SizedBox(
@@ -467,7 +496,7 @@ class _HomePageState extends State<HomePage> {
                         child: AutoSizeText(
                           reqtype,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 1,
                             fontWeight: FontWeight.bold,
                           ),
                           minFontSize: 13,
@@ -475,6 +504,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       Expanded(
+                        flex: 2,
                         child: AutoSizeText(
                           reqQuantity,
                           style: TextStyle(
@@ -512,7 +542,22 @@ class _HomePageState extends State<HomePage> {
                             )),
                         onPressed: () async {
                           if (mgtStatus == "20") {
-                            await masterUpdate(reqNo);
+                            CoolAlert.show(
+                                context: context,
+                                type: CoolAlertType.custom,
+                                text: "Select Port",
+                                widget: DropDownMultiSelect(
+                                    options: ['port1', 'port2', 'port3'],
+                                    selectedValues: portdrop,
+                                    onChanged: (List<String> x) {
+                                      setState(() {
+                                        portdrop = x;
+                                      });
+                                    },
+                                    whenEmpty: 'select port'),
+                                onConfirmBtnTap: () async {
+                                  await masterUpdate(reqNo);
+                                });
                           } else if (mgtStatus == "30") {
                             mainSchPopup(reqNo, vesselName, startDate, endDate,
                                 mgtStatus);

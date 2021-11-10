@@ -5,6 +5,9 @@ class MasterResponseModel {
   final String mmsiNo;
   final String reqComment;
   final String reqDate;
+  final String reqport;
+  final String reqtype;
+  final String reqquantity;
 
   MasterResponseModel({
     required this.reqName,
@@ -13,6 +16,9 @@ class MasterResponseModel {
     required this.mmsiNo,
     required this.reqComment,
     required this.reqDate,
+    required this.reqport,
+    required this.reqtype,
+    required this.reqquantity,
   });
 
   factory MasterResponseModel.fromJson(Map<String, dynamic> json) {
@@ -25,6 +31,10 @@ class MasterResponseModel {
       reqComment:
           json['REQ_COMMENT'] != null ? json['REQ_COMMENT'] as String : "",
       reqDate: json['REQ_DATE'] != null ? json['REQ_DATE'] as String : "",
+      reqport: json['REQ_PORT'] != null ? json['REQ_PORT'] as String : "",
+      reqtype: json['REQ_TYPE'] != null ? json['REQ_TYPE'] as String : "",
+      reqquantity:
+          json['REQ_QUANTITY'] != null ? json['REQ_QUANTITY'] as String : "",
     );
   }
 }
