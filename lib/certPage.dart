@@ -12,7 +12,7 @@ import 'package:sizer/sizer.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-
+import 'package:swipe_cards/swipe_cards.dart';
 import 'common/common.dart';
 
 class certPage extends StatefulWidget {
@@ -92,7 +92,11 @@ class _certPageState extends State<certPage> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black, width: 1),
                 ),
-                child: const PDF().cachedFromUrl(url),
+                child: const PDF(
+                  enableSwipe: true,
+                  swipeHorizontal: true,
+                  autoSpacing: true,
+                ).cachedFromUrl(url),
               ),
               // Container(
               //   margin: EdgeInsets.fromLTRB(10, 0, 10, 0),

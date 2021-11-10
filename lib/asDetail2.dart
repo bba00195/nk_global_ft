@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui' as ui;
 import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -1005,116 +1006,191 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                         height: 10,
                       ),
                       Center(
-                        child: Container(
-                          width: 70.w,
-                          child: ElevatedButton(
-                              onPressed: () async {
-                                return showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return CupertinoAlertDialog(
-                                        title: Text(
-                                            "Do you want to complete the task?"),
-                                        actions: [
-                                          CupertinoDialogAction(
-                                            child: Text("Allow"),
-                                            onPressed: () async {
-                                              for (int i = 0;
-                                                  i < Imagelist2!.length;
-                                                  i++) {
-                                                ByteData byteData2 =
-                                                    await Imagelist2![i]
-                                                        .getByteData(
-                                                            quality: 20);
-                                                List<int> imgData2 = byteData2
-                                                    .buffer
-                                                    .asUint8List();
-                                                filename2 =
-                                                    Imagelist2![i].name!;
-                                                filesrc2 =
-                                                    "${base64Encode(imgData2)}";
+                          child: Container(
+                              width: 70.w,
+                              child: ElevatedButton(
+                                  child: Text("SAVE"),
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.indigo),
+                                  onPressed: () async {
+                                    CoolAlert.show(
+                                        context: context,
+                                        type: CoolAlertType.confirm,
+                                        text:
+                                            "Do you want to complete the task?",
+                                        confirmBtnText: "Allow",
+                                        confirmBtnColor: Colors.indigo,
+                                        cancelBtnText: "Deny",
+                                        cancelBtnTextStyle:
+                                            TextStyle(color: Colors.black),
+                                        onConfirmBtnTap: () async {
+                                          for (int i = 0;
+                                              i < Imagelist2!.length;
+                                              i++) {
+                                            ByteData byteData2 =
+                                                await Imagelist2![i]
+                                                    .getByteData(quality: 20);
+                                            List<int> imgData2 =
+                                                byteData2.buffer.asUint8List();
+                                            filename2 = Imagelist2![i].name!;
+                                            filesrc2 =
+                                                "${base64Encode(imgData2)}";
 
-                                                as_Before_fileUpload(
-                                                    reqNo,
-                                                    asBefore,
-                                                    member.user.userId,
-                                                    filename2,
-                                                    filesrc2);
-                                              }
+                                            as_Before_fileUpload(
+                                                reqNo,
+                                                asBefore,
+                                                member.user.userId,
+                                                filename2,
+                                                filesrc2);
+                                          }
 
-                                              for (int i = 0;
-                                                  i < Imagelist!.length;
-                                                  i++) {
-                                                ByteData byteData =
-                                                    await Imagelist![i]
-                                                        .getByteData(
-                                                            quality: 20);
-                                                List<int> imgData = byteData
-                                                    .buffer
-                                                    .asUint8List();
-                                                filename = Imagelist![i].name!;
-                                                filesrc =
-                                                    "${base64Encode(imgData)}";
+                                          for (int i = 0;
+                                              i < Imagelist!.length;
+                                              i++) {
+                                            ByteData byteData =
+                                                await Imagelist![i]
+                                                    .getByteData(quality: 20);
+                                            List<int> imgData =
+                                                byteData.buffer.asUint8List();
+                                            filename = Imagelist![i].name!;
+                                            filesrc =
+                                                "${base64Encode(imgData)}";
 
-                                                as_After_fileUpload(
-                                                    reqNo,
-                                                    asAfter,
-                                                    member.user.userId,
-                                                    filename,
-                                                    filesrc);
-                                              }
+                                            as_After_fileUpload(
+                                                reqNo,
+                                                asAfter,
+                                                member.user.userId,
+                                                filename,
+                                                filesrc);
+                                          }
 
-                                              final sign = _sign.currentState;
-                                              final img = await sign!.getData();
-                                              var data = await img.toByteData(
-                                                  format:
-                                                      ui.ImageByteFormat.png);
+                                          final sign = _sign.currentState;
+                                          final img = await sign!.getData();
+                                          var data = await img.toByteData(
+                                              format: ui.ImageByteFormat.png);
 
-                                              List<int> encoded =
-                                                  data!.buffer.asUint8List();
-                                              setState(() {
-                                                _signimg = data;
-                                                signsrc =
-                                                    "${base64Encode(encoded)}";
-                                                signname = member.user.userId +
-                                                    "_" +
-                                                    reqNo +
-                                                    "_"
-                                                        "signature" +
-                                                    ".png";
+                                          List<int> encoded =
+                                              data!.buffer.asUint8List();
+                                          setState(() {
+                                            _signimg = data;
+                                            signsrc =
+                                                "${base64Encode(encoded)}";
+                                            signname = member.user.userId +
+                                                "_" +
+                                                reqNo +
+                                                "_"
+                                                    "signature" +
+                                                ".png";
 
-                                                as_Signature_upload(
-                                                    reqNo,
-                                                    signCode,
-                                                    member.user.userId,
-                                                    signname,
-                                                    signsrc);
-                                              });
-                                              masterUpdate2(reqNo);
-                                              Navigator.pushReplacement(
-                                                  context,
-                                                  CupertinoPageRoute(
-                                                      builder: (context) =>
-                                                          HomePage(
-                                                              member: member)));
-                                            },
-                                          ),
-                                          CupertinoDialogAction(
-                                            child: Text("Deny"),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          )
-                                        ],
-                                      );
-                                    });
-                              },
-                              child: Text("SAVE"),
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.indigo,
-                              )),
-                        ),
-                      )
+                                            as_Signature_upload(
+                                                reqNo,
+                                                signCode,
+                                                member.user.userId,
+                                                signname,
+                                                signsrc);
+
+                                            // return showDialog(
+                                            //     context: context,
+                                            //     builder: (context) {
+                                            //       return CupertinoAlertDialog(
+                                            //         title: Text(
+                                            //             "Do you want to complete the task?"),
+                                            //         actions: [
+                                            //           CupertinoDialogAction(
+                                            //             child: Text("Allow"),
+                                            //             onPressed: () async {
+                                            //               for (int i = 0;
+                                            //                   i < Imagelist2!.length;
+                                            //                   i++) {
+                                            //                 ByteData byteData2 =
+                                            //                     await Imagelist2![i]
+                                            //                         .getByteData(
+                                            //                             quality: 20);
+                                            //                 List<int> imgData2 = byteData2
+                                            //                     .buffer
+                                            //                     .asUint8List();
+                                            //                 filename2 =
+                                            //                     Imagelist2![i].name!;
+                                            //                 filesrc2 =
+                                            //                     "${base64Encode(imgData2)}";
+
+                                            //                 as_Before_fileUpload(
+                                            //                     reqNo,
+                                            //                     asBefore,
+                                            //                     member.user.userId,
+                                            //                     filename2,
+                                            //                     filesrc2);
+                                            //               }
+
+                                            //               for (int i = 0;
+                                            //                   i < Imagelist!.length;
+                                            //                   i++) {
+                                            //                 ByteData byteData =
+                                            //                     await Imagelist![i]
+                                            //                         .getByteData(
+                                            //                             quality: 20);
+                                            //                 List<int> imgData = byteData
+                                            //                     .buffer
+                                            //                     .asUint8List();
+                                            //                 filename = Imagelist![i].name!;
+                                            //                 filesrc =
+                                            //                     "${base64Encode(imgData)}";
+
+                                            //                 as_After_fileUpload(
+                                            //                     reqNo,
+                                            //                     asAfter,
+                                            //                     member.user.userId,
+                                            //                     filename,
+                                            //                     filesrc);
+                                            //               }
+
+                                            //               final sign = _sign.currentState;
+                                            //               final img = await sign!.getData();
+                                            //               var data = await img.toByteData(
+                                            //                   format:
+                                            //                       ui.ImageByteFormat.png);
+
+                                            //               List<int> encoded =
+                                            //                   data!.buffer.asUint8List();
+                                            //               setState(() {
+                                            //                 _signimg = data;
+                                            //                 signsrc =
+                                            //                     "${base64Encode(encoded)}";
+                                            //                 signname = member.user.userId +
+                                            //                     "_" +
+                                            //                     reqNo +
+                                            //                     "_"
+                                            //                         "signature" +
+                                            //                     ".png";
+
+                                            //                 as_Signature_upload(
+                                            //                     reqNo,
+                                            //                     signCode,
+                                            //                     member.user.userId,
+                                            //                     signname,
+                                            //                     signsrc);
+                                            //               });
+                                            //               masterUpdate2(reqNo);
+                                            //               Navigator.pushReplacement(
+                                            //                   context,
+                                            //                   CupertinoPageRoute(
+                                            //                       builder: (context) =>
+                                            //                           HomePage(
+                                            //                               member: member)));
+                                            //             },
+                                            //           ),
+                                            //           CupertinoDialogAction(
+                                            //             child: Text("Deny"),
+                                            //             onPressed: () {
+                                            //               Navigator.of(context).pop();
+                                            //             },
+                                            //           )
+                                            //         ],
+                                            //       );
+                                            //     });
+                                          });
+                                        });
+                                  })))
                     ],
                   )
                 ],

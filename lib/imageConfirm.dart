@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -533,36 +534,53 @@ class _ImageConfirmState extends State<ImageConfirm>
                           flex: 5,
                           child: ElevatedButton(
                             onPressed: () async {
-                              showDialog(
+                              CoolAlert.show(
                                   context: context,
-                                  builder: (context) {
-                                    return CupertinoAlertDialog(
-                                      title: Text("Waring!!!"),
-                                      content:
-                                          Text("업로드된 서명과 사진을 새로 등록하시겠습니까?"),
-                                      actions: [
-                                        CupertinoDialogAction(
-                                          child: Text("yes"),
-                                          onPressed: () async {
-                                            histroyDelete(reqNo);
-                                            Navigator.pushReplacement(
-                                                context,
-                                                CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        ASmodify(
-                                                            member: member,
-                                                            reqNo: reqNo)));
-                                          },
-                                        ),
-                                        CupertinoDialogAction(
-                                          child: Text("No"),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                      ],
-                                    );
+                                  type: CoolAlertType.confirm,
+                                  text: "업로드된 서명과 사진을 재등록 하시겠습니까?",
+                                  confirmBtnText: "Allow",
+                                  confirmBtnColor: Colors.indigo,
+                                  cancelBtnText: "Deny",
+                                  cancelBtnTextStyle:
+                                      TextStyle(color: Colors.black),
+                                  onConfirmBtnTap: () async {
+                                    histroyDelete(reqNo);
+                                    Navigator.pushReplacement(
+                                        context,
+                                        CupertinoPageRoute(
+                                            builder: (context) => ASmodify(
+                                                member: member, reqNo: reqNo)));
                                   });
+                              // showDialog(
+                              //     context: context,
+                              //     builder: (context) {
+                              //       return CupertinoAlertDialog(
+                              //         title: Text("Waring!!!"),
+                              //         content:
+                              //             Text("업로드된 서명과 사진을 새로 등록하시겠습니까?"),
+                              //         actions: [
+                              //           CupertinoDialogAction(
+                              //             child: Text("yes"),
+                              //             onPressed: () async {
+                              //               histroyDelete(reqNo);
+                              //               Navigator.pushReplacement(
+                              //                   context,
+                              //                   CupertinoPageRoute(
+                              //                       builder: (context) =>
+                              //                           ASmodify(
+                              //                               member: member,
+                              //                               reqNo: reqNo)));
+                              //             },
+                              //           ),
+                              //           CupertinoDialogAction(
+                              //             child: Text("No"),
+                              //             onPressed: () {
+                              //               Navigator.pop(context);
+                              //             },
+                              //           ),
+                              //         ],
+                              //       );
+                              //     });
                             },
                             child: Text("re-upload"),
                             style: ElevatedButton.styleFrom(

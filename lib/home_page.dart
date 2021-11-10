@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -27,6 +28,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late UserManager member;
+  late String reqNo;
   APIService apiService = new APIService();
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   RefreshController _refreshController =
@@ -47,9 +49,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   mainSchSearch() async {
-    List<String> sParam = [
-      member.user.userId,
-    ];
+    List<String> sParam = [member.user.userId];
     await apiService.getSelect("MAIN_S1", sParam).then((value) {
       setState(() {
         if (value.mainSch.isNotEmpty) {
@@ -75,12 +75,17 @@ class _HomePageState extends State<HomePage> {
               },
             );
           } else {
-            showDialog(
-              context: context,
-              builder: (_) {
-                return Show(message: "Success on the board.");
-              },
-            );
+            CoolAlert.show(
+                text: "select Port",
+                context: context,
+                type: CoolAlertType.custom,
+                widget: DropdownButtonFormField(items: []));
+            // showDialog(
+            //   context: context,
+            //   builder: (_) {
+            //     return Show(message: "Success on the board.");
+            //   },
+            // );
           }
         } else {
           showDialog(
@@ -113,12 +118,16 @@ class _HomePageState extends State<HomePage> {
             );
           } else {
             Navigator.of(context).pop(true);
-            showDialog(
-              context: context,
-              builder: (_) {
-                return Show(message: "Cancellation complete");
-              },
-            );
+            CoolAlert.show(
+                context: context,
+                type: CoolAlertType.success,
+                text: "Cancellation complete");
+            // showDialog(
+            //   context: context,
+            //   builder: (_) {
+            //     return Show(message: "Cancellation complete");
+            //   },
+            // );
           }
         } else {
           showDialog(
@@ -345,8 +354,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget schContainer(String reqNo, String vesselName, String startDate,
-      String endDate, String mgtStatus, String reqport) {
+  Widget schContainer(
+      String reqNo,
+      String vesselName,
+      String startDate,
+      String endDate,
+      String mgtStatus,
+      String reqport,
+      String reqtype,
+      String reqQuantity) {
     String statusName = "Wait on board";
     Color sColor = Colors.green;
     late Function sFunc;
@@ -393,29 +409,6 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Expanded(
                         flex: 2,
-                        child: Icon(Icons.confirmation_number),
-                      ),
-                      Expanded(
-                          flex: 8,
-                          child: AutoSizeText(
-                            reqNo,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            minFontSize: 18,
-                            maxLines: 1,
-                          )),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 2,
                         child: Icon(
                           Icons.calendar_today,
                           size: 18,
@@ -457,6 +450,39 @@ class _HomePageState extends State<HomePage> {
                           maxLines: 3,
                         ),
                       ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Icon(Icons.work),
+                      ),
+                      Expanded(
+                        flex: 8,
+                        child: AutoSizeText(
+                          reqtype,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          minFontSize: 13,
+                          maxLines: 3,
+                        ),
+                      ),
+                      Expanded(
+                        child: AutoSizeText(
+                          reqQuantity,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
                     ],
                   ),
                   SizedBox(
@@ -580,7 +606,9 @@ class _HomePageState extends State<HomePage> {
                       mainSchList.elementAt(i).startDate,
                       mainSchList.elementAt(i).endDate,
                       mainSchList.elementAt(i).mgtStatus,
-                      mainSchList.elementAt(i).reqport),
+                      mainSchList.elementAt(i).reqport,
+                      mainSchList.elementAt(i).reqtype,
+                      mainSchList.elementAt(i).reqQuantity),
               ],
             ),
           ),

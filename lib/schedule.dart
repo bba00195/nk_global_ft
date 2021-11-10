@@ -6,11 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
 import 'package:nk_global_ft/asDetail.dart';
 import 'package:nk_global_ft/asDetail2.dart';
+import 'package:nk_global_ft/imageConfirm.dart';
 import 'package:nk_global_ft/model/schedule_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
-
+import 'package:cool_alert/cool_alert.dart';
 import 'common/common.dart';
 import 'util.dart';
 
@@ -443,56 +444,90 @@ class _ScheduleState extends State<Schedule> {
     return ElevatedButton(
       onPressed: () {
         if (sText == "Onboard") {
-          showDialog(
+          CoolAlert.show(
               context: context,
-              builder: (context) {
-                return CupertinoAlertDialog(
-                  title: Text("Would you like to register for boarding?"),
-                  actions: [
-                    CupertinoDialogAction(
-                      child: Text("Allow"),
-                      onPressed: () async {
-                        value[index].isSelected = true;
-                        await masterUpdate(reqNo);
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    CupertinoDialogAction(
-                      child: Text("Deny"),
-                      onPressed: () {
-                        value[index].isSelected = false;
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  ],
-                );
+              type: CoolAlertType.confirm,
+              text: 'would you like to register for boarding?',
+              confirmBtnText: 'submit',
+              cancelBtnText: 'Deny',
+              confirmBtnColor: Colors.indigo,
+              cancelBtnTextStyle: TextStyle(color: Colors.black),
+              onConfirmBtnTap: () async {
+                value[index].isSelected = true;
+                await masterUpdate(reqNo);
+                Navigator.of(context).pop();
+              },
+              onCancelBtnTap: () {
+                value[index].isSelected = false;
+                Navigator.of(context).pop();
               });
+          // showDialog(
+          //     context: context,
+          //     builder: (context) {
+          //       return CupertinoAlertDialog(
+          //         title: Text("Would you like to register for boarding?"),
+          //         actions: [
+          //           CupertinoDialogAction(
+          //             child: Text("Allow"),
+          //             onPressed: () async {
+          //               value[index].isSelected = true;
+          //               await masterUpdate(reqNo);
+          //               Navigator.of(context).pop();
+          //             },
+          //           ),
+          //           CupertinoDialogAction(
+          //             child: Text("Deny"),
+          //             onPressed: () {
+          //               value[index].isSelected = false;
+          //               Navigator.of(context).pop();
+          //             },
+          //           )
+          //         ],
+          //       );
+          //     });
         } else if (sText == "Proceeding") {
-          showDialog(
+          CoolAlert.show(
               context: context,
-              builder: (context) {
-                return CupertinoAlertDialog(
-                  title: Text("Cancel the on board? Or A/S Report register"),
-                  actions: [
-                    CupertinoDialogAction(
-                      child: Text("Cancel onboard"),
-                      onPressed: () {
-                        boardCancelUpdate(reqNo);
-                      },
-                    ),
-                    CupertinoDialogAction(
-                      child: Text("Register"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                                builder: (context) => ASmanagement2(
-                                    member: member, reqNo: reqNo)));
-                      },
-                    )
-                  ],
-                );
+              type: CoolAlertType.confirm,
+              text: 'Route A/S Report Page or Cancel the On Board',
+              confirmBtnText: "Report",
+              cancelBtnText: "승선취소",
+              confirmBtnColor: Colors.indigo,
+              onConfirmBtnTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) =>
+                            ASmanagement2(member: member, reqNo: reqNo)));
+              },
+              onCancelBtnTap: () {
+                boardCancelUpdate(reqNo);
               });
+          // showDialog(
+          //     context: context,
+          //     builder: (context) {
+          //       return CupertinoAlertDialog(
+          //         title: Text("Cancel the on board? Or A/S Report register"),
+          //         actions: [
+          //           CupertinoDialogAction(
+          //             child: Text("Cancel onboard"),
+          //             onPressed: () {
+          //               boardCancelUpdate(reqNo);
+          //             },
+          //           ),
+          //           CupertinoDialogAction(
+          //             child: Text("Register"),
+          //             onPressed: () {
+          //               Navigator.push(
+          //                   context,
+          //                   CupertinoPageRoute(
+          //                       builder: (context) => ASmanagement2(
+          //                           member: member, reqNo: reqNo)));
+          //             },
+          //           )
+          //         ],
+          //       );
+          //     });
           // Navigator.push(
           //     context,
           //     CupertinoPageRoute(
@@ -501,23 +536,42 @@ class _ScheduleState extends State<Schedule> {
           //               reqNo: reqNo,
           //             )));
         } else if (sText == "Finish") {
-          showDialog(
+          CoolAlert.show(
               context: context,
-              builder: (context) {
-                return CupertinoAlertDialog(
-                  title: Text("Delete or Modify?"),
-                  actions: [
-                    CupertinoDialogAction(
-                      child: Text("Delete"),
-                      onPressed: () {},
-                    ), // 삭제
-                    CupertinoDialogAction(
-                      child: Text("Modify"),
-                      onPressed: () {}, // 수정
-                    ),
-                  ],
-                );
+              type: CoolAlertType.info,
+              text: 'Route A/S Report Page',
+              onConfirmBtnTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) =>
+                            ImageConfirm(reqNo: reqNo, member: member)));
               });
+          // showDialog(
+          //     context: context,
+          //     builder: (context) {
+          //       return CupertinoAlertDialog(
+          //         title: Text("Route A/S Result page"),
+          //         actions: [
+          //           CupertinoDialogAction(
+          //             child: Text("yes"),
+          //             onPressed: () {
+          //               Navigator.pushReplacement(
+          //                   context,
+          //                   CupertinoPageRoute(
+          //                       builder: (context) => ImageConfirm(
+          //                           reqNo: reqNo, member: member)));
+          //             },
+          //           ),
+          //           CupertinoDialogAction(
+          //             child: Text("No"),
+          //             onPressed: () {
+          //               Navigator.pop(context);
+          //             }, // 수정
+          //           ),
+          //         ],
+          //       );
+          //     });
         }
       },
       child: Text(sText),

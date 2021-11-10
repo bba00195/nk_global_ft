@@ -335,7 +335,7 @@ class _HistoryPageState extends State<HistoryPage> {
                             minHeight: 35,
                           ),
                           child: AutoSizeText(
-                            "Cancel the ride",
+                            "승선취소",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 20,

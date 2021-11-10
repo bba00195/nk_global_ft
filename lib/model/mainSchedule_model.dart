@@ -8,17 +8,22 @@ class MainSchResponseModel {
   final String reqStatus;
   final String mgtStatus;
   final String reqport;
+  final String reqtype;
+  final String reqQuantity;
 
-  MainSchResponseModel(
-      {required this.reqNo,
-      required this.userId,
-      required this.startDate,
-      required this.endDate,
-      required this.custCode,
-      required this.vesselName,
-      required this.reqStatus,
-      required this.mgtStatus,
-      required this.reqport});
+  MainSchResponseModel({
+    required this.reqNo,
+    required this.userId,
+    required this.startDate,
+    required this.endDate,
+    required this.custCode,
+    required this.vesselName,
+    required this.reqStatus,
+    required this.mgtStatus,
+    required this.reqport,
+    required this.reqtype,
+    required this.reqQuantity,
+  });
 
   factory MainSchResponseModel.fromJson(Map<String, dynamic> json) {
     return MainSchResponseModel(
@@ -33,6 +38,9 @@ class MainSchResponseModel {
       reqStatus: json['REQ_STATUS'] != null ? json['REQ_STATUS'] as String : "",
       mgtStatus: json['MGT_STATUS'] != null ? json['MGT_STATUS'] as String : "",
       reqport: json['REQ_PORT'] != null ? json['REQ_PORT'] as String : "",
+      reqtype: json['REQ_TYPE'] != null ? json['REQ_TYPE'] as String : "",
+      reqQuantity:
+          json['REQ_QUANTITY'] != null ? json['REQ_QUANTITY'] as String : "",
     );
   }
 }

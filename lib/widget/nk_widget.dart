@@ -185,7 +185,7 @@ class NkDrawer extends StatelessWidget implements PreferredSizeWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Schedule(member: member),
+                        builder: (context) => HomePage(member: member),
                       ),
                     );
                   },

@@ -1,3 +1,4 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
 import 'package:sizer/sizer.dart';
@@ -54,21 +55,25 @@ class _LoginState extends State<Login> {
 
   login(BuildContext context, String sUserId, String sPassword) async {
     if (sUserId == '') {
-      showDialog(
-        context: context,
-        builder: (_) {
-          return Show(message: "아이디를 입력해주세요.");
-        },
-      );
+      // showDialog(
+      //   context: context,
+      //   builder: (_) {
+      //     return Show(message: "아이디를 입력해주세요.");
+      //   },
+      // );
+      CoolAlert.show(
+          context: context, type: CoolAlertType.error, text: "아이디를 입력해주세요.");
       return;
     }
     if (sPassword == '') {
-      showDialog(
-        context: context,
-        builder: (_) {
-          return Show(message: "비밀번호를 입력해주세요.");
-        },
-      );
+      // showDialog(
+      //   context: context,
+      //   builder: (_) {
+      //     return Show(message: "비밀번호를 입력해주세요.");
+      //   },
+      // );
+      CoolAlert.show(
+          context: context, type: CoolAlertType.error, text: "비밀번호를 입력해주세요.");
       return;
     }
     List<String> sParam = [sUserId];
@@ -78,12 +83,16 @@ class _LoginState extends State<Login> {
       if (value.user.isNotEmpty) {
         if (passwordTextEditController.text !=
             value.user.elementAt(0).password) {
-          showDialog(
-            context: context,
-            builder: (_) {
-              return Show(message: "비밀번호가 일치하지 않습니다."); // 비밀번호 불일치
-            },
-          );
+          // showDialog(
+          //   context: context,
+          //   builder: (_) {
+          //     return Show(message: "비밀번호가 일치하지 않습니다."); // 비밀번호 불일치
+          //   },
+          // );
+          CoolAlert.show(
+              context: context,
+              type: CoolAlertType.error,
+              text: "비밀번호가 일치하지 않습니다..");
         } else {
           // tokenUpdate(sUserId, token);
           var member = UserManager();
@@ -111,12 +120,16 @@ class _LoginState extends State<Login> {
           );
         }
       } else {
-        showDialog(
-          context: context,
-          builder: (_) {
-            return Show(message: "등록되지 않는 아이디입니다."); // 비밀번호 불일치
-          },
-        );
+        CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            text: "등록되지 않은 아이디 입니다.");
+        // showDialog(
+        //   context: context,
+        //   builder: (_) {
+        //     return Show(message: "등록되지 않는 아이디입니다."); // 비밀번호 불일치
+        //   },
+        // );
       }
     });
   }

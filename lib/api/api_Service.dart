@@ -50,6 +50,10 @@ class APIService {
         final response = await http.post(url, body: sBody, headers: headers);
         result = ImageResultModel.fromJson(json.decode(response.body));
         break;
+      case "MAIN_S2":
+        final response = await http.post(url, body: sBody, headers: headers);
+        result = MainSchResultModel.fromJson(json.decode(response.body));
+        break;
       default:
         break;
     }
