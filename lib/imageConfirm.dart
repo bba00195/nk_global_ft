@@ -634,7 +634,7 @@ class _ImageConfirmState extends State<ImageConfirm>
                               //       );
                               //     });
                             },
-                            child: Text("re-upload"),
+                            child: Text("Re-Upload"),
                             style: ElevatedButton.styleFrom(
                                 primary: Colors.indigo),
                           ),

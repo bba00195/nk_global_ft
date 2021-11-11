@@ -10,7 +10,6 @@ import 'package:flutter/rendering.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
 import 'package:nk_global_ft/asDetail2.dart';
 import 'package:nk_global_ft/model/mainSchedule_model.dart';
-import 'package:nk_global_ft/model/portlist_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:intl/intl.dart';
@@ -37,11 +36,11 @@ class _HomePageState extends State<HomePage> {
       RefreshController(initialRefresh: false);
 
   List<MainSchResponseModel> mainSchList = [];
-  List<PortlistResponseModel> portlist = [];
 
   List<String> portdrop = [];
   String selport = 'select port';
   String port1 = "";
+  String sellist = "";
   @override
   void initState() {
     super.initState();
@@ -65,21 +64,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  portlistSch(String reqNo) async {
-    List<String> sParam = [member.user.userId, reqNo];
-    await apiService.getSelect("MAIN_S2", sParam).then((value) {
-      setState(() {
-        if (value.port.isNotEmpty) {
-          portlist = value.port;
-          for (int i = 0; i < portlist.length; i++) {
-            port1 = portlist.elementAt(i).reqport;
-            portdrop.add(port1);
-          }
-        } else {}
-      });
-    });
-  }
-
   masterUpdate(String reqNo) async {
     List<String> sParam = [
       reqNo,
@@ -96,17 +80,25 @@ class _HomePageState extends State<HomePage> {
               },
             );
           } else {
+            Navigator.pop(context);
             // CoolAlert.show(
-            //     text: "select Port",
+            //     text: "Success on the board.",
             //     context: context,
-            //     type: CoolAlertType.custom,
-            //     widget: DropdownButtonFormField(items: []));
-            showDialog(
-              context: context,
-              builder: (_) {
-                return Show(message: "Success on the board.");
-              },
-            );
+            //     type: CoolAlertType.success,
+            //     autoCloseDuration: Duration(seconds: 2),
+            //     onConfirmBtnTap: () {
+            //       Navigator.pushReplacement(
+            //           context,
+            //           CupertinoPageRoute(
+            //               builder: (context) => HomePage(member: member)));
+            //     });
+
+            // showDialog(
+            //   context: context,
+            //   builder: (_) {
+            //     return Show(message: "Success on the board.");
+            //   },
+            // );
           }
         } else {
           showDialog(
@@ -541,17 +533,20 @@ class _HomePageState extends State<HomePage> {
                               maxLines: 1,
                             )),
                         onPressed: () async {
+                          var split12 = reqport.split('/');
+
                           if (mgtStatus == "20") {
                             CoolAlert.show(
                                 context: context,
                                 type: CoolAlertType.custom,
                                 text: "Select Port",
+                                confirmBtnText: "On Board",
                                 widget: DropDownMultiSelect(
-                                    options: ['port1', 'port2', 'port3'],
-                                    selectedValues: portdrop,
+                                    options: split12,
+                                    selectedValues: split12,
                                     onChanged: (List<String> x) {
                                       setState(() {
-                                        portdrop = x;
+                                        split12 = x;
                                       });
                                     },
                                     whenEmpty: 'select port'),
