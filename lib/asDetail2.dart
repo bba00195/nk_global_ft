@@ -13,10 +13,12 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:nk_global_ft/home_page.dart';
+import 'package:nk_global_ft/imageConfirm.dart';
 import 'package:nk_global_ft/model/master_model.dart';
 import 'package:nk_global_ft/model/common_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 import 'package:http/http.dart' as http;
@@ -27,8 +29,13 @@ import 'model/image_model.dart';
 class ASmanagement2 extends StatefulWidget {
   final UserManager member;
   final String reqNo;
+  final String split12;
 
-  ASmanagement2({required this.member, required this.reqNo});
+  ASmanagement2({
+    required this.member,
+    required this.reqNo,
+    required this.split12,
+  });
   @override
   _ASmanagementState2 createState() => _ASmanagementState2();
 }
@@ -45,6 +52,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
   String _error = 'No Error Dectected';
   APIService apiService = new APIService();
 
+  late String split12 = '';
   late UserManager member;
   late String reqNo;
   late String filename = '';
@@ -86,15 +94,23 @@ class _ASmanagementState2 extends State<ASmanagement2> {
   late String file_name1;
   late String Base64Image;
 
+  DateFormat format2 = DateFormat("yyyy-MM-dd HH:mm:ss");
+
+  DateTime datetime = DateTime.now();
+  String strDate = '';
+
   final _sign = GlobalKey<SignatureState>();
 
   ValueNotifier<ByteData?> rawImage = ValueNotifier<ByteData?>(null);
+  late SharedPreferences _prefs;
 
   @override
   void initState() {
     super.initState();
     member = widget.member;
     reqNo = widget.reqNo;
+    split12 = widget.split12;
+
     selectMaster();
   }
 
@@ -103,6 +119,12 @@ class _ASmanagementState2 extends State<ASmanagement2> {
     super.dispose();
   }
 
+  portSelSeref() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      split12 = (_prefs.getString('port') ?? '');
+    });
+  }
   // mainSchImg() async {
   //   List<String> sParam = [reqNo];
   //   await apiService.getSelect("IMAGE_S1", sParam).then((value) {
@@ -194,9 +216,11 @@ class _ASmanagementState2 extends State<ASmanagement2> {
   }
 
   masterUpdate2(String reqNo) async {
+    strDate = format2.format(datetime);
     List<String> sParam = [
       reqNo,
       member.user.userId,
+      strDate,
     ];
     await apiService.getUpdate("MASTER_U2", sParam).then((value) {
       setState(() {
@@ -490,7 +514,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
 
   //Information
   Widget asTable(String reqName, String shipCust, String vesselName,
-      String mmsiNo, String reqComment, String reqDate) {
+      String mmsiNo, String reqComment, String reqDate, String split12) {
     return Padding(
         padding: EdgeInsets.all(0),
         child: Table(
@@ -619,7 +643,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                         style: TextStyle(
                             color: Colors.black, fontWeight: FontWeight.bold)),
                     SizedBox(height: 5),
-                    Text(reqport,
+                    Text(split12,
                         style: TextStyle(
                             color: Colors.grey, fontWeight: FontWeight.bold)),
                     SizedBox(height: 5),
@@ -819,7 +843,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                     ),
                   ),
                   asTable(reqName, shipCust, vesselName, mmsiNo, reqComment,
-                      reqDate),
+                      reqDate, split12),
                   bigo(reqComment),
                   SizedBox(
                     height: 15,
@@ -1000,65 +1024,65 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                       SizedBox(
                         height: 10,
                       ),
-                      Column(
-                        children: [
-                          Column(
-                            children: [
-                              Center(
-                                child: Text(
-                                  "Signature",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                height: 200,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey, width: 1)),
-                                child: Signature(
-                                  color: Colors.black,
-                                  key: _sign,
-                                  onSign: () {
-                                    final sign = _sign.currentState;
-                                    debugPrint(
-                                        '${sign!.points.length} points in the signature');
-                                  },
-                                  strokeWidth: 2.5,
-                                ),
-                              )
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Container(
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.refresh,
-                                    color: Colors.green,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      final sign = _sign.currentState;
-                                      sign!.clear();
-                                      setState(() {
-                                        _signimg = ByteData(0);
-                                      });
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
+                      // Column(
+                      //   children: [
+                      //     Column(
+                      //       children: [
+                      //         Center(
+                      //           child: Text(
+                      //             "Signature",
+                      //             style: TextStyle(
+                      //                 fontSize: 20,
+                      //                 fontWeight: FontWeight.bold),
+                      //           ),
+                      //         ),
+                      //         SizedBox(
+                      //           height: 10,
+                      //         ),
+                      //         Container(
+                      //           height: 200,
+                      //           decoration: BoxDecoration(
+                      //               border: Border.all(
+                      //                   color: Colors.grey, width: 1)),
+                      //           child: Signature(
+                      //             color: Colors.black,
+                      //             key: _sign,
+                      //             onSign: () {
+                      //               final sign = _sign.currentState;
+                      //               debugPrint(
+                      //                   '${sign!.points.length} points in the signature');
+                      //             },
+                      //             strokeWidth: 2.5,
+                      //           ),
+                      //         )
+                      //       ],
+                      //     ),
+                      //     Row(
+                      //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      //       children: [
+                      //         Container(
+                      //           child: IconButton(
+                      //             icon: Icon(
+                      //               Icons.refresh,
+                      //               color: Colors.green,
+                      //             ),
+                      //             onPressed: () {
+                      //               setState(() {
+                      //                 final sign = _sign.currentState;
+                      //                 sign!.clear();
+                      //                 setState(() {
+                      //                   _signimg = ByteData(0);
+                      //                 });
+                      //               });
+                      //             },
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     )
+                      //   ],
+                      // ),
                       SizedBox(
-                        height: 10,
+                        height: 30,
                       ),
                       Center(
                           child: Container(
@@ -1119,138 +1143,140 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                                 filesrc);
                                           }
 
-                                          final sign = _sign.currentState;
-                                          final img = await sign!.getData();
-                                          var data = await img.toByteData(
-                                              format: ui.ImageByteFormat.png);
+                                          // final sign = _sign.currentState;
+                                          // final img = await sign!.getData();
+                                          // var data = await img.toByteData(
+                                          //     format: ui.ImageByteFormat.png);
 
-                                          List<int> encoded =
-                                              data!.buffer.asUint8List();
-                                          setState(() {
-                                            _signimg = data;
-                                            signsrc =
-                                                "${base64Encode(encoded)}";
-                                            signname = member.user.userId +
-                                                "_" +
-                                                reqNo +
-                                                "_"
-                                                    "signature" +
-                                                ".png";
+                                          // List<int> encoded =
+                                          //     data!.buffer.asUint8List();
+                                          // setState(() {
+                                          //   _signimg = data;
+                                          //   signsrc =
+                                          //       "${base64Encode(encoded)}";
+                                          //   signname = member.user.userId +
+                                          //       "_" +
+                                          //       reqNo +
+                                          //       "_"
+                                          //           "signature" +
+                                          //       ".png";
 
-                                            as_Signature_upload(
-                                                reqNo,
-                                                signCode,
-                                                member.user.userId,
-                                                signname,
-                                                signsrc);
-                                            masterUpdate2(reqNo);
-                                            Navigator.pushReplacement(
-                                                context,
-                                                CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        HomePage(
-                                                            member: member)));
+                                          //   as_Signature_upload(
+                                          //       reqNo,
+                                          //       signCode,
+                                          //       member.user.userId,
+                                          //       signname,
+                                          //       signsrc);
 
-                                            // return showDialog(
-                                            //     context: context,
-                                            //     builder: (context) {
-                                            //       return CupertinoAlertDialog(
-                                            //         title: Text(
-                                            //             "Do you want to complete the task?"),
-                                            //         actions: [
-                                            //           CupertinoDialogAction(
-                                            //             child: Text("Allow"),
-                                            //             onPressed: () async {
-                                            //               for (int i = 0;
-                                            //                   i < Imagelist2!.length;
-                                            //                   i++) {
-                                            //                 ByteData byteData2 =
-                                            //                     await Imagelist2![i]
-                                            //                         .getByteData(
-                                            //                             quality: 20);
-                                            //                 List<int> imgData2 = byteData2
-                                            //                     .buffer
-                                            //                     .asUint8List();
-                                            //                 filename2 =
-                                            //                     Imagelist2![i].name!;
-                                            //                 filesrc2 =
-                                            //                     "${base64Encode(imgData2)}";
+                                          Navigator.pushReplacement(
+                                              context,
+                                              CupertinoPageRoute(
+                                                  builder: (context) =>
+                                                      ImageConfirm(
+                                                        member: member,
+                                                        reqNo: reqNo,
+                                                        split12: split12,
+                                                      )));
 
-                                            //                 as_Before_fileUpload(
-                                            //                     reqNo,
-                                            //                     asBefore,
-                                            //                     member.user.userId,
-                                            //                     filename2,
-                                            //                     filesrc2);
-                                            //               }
+                                          // return showDialog(
+                                          //     context: context,
+                                          //     builder: (context) {
+                                          //       return CupertinoAlertDialog(
+                                          //         title: Text(
+                                          //             "Do you want to complete the task?"),
+                                          //         actions: [
+                                          //           CupertinoDialogAction(
+                                          //             child: Text("Allow"),
+                                          //             onPressed: () async {
+                                          //               for (int i = 0;
+                                          //                   i < Imagelist2!.length;
+                                          //                   i++) {
+                                          //                 ByteData byteData2 =
+                                          //                     await Imagelist2![i]
+                                          //                         .getByteData(
+                                          //                             quality: 20);
+                                          //                 List<int> imgData2 = byteData2
+                                          //                     .buffer
+                                          //                     .asUint8List();
+                                          //                 filename2 =
+                                          //                     Imagelist2![i].name!;
+                                          //                 filesrc2 =
+                                          //                     "${base64Encode(imgData2)}";
 
-                                            //               for (int i = 0;
-                                            //                   i < Imagelist!.length;
-                                            //                   i++) {
-                                            //                 ByteData byteData =
-                                            //                     await Imagelist![i]
-                                            //                         .getByteData(
-                                            //                             quality: 20);
-                                            //                 List<int> imgData = byteData
-                                            //                     .buffer
-                                            //                     .asUint8List();
-                                            //                 filename = Imagelist![i].name!;
-                                            //                 filesrc =
-                                            //                     "${base64Encode(imgData)}";
+                                          //                 as_Before_fileUpload(
+                                          //                     reqNo,
+                                          //                     asBefore,
+                                          //                     member.user.userId,
+                                          //                     filename2,
+                                          //                     filesrc2);
+                                          //               }
 
-                                            //                 as_After_fileUpload(
-                                            //                     reqNo,
-                                            //                     asAfter,
-                                            //                     member.user.userId,
-                                            //                     filename,
-                                            //                     filesrc);
-                                            //               }
+                                          //               for (int i = 0;
+                                          //                   i < Imagelist!.length;
+                                          //                   i++) {
+                                          //                 ByteData byteData =
+                                          //                     await Imagelist![i]
+                                          //                         .getByteData(
+                                          //                             quality: 20);
+                                          //                 List<int> imgData = byteData
+                                          //                     .buffer
+                                          //                     .asUint8List();
+                                          //                 filename = Imagelist![i].name!;
+                                          //                 filesrc =
+                                          //                     "${base64Encode(imgData)}";
 
-                                            //               final sign = _sign.currentState;
-                                            //               final img = await sign!.getData();
-                                            //               var data = await img.toByteData(
-                                            //                   format:
-                                            //                       ui.ImageByteFormat.png);
+                                          //                 as_After_fileUpload(
+                                          //                     reqNo,
+                                          //                     asAfter,
+                                          //                     member.user.userId,
+                                          //                     filename,
+                                          //                     filesrc);
+                                          //               }
 
-                                            //               List<int> encoded =
-                                            //                   data!.buffer.asUint8List();
-                                            //               setState(() {
-                                            //                 _signimg = data;
-                                            //                 signsrc =
-                                            //                     "${base64Encode(encoded)}";
-                                            //                 signname = member.user.userId +
-                                            //                     "_" +
-                                            //                     reqNo +
-                                            //                     "_"
-                                            //                         "signature" +
-                                            //                     ".png";
+                                          //               final sign = _sign.currentState;
+                                          //               final img = await sign!.getData();
+                                          //               var data = await img.toByteData(
+                                          //                   format:
+                                          //                       ui.ImageByteFormat.png);
 
-                                            //                 as_Signature_upload(
-                                            //                     reqNo,
-                                            //                     signCode,
-                                            //                     member.user.userId,
-                                            //                     signname,
-                                            //                     signsrc);
-                                            //               });
-                                            //               masterUpdate2(reqNo);
-                                            //               Navigator.pushReplacement(
-                                            //                   context,
-                                            //                   CupertinoPageRoute(
-                                            //                       builder: (context) =>
-                                            //                           HomePage(
-                                            //                               member: member)));
-                                            //             },
-                                            //           ),
-                                            //           CupertinoDialogAction(
-                                            //             child: Text("Deny"),
-                                            //             onPressed: () {
-                                            //               Navigator.of(context).pop();
-                                            //             },
-                                            //           )
-                                            //         ],
-                                            //       );
-                                            //     });
-                                          });
+                                          //               List<int> encoded =
+                                          //                   data!.buffer.asUint8List();
+                                          //               setState(() {
+                                          //                 _signimg = data;
+                                          //                 signsrc =
+                                          //                     "${base64Encode(encoded)}";
+                                          //                 signname = member.user.userId +
+                                          //                     "_" +
+                                          //                     reqNo +
+                                          //                     "_"
+                                          //                         "signature" +
+                                          //                     ".png";
+
+                                          //                 as_Signature_upload(
+                                          //                     reqNo,
+                                          //                     signCode,
+                                          //                     member.user.userId,
+                                          //                     signname,
+                                          //                     signsrc);
+                                          //               });
+                                          //               masterUpdate2(reqNo);
+                                          //               Navigator.pushReplacement(
+                                          //                   context,
+                                          //                   CupertinoPageRoute(
+                                          //                       builder: (context) =>
+                                          //                           HomePage(
+                                          //                               member: member)));
+                                          //             },
+                                          //           ),
+                                          //           CupertinoDialogAction(
+                                          //             child: Text("Deny"),
+                                          //             onPressed: () {
+                                          //               Navigator.of(context).pop();
+                                          //             },
+                                          //           )
+                                          //         ],
+                                          //       );
+                                          //     });
                                         });
                                   })))
                     ],

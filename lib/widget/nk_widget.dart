@@ -292,24 +292,24 @@ class nkNaviBottomBar extends StatelessWidget implements PreferredSizeWidget {
           currentIndex: _selectedIndex, //현재 선택된 Index
           onTap: (int index) {
             if (index == 0) {
-              Navigator.push(
+              Navigator.pushReplacement(
                   context,
                   CupertinoPageRoute(
                       builder: (context) => HomePage(
                             member: member,
                           )));
             } else if (index == 1) {
-              Navigator.push(
+              Navigator.pushReplacement(
                   context,
                   CupertinoPageRoute(
                       builder: (context) => HistoryPage(member: member)));
             } else if (index == 2) {
-              Navigator.push(
+              Navigator.pushReplacement(
                   context,
                   CupertinoPageRoute(
                       builder: (context) => Schedule(member: member)));
             } else if (index == 3) {
-              Navigator.push(
+              Navigator.pushReplacement(
                   context,
                   CupertinoPageRoute(
                       builder: (context) => certPage(member: member)));

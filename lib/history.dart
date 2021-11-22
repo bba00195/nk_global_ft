@@ -2,11 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
+import 'package:multiselect/multiselect.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
+import 'package:nk_global_ft/asFinish.dart';
 import 'package:nk_global_ft/imageConfirm.dart';
 import 'package:nk_global_ft/model/mainSchedule_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
@@ -16,6 +19,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'common/common.dart';
 import 'model/common_model.dart';
+import 'model/image_model.dart';
 
 class HistoryPage extends StatefulWidget {
   final UserManager member;
@@ -41,9 +45,25 @@ class _HistoryPageState extends State<HistoryPage> {
   DateFormat df = DateFormat('yyyy-MM-dd');
   DateTime selDate1 = DateTime.now();
   DateTime selDate2 = DateTime.now();
+  DateTime dateTime2 = DateTime.now();
+
+  DateFormat df2 = DateFormat("yyyy-MM-dd HH:mm:ss");
 
   String spdate1 = '';
   String spdate2 = '';
+  String strDate = '';
+  String sellist = '';
+
+  List<ImageResponseModel> imgVal = [];
+  List<ImageResponseModel> imgVal2 = [];
+
+  String imgB = "";
+  String imgF = "";
+  List<String> BList = [];
+  List<String> FList = [];
+
+  List<String> split = [];
+  List<String> selected = [];
 
   @override
   void initState() {
@@ -55,6 +75,21 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  imageSelect(String reqNo) async {
+    List<String> sParam = [reqNo];
+    await apiService.getSelect("IMAGE_S1", sParam).then((value) {
+      setState(() {
+        if (value.image.isNotEmpty) {
+          imgVal = value.image;
+          for (int i = 0; i < imgVal.length; i++) {
+            imgB = imgVal.elementAt(i).fileSrc;
+            BList.add(imgB);
+          }
+        } else {}
+      });
+    });
   }
 
   _selectDate(BuildContext context) async {
@@ -133,10 +168,8 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   masterUpdate(String reqNo) async {
-    List<String> sParam = [
-      reqNo,
-      member.user.userId,
-    ];
+    strDate = df2.format(dateTime2);
+    List<String> sParam = [reqNo, member.user.userId, strDate];
     await apiService.getUpdate("MASTER_U1", sParam).then((value) {
       setState(() {
         if (value.result.isNotEmpty) {
@@ -148,12 +181,13 @@ class _HistoryPageState extends State<HistoryPage> {
               },
             );
           } else {
-            showDialog(
-              context: context,
-              builder: (_) {
-                return Show(message: "Success on the board.");
-              },
-            );
+            Navigator.pop(context);
+            // showDialog(
+            //   context: context,
+            //   builder: (_) {
+            //     return Show(message: "Success on the board.");
+            //   },
+            // );
           }
         } else {
           showDialog(
@@ -207,11 +241,15 @@ class _HistoryPageState extends State<HistoryPage> {
     await mainSchDateSearch();
   }
 
-  moveToAsPage(String reqNo, UserManager member) async {
+  moveToAsPage(String reqNo, UserManager member, String seplit12) async {
     Navigator.push(
       context,
       CupertinoPageRoute(
-          builder: (context) => ASmanagement2(member: member, reqNo: reqNo)),
+          builder: (context) => ASmanagement2(
+                member: member,
+                reqNo: reqNo,
+                split12: sellist,
+              )),
     );
   }
 
@@ -353,7 +391,25 @@ class _HistoryPageState extends State<HistoryPage> {
                       flex: 3,
                       child: InkWell(
                         onTap: () async {
-                          await moveToAsPage(reqNo, member);
+                          await imageSelect(reqNo);
+                          BList.isEmpty
+                              ? Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) => ASmanagement2(
+                                      member: member,
+                                      reqNo: reqNo,
+                                      split12: sellist,
+                                    ),
+                                  ),
+                                )
+                              : Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => ImageConfirm(
+                                          reqNo: reqNo,
+                                          member: member,
+                                          split12: '')));
                         },
                         child: Container(
                           alignment: Alignment.center,
@@ -536,6 +592,186 @@ class _HistoryPageState extends State<HistoryPage> {
                                 builder: (context) => ImageConfirm(
                                       reqNo: reqNo,
                                       member: member,
+                                      split12: sellist,
+                                    )),
+                          );
+                          //////Modify()//////
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.indigo,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5),
+                            ),
+                          ),
+                          constraints: BoxConstraints(
+                            minHeight: 35,
+                          ),
+                          child: AutoSizeText(
+                            "A/S Result",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            minFontSize: 14,
+                            maxLines: 1,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      flex: 3,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.indigo,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5),
+                            ),
+                          ),
+                          constraints: BoxConstraints(
+                            minHeight: 35,
+                          ),
+                          child: AutoSizeText(
+                            "Close",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                            minFontSize: 14,
+                            maxLines: 1,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  FinishSchPopup(String reqNo, String vesselName, String startDate,
+      String endDate, String mgtStatus) {
+    String statusName = "Wait on board";
+    Color sColor = Colors.green;
+
+    if (mgtStatus == "40") {
+      statusName = "Finish";
+      sColor = Color.fromRGBO(112, 112, 112, 0);
+    }
+
+    return showDialog(
+      context: context,
+      builder: (context) => Material(
+        type: MaterialType.transparency,
+        child: Center(
+          child: Container(
+            padding: EdgeInsets.all(15),
+            height: 175,
+            margin: EdgeInsets.symmetric(horizontal: 35),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: AutoSizeText(
+                        vesselName,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        minFontSize: 14,
+                        maxLines: 1,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(),
+                    ),
+                    Container(
+                      width: 18,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        color: sColor,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: AutoSizeText(
+                        statusName,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        minFontSize: 18,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    AutoSizeText(
+                      "$startDate ~ $endDate",
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromRGBO(169, 169, 169, 1.0),
+                      ),
+                      minFontSize: 12,
+                      maxLines: 1,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: InkWell(
+                        onTap: () async {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) => AsFinish(
+                                      reqNo: reqNo,
+                                      member: member,
+                                      split12: sellist,
                                     )),
                           );
                           //////Modify()//////
@@ -611,7 +847,7 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget schContainer(String reqNo, String vesselName, String startDate,
-      String endDate, String mgtStatus) {
+      String endDate, String mgtStatus, String reqport) {
     String statusName = "Wait on board";
     Color sColor = Colors.green;
     late Function sFunc;
@@ -708,13 +944,32 @@ class _HistoryPageState extends State<HistoryPage> {
                 flex: 3,
                 child: InkWell(
                   onTap: () async {
+                    split = reqport.split('/');
                     if (mgtStatus == "20") {
-                      await masterUpdate(reqNo);
+                      CoolAlert.show(
+                          context: context,
+                          type: CoolAlertType.custom,
+                          text: "Select Port",
+                          confirmBtnText: "On Board",
+                          confirmBtnColor: Colors.indigo,
+                          widget: DropDownMultiSelect(
+                              options: split,
+                              selectedValues: selected,
+                              onChanged: (List<String> x) {
+                                setState(() {
+                                  selected = x;
+                                  sellist = selected[0];
+                                });
+                              },
+                              whenEmpty: 'select port'),
+                          onConfirmBtnTap: () async {
+                            await masterUpdate(reqNo);
+                          });
                     } else if (mgtStatus == "30") {
                       mainSchPopup(
                           reqNo, vesselName, startDate, endDate, mgtStatus);
                     } else if (mgtStatus == "40") {
-                      HistorySchPopup(
+                      FinishSchPopup(
                           reqNo, vesselName, startDate, endDate, mgtStatus);
                     }
                   },
@@ -900,7 +1155,8 @@ class _HistoryPageState extends State<HistoryPage> {
                       mainSchList.elementAt(i).vesselName,
                       mainSchList.elementAt(i).startDate,
                       mainSchList.elementAt(i).endDate,
-                      mainSchList.elementAt(i).mgtStatus),
+                      mainSchList.elementAt(i).mgtStatus,
+                      mainSchList.elementAt(i).reqport),
               ],
             ),
           ),

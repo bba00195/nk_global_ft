@@ -9,7 +9,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
-import 'package:nk_global_ft/asDetail2.dart';
 import 'package:nk_global_ft/asModify.dart';
 import 'package:nk_global_ft/common/common.dart';
 import 'package:nk_global_ft/home_page.dart';
@@ -24,18 +23,17 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-class ImageConfirm extends StatefulWidget {
+class AsFinish extends StatefulWidget {
   final String reqNo;
   final UserManager member;
   final String split12;
 
-  ImageConfirm(
-      {required this.reqNo, required this.member, required this.split12});
+  AsFinish({required this.reqNo, required this.member, required this.split12});
   @override
-  _ImageConfirmState createState() => _ImageConfirmState();
+  _AsFinishState createState() => _AsFinishState();
 }
 
-class _ImageConfirmState extends State<ImageConfirm> {
+class _AsFinishState extends State<AsFinish> with TickerProviderStateMixin {
   late String reqNo;
   late UserManager member;
 
@@ -495,8 +493,8 @@ class _ImageConfirmState extends State<ImageConfirm> {
     }
   }
 
-  testImage2(int seq2) {
-    imgs2 = FList[seq2];
+  testImage2(int seq) {
+    imgs2 = FList[seq];
     if (imgs2 != "") {
       return Row(
         children: [
@@ -529,302 +527,202 @@ class _ImageConfirmState extends State<ImageConfirm> {
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
-      return Scaffold(
-        key: scaffoldKey,
-        backgroundColor: Color.fromRGBO(255, 255, 255, 1.0),
-        appBar: NkAppBar(
-            globalKey: scaffoldKey, member: member, menuName: "A/S Result"),
-        drawer: NkDrawer(globalKey: scaffoldKey, member: member),
-        body: GestureDetector(
-          child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(),
-              child: Container(
-                margin: EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                    border: Border(
-                        top: BorderSide(color: Colors.grey, width: 2.0))),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(3, 2, 0, 1),
-                      height: 20,
-                      width: 100.w,
-                      color: Colors.grey,
-                      child: Text(
-                        "Information",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    asTable(reqName, shipCust, vesselName, mmsiNo, reqComment,
-                        reqDate),
-                    bigo(reqComment),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Center(
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(25),
-                        ),
+      return WillPopScope(
+        onWillPop: () async => false,
+        child: Scaffold(
+          key: scaffoldKey,
+          backgroundColor: Color.fromRGBO(255, 255, 255, 1.0),
+          appBar: NkAppBar(
+              globalKey: scaffoldKey, member: member, menuName: "A/S Result"),
+          drawer: NkDrawer(globalKey: scaffoldKey, member: member),
+          body: GestureDetector(
+            child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(),
+                child: Container(
+                  margin: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                      border: Border(
+                          top: BorderSide(color: Colors.grey, width: 2.0))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(3, 2, 0, 1),
+                        height: 20,
+                        width: 100.w,
+                        color: Colors.grey,
                         child: Text(
-                          "A/S Before",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                          "Information",
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          Row(
-                            children: [
-                              // FutureBuilder(
-                              //   future: mainSchSearch(),
-                              //   builder: (context, snapshot) {
-                              //     if (snapshot.hasData) {
-                              //      for(int i =0; i< BList.length; i++){
-                              //        testImage(i);
-                              //      }
-
-                              //     } else if (snapshot.hasError) {
-                              //       return Text("error");
-                              //     }
-                              //     return CircularProgressIndicator();
-                              //   },
-
-                              // )
-                              if (BList.length > 0)
-                                for (int i = 0; i < BList.length; i++)
-                                  testImage(i),
-                            ],
-                          )
-                        ],
+                      asTable(reqName, shipCust, vesselName, mmsiNo, reqComment,
+                          reqDate),
+                      bigo(reqComment),
+                      SizedBox(
+                        height: 15,
                       ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Center(
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Text("A/S After",
+                      Center(
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Text(
+                            "A/S Before",
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold)),
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
+                      SizedBox(
+                        height: 10,
+                      ),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            Row(
+                              children: [
+                                // FutureBuilder(
+                                //   future: mainSchSearch(),
+                                //   builder: (context, snapshot) {
+                                //     if (snapshot.hasData) {
+                                //      for(int i =0; i< BList.length; i++){
+                                //        testImage(i);
+                                //      }
+
+                                //     } else if (snapshot.hasError) {
+                                //       return Text("error");
+                                //     }
+                                //     return CircularProgressIndicator();
+                                //   },
+
+                                // )
+                                if (BList.length > 0)
+                                  for (int i = 0; i < BList.length; i++)
+                                    testImage(i),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Center(
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Text("A/S After",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            Row(
+                              children: [
+                                if (FList.length > 0)
+                                  for (int i = 0; i < FList.length; i++)
+                                    testImage2(i),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              if (FList.length > 0)
-                                for (int j = 0; j < FList.length; j++)
-                                  testImage2(j),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              CoolAlert.show(
-                                  context: context,
-                                  type: CoolAlertType.confirm,
-                                  text: "업로드된 사진을 재등록 하시겠습니까?",
-                                  confirmBtnText: "Allow",
-                                  confirmBtnColor: Colors.indigo,
-                                  cancelBtnText: "Deny",
-                                  cancelBtnTextStyle:
-                                      TextStyle(color: Colors.black),
-                                  onConfirmBtnTap: () async {
-                                    histroyDelete(reqNo);
-                                    Navigator.pushReplacement(
-                                        context,
-                                        CupertinoPageRoute(
-                                            builder: (context) => ASmanagement2(
-                                                  member: member,
-                                                  reqNo: reqNo,
-                                                  split12: '',
-                                                )));
-                                  });
-                              // showDialog(
-                              //     context: context,
-                              //     builder: (context) {
-                              //       return CupertinoAlertDialog(
-                              //         title: Text("Waring!!!"),
-                              //         content:
-                              //             Text("업로드된 서명과 사진을 새로 등록하시겠습니까?"),
-                              //         actions: [
-                              //           CupertinoDialogAction(
-                              //             child: Text("yes"),
-                              //             onPressed: () async {
-                              //               histroyDelete(reqNo);
-                              //               Navigator.pushReplacement(
-                              //                   context,
-                              //                   CupertinoPageRoute(
-                              //                       builder: (context) =>
-                              //                           ASmodify(
-                              //                               member: member,
-                              //                               reqNo: reqNo)));
-                              //             },
-                              //           ),
-                              //           CupertinoDialogAction(
-                              //             child: Text("No"),
-                              //             onPressed: () {
-                              //               Navigator.pop(context);
-                              //             },
-                              //           ),
-                              //         ],
-                              //       );
-                              //     });
-                            },
-                            child: Text("Re-Upload"),
-                            style: ElevatedButton.styleFrom(
-                                primary: Colors.indigo),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: ElevatedButton(
-                            child: Text("Signature"),
-                            style: ElevatedButton.styleFrom(
-                                primary: Colors.indigo),
-                            onPressed: () {
-                              CoolAlert.show(
-                                  context: context,
-                                  type: CoolAlertType.custom,
-                                  title: "Signature plz",
-                                  confirmBtnText: "Submit",
-                                  confirmBtnColor: Colors.indigo,
-                                  onConfirmBtnTap: () async {
-                                    final sign = _sign.currentState;
-                                    final img = await sign!.getData();
-                                    var data = await img.toByteData(
-                                        format: ImageByteFormat.png);
-                                    List<int> encode =
-                                        data!.buffer.asUint8List();
-                                    setState(() {
-                                      _signimg = data;
-                                      signsrc = "${base64Encode(encode)}";
-                                      signname = member.user.userId +
-                                          "_" +
-                                          reqNo +
-                                          "_" +
-                                          "signature" +
-                                          ".png";
-                                      as_Signature_upload(
-                                          reqNo,
-                                          signCode,
-                                          member.user.userId,
-                                          signname,
-                                          signsrc);
+                          Expanded(
+                            flex: 3,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                CoolAlert.show(
+                                    context: context,
+                                    type: CoolAlertType.confirm,
+                                    text: "삭제 -> 승선대기상태?",
+                                    confirmBtnText: "Allow",
+                                    confirmBtnColor: Colors.indigo,
+                                    cancelBtnText: "Deny",
+                                    cancelBtnTextStyle:
+                                        TextStyle(color: Colors.black),
+                                    onConfirmBtnTap: () async {
+                                      histroyDelete(reqNo);
+                                      Navigator.pushReplacement(
+                                          context,
+                                          CupertinoPageRoute(
+                                              builder: (context) => HomePage(
+                                                    member: member,
+                                                  )));
                                     });
-                                    masterUpdate2(reqNo);
-                                    Navigator.pushReplacement(
-                                        context,
-                                        CupertinoPageRoute(
-                                            builder: (context) =>
-                                                HomePage(member: member)));
-                                  },
-                                  widget: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        height: 150,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.grey, width: 1)),
-                                        child: Signature(
-                                          color: Colors.black,
-                                          key: _sign,
-                                          onSign: () {
-                                            final sign = _sign.currentState;
-                                            debugPrint(
-                                                '${sign!.points.length} points in the signature');
-                                          },
-                                          strokeWidth: 2.5,
-                                        ),
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Container(
-                                            child: IconButton(
-                                              icon: Icon(
-                                                Icons.refresh,
-                                                color: Colors.green,
-                                              ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  final sign =
-                                                      _sign.currentState;
-                                                  sign!.clear();
-                                                  setState(() {
-                                                    _signimg = ByteData(0);
-                                                  });
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ));
-                            },
+                                // showDialog(
+                                //     context: context,
+                                //     builder: (context) {
+                                //       return CupertinoAlertDialog(
+                                //         title: Text("Waring!!!"),
+                                //         content:
+                                //             Text("업로드된 서명과 사진을 새로 등록하시겠습니까?"),
+                                //         actions: [
+                                //           CupertinoDialogAction(
+                                //             child: Text("yes"),
+                                //             onPressed: () async {
+                                //               histroyDelete(reqNo);
+                                //               Navigator.pushReplacement(
+                                //                   context,
+                                //                   CupertinoPageRoute(
+                                //                       builder: (context) =>
+                                //                           ASmodify(
+                                //                               member: member,
+                                //                               reqNo: reqNo)));
+                                //             },
+                                //           ),
+                                //           CupertinoDialogAction(
+                                //             child: Text("No"),
+                                //             onPressed: () {
+                                //               Navigator.pop(context);
+                                //             },
+                                //           ),
+                                //         ],
+                                //       );
+                                //     });
+                              },
+                              child: Text("Delete"),
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.indigo),
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                  context,
-                                  CupertinoPageRoute(
-                                      builder: (context) => HomePage(
-                                            member: member,
-                                          )));
-                            },
-                            child: Text("Cancel"),
-                            style: ElevatedButton.styleFrom(
-                                primary: Colors.indigo),
+                          SizedBox(
+                            width: 10,
                           ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              )),
+                          Expanded(
+                            flex: 3,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("Cancel"),
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.indigo),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                )),
+          ),
         ),
       );
     });

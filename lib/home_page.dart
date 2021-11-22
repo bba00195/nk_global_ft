@@ -9,12 +9,15 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
 import 'package:nk_global_ft/asDetail2.dart';
+import 'package:nk_global_ft/imageConfirm.dart';
+import 'package:nk_global_ft/model/image_model.dart';
 import 'package:nk_global_ft/model/mainSchedule_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:intl/intl.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:rounded_expansion_tile/rounded_expansion_tile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'common/common.dart';
 
 class HomePage extends StatefulWidget {
@@ -36,11 +39,26 @@ class _HomePageState extends State<HomePage> {
       RefreshController(initialRefresh: false);
 
   List<MainSchResponseModel> mainSchList = [];
+  List<ImageResponseModel> imgVal = [];
+  List<ImageResponseModel> imgVal2 = [];
+
+  String imgB = "";
+  String imgF = "";
+  List<String> BList = [];
+  List<String> FList = [];
 
   List<String> portdrop = [];
   String selport = 'select port';
   String port1 = "";
   String sellist = "";
+  List<String> split = [];
+  List<String> selected = [];
+  String split12 = '';
+  DateFormat format2 = DateFormat("yyyy-MM-dd HH:mm:ss");
+
+  DateTime datetime = DateTime.now();
+  String strDate = '';
+
   @override
   void initState() {
     super.initState();
@@ -51,6 +69,36 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  imageSelect(String reqNo) async {
+    List<String> sParam = [reqNo];
+    await apiService.getSelect("IMAGE_S1", sParam).then((value) {
+      setState(() {
+        if (value.image.isNotEmpty) {
+          imgVal = value.image;
+          for (int i = 0; i < imgVal.length; i++) {
+            imgB = imgVal.elementAt(i).fileSrc;
+            BList.add(imgB);
+          }
+        } else {}
+      });
+    });
+  }
+
+  imageSelect2() async {
+    List<String> sParam = [reqNo];
+    await apiService.getSelect("IMAGE_S2", sParam).then((value) {
+      setState(() {
+        if (value.image.isNotEmpty) {
+          imgVal2 = value.image;
+          for (int i = 0; i < imgVal.length; i++) {
+            imgF = imgVal.elementAt(i).fileSrc;
+            FList.add(imgF);
+          }
+        } else {}
+      });
+    });
   }
 
   mainSchSearch() async {
@@ -65,10 +113,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   masterUpdate(String reqNo) async {
-    List<String> sParam = [
-      reqNo,
-      member.user.userId,
-    ];
+    strDate = format2.format(datetime);
+    List<String> sParam = [reqNo, member.user.userId, strDate];
     await apiService.getUpdate("MASTER_U1", sParam).then((value) {
       setState(() {
         if (value.result.isNotEmpty) {
@@ -81,6 +127,7 @@ class _HomePageState extends State<HomePage> {
             );
           } else {
             Navigator.pop(context);
+
             // CoolAlert.show(
             //     text: "Success on the board.",
             //     context: context,
@@ -159,6 +206,7 @@ class _HomePageState extends State<HomePage> {
   mainSchPopup(String reqNo, String vesselName, String startDate,
       String endDate, String mgtStatus) {
     String statusName = "Wait on board";
+
     Color sColor = Colors.green;
 
     if (mgtStatus == "20") {
@@ -289,12 +337,26 @@ class _HomePageState extends State<HomePage> {
                     Expanded(
                       flex: 3,
                       child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  builder: (context) => ASmanagement2(
-                                      member: member, reqNo: reqNo)));
+                        onTap: () async {
+                          await imageSelect(reqNo);
+
+                          BList.isEmpty
+                              ? Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) => ASmanagement2(
+                                        member: member,
+                                        reqNo: reqNo,
+                                        split12: sellist),
+                                  ),
+                                )
+                              : Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => ImageConfirm(
+                                          reqNo: reqNo,
+                                          member: member,
+                                          split12: sellist)));
                         },
                         child: Container(
                           alignment: Alignment.center,
@@ -379,6 +441,7 @@ class _HomePageState extends State<HomePage> {
     String statusName = "Wait on board";
     Color sColor = Colors.green;
     late Function sFunc;
+    split = reqport.split('/');
 
     if (mgtStatus == "20") {
       statusName = "Wait on board";
@@ -533,7 +596,7 @@ class _HomePageState extends State<HomePage> {
                               maxLines: 1,
                             )),
                         onPressed: () async {
-                          var split12 = reqport.split('/');
+                          // var split12 = reqport.split('/');
 
                           if (mgtStatus == "20") {
                             CoolAlert.show(
@@ -541,12 +604,15 @@ class _HomePageState extends State<HomePage> {
                                 type: CoolAlertType.custom,
                                 text: "Select Port",
                                 confirmBtnText: "On Board",
+                                confirmBtnColor: Colors.indigo,
+                                barrierDismissible: false,
                                 widget: DropDownMultiSelect(
-                                    options: split12,
-                                    selectedValues: split12,
+                                    options: split,
+                                    selectedValues: selected,
                                     onChanged: (List<String> x) {
                                       setState(() {
-                                        split12 = x;
+                                        selected = x;
+                                        sellist = selected[0];
                                       });
                                     },
                                     whenEmpty: 'select port'),

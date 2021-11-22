@@ -3,6 +3,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:multiselect/multiselect.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
 import 'package:nk_global_ft/asDetail.dart';
 import 'package:nk_global_ft/asDetail2.dart';
@@ -13,6 +14,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'common/common.dart';
+import 'model/image_model.dart';
 import 'util.dart';
 
 class Schedule extends StatefulWidget {
@@ -38,8 +40,23 @@ class _ScheduleState extends State<Schedule> {
 
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  DateTime datetime3 = DateTime.now();
+  DateFormat df3 = DateFormat("yyyy-MM-dd HH:mm:ss");
+
+  String strDate = '';
 
   List<ScheduleResponseModel> scheduleValue = [];
+
+  List<ImageResponseModel> imgVal = [];
+  List<ImageResponseModel> imgVal2 = [];
+
+  String imgB = "";
+  String imgF = "";
+  List<String> BList = [];
+  List<String> FList = [];
+
+  List<String> split = [];
+  List<String> selected = [];
 
   List<String> scheduleStarts = [];
   List<List<Event>> scheduleEventList = [];
@@ -51,8 +68,9 @@ class _ScheduleState extends State<Schedule> {
   int sDay = 0;
 
   String text1 = "";
-
   String text2 = "승선";
+
+  String sellist = '';
   var changeColor = Colors.indigo;
 
   @override
@@ -72,6 +90,36 @@ class _ScheduleState extends State<Schedule> {
     _selectedEvents.dispose();
     _selectedMgtEvents.dispose();
     super.dispose();
+  }
+
+  imageSelect(String reqNo) async {
+    List<String> sParam = [reqNo];
+    await apiService.getSelect("IMAGE_S1", sParam).then((value) {
+      setState(() {
+        if (value.image.isNotEmpty) {
+          imgVal = value.image;
+          for (int i = 0; i < imgVal.length; i++) {
+            imgB = imgVal.elementAt(i).fileSrc;
+            BList.add(imgB);
+          }
+        } else {}
+      });
+    });
+  }
+
+  imageSelect2() async {
+    List<String> sParam = [reqNo];
+    await apiService.getSelect("IMAGE_S2", sParam).then((value) {
+      setState(() {
+        if (value.image.isNotEmpty) {
+          imgVal2 = value.image;
+          for (int i = 0; i < imgVal.length; i++) {
+            imgF = imgVal.elementAt(i).fileSrc;
+            FList.add(imgF);
+          }
+        } else {}
+      });
+    });
   }
 
   scheduleSearch() async {
@@ -140,17 +188,15 @@ class _ScheduleState extends State<Schedule> {
   }
 
   masterUpdate(String reqNo) async {
-    List<String> sParam = [
-      reqNo,
-      member.user.userId,
-    ];
+    strDate = df3.format(datetime3);
+    List<String> sParam = [reqNo, member.user.userId, strDate];
     await apiService.getUpdate("MASTER_U1", sParam).then((value) {
       setState(() {
         if (value.result.isNotEmpty) {
           if (value.result.elementAt(0).rsCode == "E") {
             Show(message: value.result.elementAt(0).rsMsg);
           } else {
-            Show(message: "Success on the board.");
+            Navigator.pop(context);
           }
         } else {
           Show(message: "Fail to on the board");
@@ -173,12 +219,14 @@ class _ScheduleState extends State<Schedule> {
   String schUserId = "";
   String mgtStatus = "";
   String reqNo = "";
+  String reqport = "";
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     setState(() {
       schSubject = "";
       schUserId = "";
       reqNo = "";
+      reqport = "";
       _selectedDay = selectedDay;
       _focusedDay = focusedDay;
     });
@@ -195,6 +243,7 @@ class _ScheduleState extends State<Schedule> {
           schUserId = scheduleValue.elementAt(j).userId;
           mgtStatus = scheduleValue.elementAt(j).mgtStatus;
           reqNo = scheduleValue.elementAt(j).reqNo;
+          reqport = scheduleValue.elementAt(j).reqport;
         }
       }
     }
@@ -426,8 +475,8 @@ class _ScheduleState extends State<Schedule> {
     await scheduleSearch();
   }
 
-  btnScheduleList(
-      int mgtStatusVal, List<Event> value, int index, BuildContext context) {
+  btnScheduleList(int mgtStatusVal, List<Event> value, int index,
+      BuildContext context, String reqport) {
     String sText = "Onboard";
     Color sColor = Colors.indigo;
     if (mgtStatusVal == 20) {
@@ -443,23 +492,27 @@ class _ScheduleState extends State<Schedule> {
 
     return ElevatedButton(
       onPressed: () {
+        split = reqport.split('/');
         if (sText == "Onboard") {
           CoolAlert.show(
               context: context,
-              type: CoolAlertType.confirm,
-              text: 'would you like to register for boarding?',
-              confirmBtnText: 'submit',
-              cancelBtnText: 'Deny',
+              type: CoolAlertType.custom,
+              text: "Select Port",
+              confirmBtnText: "On Board",
               confirmBtnColor: Colors.indigo,
-              cancelBtnTextStyle: TextStyle(color: Colors.black),
+              barrierDismissible: false,
+              widget: DropDownMultiSelect(
+                  options: split,
+                  selectedValues: selected,
+                  onChanged: (List<String> x) {
+                    setState(() {
+                      selected = x;
+                      sellist = selected[0];
+                    });
+                  },
+                  whenEmpty: 'select port'),
               onConfirmBtnTap: () async {
-                value[index].isSelected = true;
                 await masterUpdate(reqNo);
-                Navigator.of(context).pop();
-              },
-              onCancelBtnTap: () {
-                value[index].isSelected = false;
-                Navigator.of(context).pop();
               });
           // showDialog(
           //     context: context,
@@ -492,13 +545,28 @@ class _ScheduleState extends State<Schedule> {
               text: 'Route A/S Report Page or Cancel the On Board',
               confirmBtnText: "Report",
               cancelBtnText: "승선취소",
+              cancelBtnTextStyle: TextStyle(
+                color: Colors.black,
+              ),
               confirmBtnColor: Colors.indigo,
-              onConfirmBtnTap: () {
-                Navigator.pushReplacement(
-                    context,
-                    CupertinoPageRoute(
-                        builder: (context) =>
-                            ASmanagement2(member: member, reqNo: reqNo)));
+              onConfirmBtnTap: () async {
+                await imageSelect(reqNo);
+                BList.isEmpty
+                    ? Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => ASmanagement2(
+                            member: member,
+                            reqNo: reqNo,
+                            split12: sellist,
+                          ),
+                        ),
+                      )
+                    : Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => ImageConfirm(
+                                reqNo: reqNo, member: member, split12: '')));
               },
               onCancelBtnTap: () {
                 boardCancelUpdate(reqNo);
@@ -544,8 +612,8 @@ class _ScheduleState extends State<Schedule> {
                 Navigator.pushReplacement(
                     context,
                     CupertinoPageRoute(
-                        builder: (context) =>
-                            ImageConfirm(reqNo: reqNo, member: member)));
+                        builder: (context) => ImageConfirm(
+                            reqNo: reqNo, member: member, split12: sellist)));
               });
           // showDialog(
           //     context: context,
@@ -760,7 +828,8 @@ class _ScheduleState extends State<Schedule> {
                                               ),
                                               value,
                                               index,
-                                              context),
+                                              context,
+                                              reqport),
                                         ],
                                       ),
                                     )

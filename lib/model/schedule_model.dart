@@ -5,6 +5,7 @@ class ScheduleResponseModel {
   final String reqVesselName;
   final String date;
   final String mgtStatus;
+  final String reqport;
 
   ScheduleResponseModel(
       {required this.reqNo,
@@ -12,7 +13,8 @@ class ScheduleResponseModel {
       required this.userId,
       required this.reqVesselName,
       required this.date,
-      required this.mgtStatus});
+      required this.mgtStatus,
+      required this.reqport});
 
   factory ScheduleResponseModel.fromJson(Map<String, dynamic> json) {
     return ScheduleResponseModel(
@@ -24,7 +26,8 @@ class ScheduleResponseModel {
             : "",
         date: json['DATE'] != null ? json['DATE'] as String : "",
         mgtStatus:
-            json['MGT_STATUS'] != null ? json['MGT_STATUS'] as String : "");
+            json['MGT_STATUS'] != null ? json['MGT_STATUS'] as String : "",
+        reqport: json['REQ_PORT'] != null ? json['REQ_PORT'] as String : "");
   }
 }
 

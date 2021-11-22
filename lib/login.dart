@@ -1,12 +1,18 @@
+import 'dart:convert';
+
 import 'package:cool_alert/cool_alert.dart';
+import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
+import 'package:nk_global_ft/noNetWorkSign.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:nk_global_ft/model/Local_auth_api.dart';
-
+import 'package:flutter_signature_pad/flutter_signature_pad.dart';
+import 'dart:ui' as ui;
+import 'noNetWorkSign.dart';
 import 'home_page.dart';
 import 'common/common.dart';
 
@@ -25,6 +31,7 @@ class _LoginState extends State<Login> {
 
   GlobalKey<FormState> idFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> pwFormKey = GlobalKey<FormState>();
+  final _sign = GlobalKey<SignatureState>();
 
   final idTextEditController = TextEditingController();
   final passwordTextEditController = TextEditingController();
@@ -35,6 +42,7 @@ class _LoginState extends State<Login> {
   List<BiometricType>? _availableBiomatrics;
   String _authorized = '인증 되지 않음';
   bool _isAuthenticating = false;
+  ByteData _img = ByteData(0);
 
   @override
   void initState() {
@@ -434,6 +442,78 @@ class _LoginState extends State<Login> {
     );
   }
 
+  signdialog() async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("signature Pad"),
+            content: Column(
+              children: [
+                Container(
+                  height: 200,
+                  width: 200,
+                  color: Colors.grey[400],
+                  child: Signature(
+                    color: Colors.black,
+                    key: _sign,
+                    onSign: () {
+                      final sign = _sign.currentState;
+                    },
+                    strokeWidth: 3,
+                  ),
+                ),
+                // _img.buffer.lengthInBytes == 0
+                //     ? Container()
+                //     : LimitedBox(
+                //         maxHeight: 150,
+                //         child: Image.memory(_img.buffer.asUint8List()),
+                //       )
+              ],
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () async {
+                    final sign = _sign.currentState;
+                    final image = await sign!.getData();
+                    var data =
+                        await image.toByteData(format: ui.ImageByteFormat.png);
+                    sign.clear();
+                    final encoded = base64.encode(data!.buffer.asUint8List());
+                    setState(() {
+                      _img = data;
+                    });
+                  },
+                  child: Text("save")),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("close"))
+            ],
+          );
+        });
+  }
+
+  noNetworkSign() {
+    return Container(
+      height: 50,
+      width: 70.w,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(primary: Colors.indigo),
+        child: Text("signature capture"),
+        onPressed: () {
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => SignPage(),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
@@ -480,6 +560,12 @@ class _LoginState extends State<Login> {
                   height: 10,
                 ),
                 faceIdOrLoginTxt(),
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: noNetworkSign(),
+                )
               ],
             ),
           ),

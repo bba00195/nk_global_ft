@@ -12,6 +12,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:nk_global_ft/home_page.dart';
+import 'package:nk_global_ft/imageConfirm.dart';
 import 'package:nk_global_ft/model/master_model.dart';
 import 'package:nk_global_ft/model/common_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
@@ -857,13 +858,13 @@ class _ASmodifyState2 extends State<ASmodify> {
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.builder(
                                       scrollDirection: Axis.horizontal,
-                                      itemCount: Imagelist2!.length + 1,
+                                      itemCount: Imagelist2!.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
                                         if (index == 0) {
                                           return addpick2();
                                         }
-                                        Asset asset = Imagelist2![index - 1];
+                                        Asset asset = Imagelist2![index];
                                         return Stack(children: [
                                           ClipRRect(
                                             borderRadius:
@@ -1000,57 +1001,57 @@ class _ASmodifyState2 extends State<ASmodify> {
                         children: [
                           Column(
                             children: [
-                              Center(
-                                child: Text(
-                                  "Signature",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
+                              // Center(
+                              //   child: Text(
+                              //     "Signature",
+                              //     style: TextStyle(
+                              //         fontSize: 20,
+                              //         fontWeight: FontWeight.bold),
+                              //   ),
+                              // ),
                               SizedBox(
                                 height: 10,
                               ),
-                              Container(
-                                height: 200,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey, width: 1)),
-                                child: Signature(
-                                  color: Colors.black,
-                                  key: _sign,
-                                  onSign: () {
-                                    final sign = _sign.currentState;
-                                    debugPrint(
-                                        '${sign!.points.length} points in the signature');
-                                  },
-                                  strokeWidth: 2.5,
-                                ),
-                              )
+                              // Container(
+                              //   height: 200,
+                              //   decoration: BoxDecoration(
+                              //       border: Border.all(
+                              //           color: Colors.grey, width: 1)),
+                              //   child: Signature(
+                              //     color: Colors.black,
+                              //     key: _sign,
+                              //     onSign: () {
+                              //       final sign = _sign.currentState;
+                              //       debugPrint(
+                              //           '${sign!.points.length} points in the signature');
+                              //     },
+                              //     strokeWidth: 2.5,
+                              //   ),
+                              // )
                             ],
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Container(
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.refresh,
-                                    color: Colors.green,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      final sign = _sign.currentState;
-                                      sign!.clear();
-                                      setState(() {
-                                        _signimg = ByteData(0);
-                                      });
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          )
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          //   children: [
+                          //     Container(
+                          //       child: IconButton(
+                          //         icon: Icon(
+                          //           Icons.refresh,
+                          //           color: Colors.green,
+                          //         ),
+                          //         onPressed: () {
+                          //           setState(() {
+                          //             final sign = _sign.currentState;
+                          //             sign!.clear();
+                          //             setState(() {
+                          //               _signimg = ByteData(0);
+                          //             });
+                          //           });
+                          //         },
+                          //       ),
+                          //     ),
+                          //   ],
+                          // )
                         ],
                       ),
                       SizedBox(
@@ -1116,39 +1117,42 @@ class _ASmodifyState2 extends State<ASmodify> {
                                                     filesrc);
                                               }
 
-                                              final sign = _sign.currentState;
-                                              final img = await sign!.getData();
-                                              var data = await img.toByteData(
-                                                  format:
-                                                      ui.ImageByteFormat.png);
+                                              // final sign = _sign.currentState;
+                                              // final img = await sign!.getData();
+                                              // var data = await img.toByteData(
+                                              //     format:
+                                              //         ui.ImageByteFormat.png);
 
-                                              List<int> encoded =
-                                                  data!.buffer.asUint8List();
-                                              setState(() {
-                                                _signimg = data;
-                                                signsrc =
-                                                    "${base64Encode(encoded)}";
-                                                signname = member.user.userId +
-                                                    "_" +
-                                                    reqNo +
-                                                    "_"
-                                                        "signature" +
-                                                    ".png";
+                                              // List<int> encoded =
+                                              //     data!.buffer.asUint8List();
+                                              // setState(() {
+                                              //   _signimg = data;
+                                              //   signsrc =
+                                              //       "${base64Encode(encoded)}";
+                                              //   signname = member.user.userId +
+                                              //       "_" +
+                                              //       reqNo +
+                                              //       "_"
+                                              //           "signature" +
+                                              //       ".png";
 
-                                                as_Signature_upload(
-                                                    reqNo,
-                                                    signCode,
-                                                    member.user.userId,
-                                                    signname,
-                                                    signsrc);
-                                              });
-                                              masterUpdate2(reqNo);
+                                              //   as_Signature_upload(
+                                              //       reqNo,
+                                              //       signCode,
+                                              //       member.user.userId,
+                                              //       signname,
+                                              //       signsrc);
+                                              // });
+
                                               Navigator.pushReplacement(
                                                   context,
                                                   CupertinoPageRoute(
                                                       builder: (context) =>
-                                                          HomePage(
-                                                              member: member)));
+                                                          ImageConfirm(
+                                                            member: member,
+                                                            reqNo: reqNo,
+                                                            split12: '',
+                                                          )));
                                             },
                                           ),
                                           CupertinoDialogAction(
