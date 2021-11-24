@@ -493,7 +493,32 @@ class _HomePageState extends State<HomePage> {
                       Expanded(
                         flex: 8,
                         child: AutoSizeText(
-                          startDate + " ~ " + endDate,
+                          "ETA : " + startDate,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          minFontSize: 18,
+                          maxLines: 1,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(""),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(flex: 2, child: Text("")),
+                      Expanded(
+                        flex: 8,
+                        child: AutoSizeText(
+                          "ETD : " + endDate,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

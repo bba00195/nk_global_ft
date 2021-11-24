@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 import 'package:cool_alert/cool_alert.dart';
@@ -19,6 +20,7 @@ import 'package:nk_global_ft/main.dart';
 import 'package:nk_global_ft/model/image_model.dart';
 import 'package:nk_global_ft/model/master_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +70,9 @@ class _ImageConfirmState extends State<ImageConfirm> {
   late String signname = '';
   late String signdata;
   String signCode = "C";
+  var picksign;
+  final ImagePicker _picker = ImagePicker();
+  List<XFile> _picksign = [];
 
   final _sign = GlobalKey<SignatureState>();
   ByteData _signimg = ByteData(0);
@@ -275,6 +280,16 @@ class _ImageConfirmState extends State<ImageConfirm> {
         }
       });
     });
+  }
+
+  Future<void> _pickSign() async {
+    final List<XFile>? signs = await _picker.pickMultiImage();
+    if (signs != null) {
+      setState(() {
+        _picksign = signs;
+        picksign = signs[0];
+      });
+    }
   }
 
   Widget asTable(String reqName, String shipCust, String vesselName,
@@ -721,6 +736,9 @@ class _ImageConfirmState extends State<ImageConfirm> {
                                   title: "Signature plz",
                                   confirmBtnText: "Submit",
                                   confirmBtnColor: Colors.indigo,
+                                  cancelBtnText: "Close",
+                                  cancelBtnTextStyle:
+                                      TextStyle(backgroundColor: Colors.indigo),
                                   onConfirmBtnTap: () async {
                                     final sign = _sign.currentState;
                                     final img = await sign!.getData();
@@ -756,22 +774,33 @@ class _ImageConfirmState extends State<ImageConfirm> {
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      Container(
-                                        height: 150,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.grey, width: 1)),
-                                        child: Signature(
-                                          color: Colors.black,
-                                          key: _sign,
-                                          onSign: () {
-                                            final sign = _sign.currentState;
-                                            debugPrint(
-                                                '${sign!.points.length} points in the signature');
-                                          },
-                                          strokeWidth: 2.5,
-                                        ),
-                                      ),
+                                      _picksign.isEmpty
+                                          ? Container(
+                                              height: 150,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: Colors.grey,
+                                                      width: 1)),
+                                              child: Signature(
+                                                color: Colors.black,
+                                                key: _sign,
+                                                onSign: () {
+                                                  final sign =
+                                                      _sign.currentState;
+                                                  debugPrint(
+                                                      '${sign!.points.length} points in the signature');
+                                                },
+                                                strokeWidth: 2.5,
+                                              ),
+                                            )
+                                          : Container(
+                                              height: 150,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      fit: BoxFit.cover,
+                                                      image: FileImage(File(
+                                                          _picksign[0].path)))),
+                                            ),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
@@ -786,10 +815,28 @@ class _ImageConfirmState extends State<ImageConfirm> {
                                                 setState(() {
                                                   final sign =
                                                       _sign.currentState;
+
                                                   sign!.clear();
+
+                                                  final picks =
+                                                      _picksign.elementAt(0);
+
                                                   setState(() {
                                                     _signimg = ByteData(0);
                                                   });
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                          Container(
+                                            child: IconButton(
+                                              icon: Icon(
+                                                Icons.upload,
+                                                color: Colors.blue,
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  _pickSign();
                                                 });
                                               },
                                             ),

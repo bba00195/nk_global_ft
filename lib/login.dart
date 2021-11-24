@@ -499,8 +499,7 @@ class _LoginState extends State<Login> {
     return Container(
       height: 50,
       width: 70.w,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(primary: Colors.indigo),
+      child: TextButton(
         child: Text("signature capture"),
         onPressed: () {
           Navigator.push(
