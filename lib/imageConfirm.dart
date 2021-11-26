@@ -282,7 +282,7 @@ class _ImageConfirmState extends State<ImageConfirm> {
     });
   }
 
-  Future<void> _pickSign() async {
+  Future<void> imageSign() async {
     final List<XFile>? signs = await _picker.pickMultiImage();
     if (signs != null) {
       setState(() {
@@ -541,8 +541,40 @@ class _ImageConfirmState extends State<ImageConfirm> {
   //   }
   // }
 
+  box2() {
+    return Column(
+      children: [
+        (_picksign.length == 0)
+            ? Container(
+                height: 150,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey, width: 1)),
+                child: Signature(
+                  color: Colors.black,
+                  key: _sign,
+                  onSign: () {
+                    final sign = _sign.currentState;
+                    debugPrint(
+                        '${sign!.points.length} points in the signature');
+                  },
+                  strokeWidth: 2.5,
+                ),
+              )
+            : Container(
+                height: 150,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: FileImage(File(picksign.path)))),
+              )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    //  ImageConfirm imageConfirm=
+    //     context.findAncestorStateOfType<_ImageConfirmState>();
     return Sizer(builder: (context, orientation, deviceType) {
       return Scaffold(
         key: scaffoldKey,
@@ -774,33 +806,7 @@ class _ImageConfirmState extends State<ImageConfirm> {
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      _picksign.isEmpty
-                                          ? Container(
-                                              height: 150,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: Colors.grey,
-                                                      width: 1)),
-                                              child: Signature(
-                                                color: Colors.black,
-                                                key: _sign,
-                                                onSign: () {
-                                                  final sign =
-                                                      _sign.currentState;
-                                                  debugPrint(
-                                                      '${sign!.points.length} points in the signature');
-                                                },
-                                                strokeWidth: 2.5,
-                                              ),
-                                            )
-                                          : Container(
-                                              height: 150,
-                                              decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                      fit: BoxFit.cover,
-                                                      image: FileImage(File(
-                                                          _picksign[0].path)))),
-                                            ),
+                                      box2(),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
@@ -815,11 +821,10 @@ class _ImageConfirmState extends State<ImageConfirm> {
                                                 setState(() {
                                                   final sign =
                                                       _sign.currentState;
-
-                                                  sign!.clear();
-
-                                                  final picks =
-                                                      _picksign.elementAt(0);
+                                                  if (sign != null) {
+                                                    sign.clear();
+                                                  } else
+                                                    _picksign.clear();
 
                                                   setState(() {
                                                     _signimg = ByteData(0);
@@ -836,7 +841,7 @@ class _ImageConfirmState extends State<ImageConfirm> {
                                               ),
                                               onPressed: () {
                                                 setState(() {
-                                                  _pickSign();
+                                                  imageSign();
                                                 });
                                               },
                                             ),
@@ -877,9 +882,6 @@ class _ImageConfirmState extends State<ImageConfirm> {
     });
   }
 }
-
-
-
 
 // if (imgList.length > 0)
 //                   for (int i = 0; i < imgList.length; i++) testImage(i),
