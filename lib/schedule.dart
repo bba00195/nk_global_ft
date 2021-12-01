@@ -662,187 +662,194 @@ class _ScheduleState extends State<Schedule> {
       ),
       bottomNavigationBar: nkNaviBottomBar(
           globalKey: scaffoldKey, member: member, selectedIndex: 2),
-      body: Column(
-        children: [
-          ValueListenableBuilder<DateTime>(
-            valueListenable: headDay,
-            builder: (context, value, _) {
-              return _CalendarHeader(
-                focusedDay: value,
-                onLeftArrowTap: () {
-                  _pageController.previousPage(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                  );
-                  setState(() {
-                    sDay -= 30;
-                    dateNow = DateTime.parse(DateFormat('yyyy-MM-dd')
-                            .format(DateTime.now().add(Duration(days: sDay))) +
-                        ' 00:00:00.000Z');
-                    scheduleSearch();
-                    _onDaySelected(dateNow, dateNow);
-                  });
-                },
-                onRightArrowTap: () {
-                  _pageController.nextPage(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                  );
-                  setState(() {
-                    sDay += 30;
-                    dateNow = DateTime.parse(DateFormat('yyyy-MM-dd')
-                            .format(DateTime.now().add(Duration(days: sDay))) +
-                        ' 00:00:00.000Z');
-                    scheduleSearch();
-                    _onDaySelected(dateNow, dateNow);
-                  });
-                },
-              );
-            },
-          ),
-          boxScheculeCalendar(),
-          SizedBox(height: 8.0),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-            child: Row(
-              children: [
-                Text(
-                  "A/S Schedule",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ValueListenableBuilder<List<Event>>(
-              valueListenable: _selectedEvents,
+      body: WillPopScope(
+        child: Column(
+          children: [
+            ValueListenableBuilder<DateTime>(
+              valueListenable: headDay,
               builder: (context, value, _) {
-                return ListView.builder(
-                  itemCount: value.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                        onTap: () {
-                          // if (int.parse(
-                          //         _selectedMgtEvents.value[index].toString()) <
-                          //     30) {
-                          //   setState(() {
-                          //     onBoardAlert(context, value, index);
-                          //   });
-                          // } else {
-                          //   Navigator.push(
-                          //     context,
-                          //     CupertinoPageRoute(
-                          //       builder: (context) => ASmanagement2(
-                          //         member: member,
-                          //         reqNo: reqNo,
-                          //       ),
-                          //     ),
-                          //   );
-                          // }
-                        },
-                        child: Container(
-                            width: 200,
-                            height: 150,
-                            margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(color: Colors.white),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 4,
-                                    blurRadius: 7,
-                                    offset: Offset(0, 3),
-                                  )
-                                ]),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ListTile(
-                                    selected: value[index].isSelected,
-                                    title: Text(
-                                      "${value[index]}",
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black),
-                                    ),
-                                    trailing: Text(
-                                      "${_selectedDay.toString().substring(0, 10)}",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                    )
-                                    // trailing: (int.parse(_selectedMgtEvents
-                                    //             .value[index]
-                                    //             .toString()) <
-                                    //         30)
-                                    //     ? ElevatedButton(
-                                    //         onPressed: null,
-                                    //         child: Text("Onboard"),
-                                    //         style: ElevatedButton.styleFrom(
-                                    //             onSurface: Colors.indigo),
-                                    //       )
-                                    //     : ElevatedButton(
-                                    //         onPressed: null,
-                                    //         child: Text("Proceeding"),
-                                    //         style: ElevatedButton.styleFrom(
-                                    //             onSurface: Colors.green),
-                                    //       ),
-                                    ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Stack(
-                                      alignment: Alignment.centerLeft,
-                                      children: [
-                                        icnScheduleList(
-                                          int.parse(
-                                            _selectedMgtEvents.value[index]
-                                                .toString(),
-                                          ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            ctnScheduleList(
-                                              int.parse(
-                                                _selectedMgtEvents.value[index]
-                                                    .toString(),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    Container(
-                                      margin:
-                                          EdgeInsets.only(top: 20, right: 5),
-                                      child: ButtonBar(
-                                        children: [
-                                          btnScheduleList(
-                                              int.parse(
-                                                _selectedMgtEvents.value[index]
-                                                    .toString(),
-                                              ),
-                                              value,
-                                              index,
-                                              context,
-                                              reqport),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )
-                              ],
-                            )));
+                return _CalendarHeader(
+                  focusedDay: value,
+                  onLeftArrowTap: () {
+                    _pageController.previousPage(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                    );
+                    setState(() {
+                      sDay -= 30;
+                      dateNow = DateTime.parse(DateFormat('yyyy-MM-dd').format(
+                              DateTime.now().add(Duration(days: sDay))) +
+                          ' 00:00:00.000Z');
+                      scheduleSearch();
+                      _onDaySelected(dateNow, dateNow);
+                    });
+                  },
+                  onRightArrowTap: () {
+                    _pageController.nextPage(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                    );
+                    setState(() {
+                      sDay += 30;
+                      dateNow = DateTime.parse(DateFormat('yyyy-MM-dd').format(
+                              DateTime.now().add(Duration(days: sDay))) +
+                          ' 00:00:00.000Z');
+                      scheduleSearch();
+                      _onDaySelected(dateNow, dateNow);
+                    });
                   },
                 );
               },
             ),
-          ),
-        ],
+            boxScheculeCalendar(),
+            SizedBox(height: 8.0),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+              child: Row(
+                children: [
+                  Text(
+                    "A/S Schedule",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ValueListenableBuilder<List<Event>>(
+                valueListenable: _selectedEvents,
+                builder: (context, value, _) {
+                  return ListView.builder(
+                    itemCount: value.length,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                          onTap: () {
+                            // if (int.parse(
+                            //         _selectedMgtEvents.value[index].toString()) <
+                            //     30) {
+                            //   setState(() {
+                            //     onBoardAlert(context, value, index);
+                            //   });
+                            // } else {
+                            //   Navigator.push(
+                            //     context,
+                            //     CupertinoPageRoute(
+                            //       builder: (context) => ASmanagement2(
+                            //         member: member,
+                            //         reqNo: reqNo,
+                            //       ),
+                            //     ),
+                            //   );
+                            // }
+                          },
+                          child: Container(
+                              width: 200,
+                              height: 150,
+                              margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 4,
+                                      blurRadius: 7,
+                                      offset: Offset(0, 3),
+                                    )
+                                  ]),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ListTile(
+                                      selected: value[index].isSelected,
+                                      title: Text(
+                                        "${value[index]}",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black),
+                                      ),
+                                      trailing: Text(
+                                        "${_selectedDay.toString().substring(0, 10)}",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
+                                      )
+                                      // trailing: (int.parse(_selectedMgtEvents
+                                      //             .value[index]
+                                      //             .toString()) <
+                                      //         30)
+                                      //     ? ElevatedButton(
+                                      //         onPressed: null,
+                                      //         child: Text("Onboard"),
+                                      //         style: ElevatedButton.styleFrom(
+                                      //             onSurface: Colors.indigo),
+                                      //       )
+                                      //     : ElevatedButton(
+                                      //         onPressed: null,
+                                      //         child: Text("Proceeding"),
+                                      //         style: ElevatedButton.styleFrom(
+                                      //             onSurface: Colors.green),
+                                      //       ),
+                                      ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Stack(
+                                        alignment: Alignment.centerLeft,
+                                        children: [
+                                          icnScheduleList(
+                                            int.parse(
+                                              _selectedMgtEvents.value[index]
+                                                  .toString(),
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              ctnScheduleList(
+                                                int.parse(
+                                                  _selectedMgtEvents
+                                                      .value[index]
+                                                      .toString(),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      Container(
+                                        margin:
+                                            EdgeInsets.only(top: 20, right: 5),
+                                        child: ButtonBar(
+                                          children: [
+                                            btnScheduleList(
+                                                int.parse(
+                                                  _selectedMgtEvents
+                                                      .value[index]
+                                                      .toString(),
+                                                ),
+                                                value,
+                                                index,
+                                                context,
+                                                reqport),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              )));
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+        onWillPop: () {
+          return Future(() => false);
+        },
       ),
     );
   }

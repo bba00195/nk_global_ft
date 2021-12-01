@@ -19,6 +19,7 @@ import 'package:nk_global_ft/history.dart';
 import 'package:nk_global_ft/main.dart';
 import 'package:nk_global_ft/model/image_model.dart';
 import 'package:nk_global_ft/model/master_model.dart';
+import 'package:nk_global_ft/signature.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
@@ -86,7 +87,6 @@ class _ImageConfirmState extends State<ImageConfirm> {
   void initState() {
     reqNo = widget.reqNo;
     member = widget.member;
-
     _init();
     selectMaster();
     super.initState();
@@ -282,7 +282,7 @@ class _ImageConfirmState extends State<ImageConfirm> {
     });
   }
 
-  Future<void> imageSign() async {
+  void imageSign() async {
     final List<XFile>? signs = await _picker.pickMultiImage();
     if (signs != null) {
       setState(() {
@@ -762,94 +762,11 @@ class _ImageConfirmState extends State<ImageConfirm> {
                             style: ElevatedButton.styleFrom(
                                 primary: Colors.indigo),
                             onPressed: () {
-                              CoolAlert.show(
-                                  context: context,
-                                  type: CoolAlertType.custom,
-                                  title: "Signature plz",
-                                  confirmBtnText: "Submit",
-                                  confirmBtnColor: Colors.indigo,
-                                  cancelBtnText: "Close",
-                                  cancelBtnTextStyle:
-                                      TextStyle(backgroundColor: Colors.indigo),
-                                  onConfirmBtnTap: () async {
-                                    final sign = _sign.currentState;
-                                    final img = await sign!.getData();
-                                    var data = await img.toByteData(
-                                        format: ImageByteFormat.png);
-                                    List<int> encode =
-                                        data!.buffer.asUint8List();
-                                    setState(() {
-                                      _signimg = data;
-                                      signsrc = "${base64Encode(encode)}";
-                                      signname = member.user.userId +
-                                          "_" +
-                                          reqNo +
-                                          "_" +
-                                          "signature" +
-                                          ".png";
-                                      as_Signature_upload(
-                                          reqNo,
-                                          signCode,
-                                          member.user.userId,
-                                          signname,
-                                          signsrc);
-                                    });
-                                    masterUpdate2(reqNo);
-                                    Navigator.pushReplacement(
-                                        context,
-                                        CupertinoPageRoute(
-                                            builder: (context) =>
-                                                HomePage(member: member)));
-                                  },
-                                  widget: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      box2(),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Container(
-                                            child: IconButton(
-                                              icon: Icon(
-                                                Icons.refresh,
-                                                color: Colors.green,
-                                              ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  final sign =
-                                                      _sign.currentState;
-                                                  if (sign != null) {
-                                                    sign.clear();
-                                                  } else
-                                                    _picksign.clear();
-
-                                                  setState(() {
-                                                    _signimg = ByteData(0);
-                                                  });
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                          Container(
-                                            child: IconButton(
-                                              icon: Icon(
-                                                Icons.upload,
-                                                color: Colors.blue,
-                                              ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  imageSign();
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ));
+                              Navigator.pushReplacement(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => SignaturePage(
+                                          reqNo: reqNo, member: member)));
                             },
                           ),
                         ),
@@ -859,19 +776,14 @@ class _ImageConfirmState extends State<ImageConfirm> {
                         Expanded(
                           flex: 3,
                           child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                  context,
-                                  CupertinoPageRoute(
-                                      builder: (context) => HomePage(
-                                            member: member,
-                                          )));
-                            },
                             child: Text("Cancel"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
                             style: ElevatedButton.styleFrom(
                                 primary: Colors.indigo),
                           ),
-                        ),
+                        )
                       ],
                     )
                   ],
