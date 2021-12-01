@@ -34,7 +34,7 @@ class _LoginState extends State<Login> {
   var oceanList;
   List vesselList = [];
   List properties = [];
-
+  List imolist = [];
   List<int> mmsilist = [];
   oceanApi() {
     return Container(
@@ -48,6 +48,13 @@ class _LoginState extends State<Login> {
               //print(oceanList[0]["properties"]);
               for (int i = 0; i < oceanList.length; i++) {
                 vesselList.add(oceanList[i]["properties"]);
+              }
+              for (int j = 0; j < vesselList.length; j++) {
+                imolist.add(vesselList[j]["ec_imo"]);
+              }
+              for (int q = 0; q < imolist.length; q++) {
+                print(imolist[q]);
+                // imolist.contains(imono)
               }
             }
           });
