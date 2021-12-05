@@ -7,9 +7,11 @@ class MainSchResponseModel {
   final String vesselName;
   final String reqStatus;
   final String mgtStatus;
+  final String imono;
   final String reqport;
   final String reqtype;
   final String reqQuantity;
+  final String mmsino;
 
   MainSchResponseModel({
     required this.reqNo,
@@ -20,9 +22,11 @@ class MainSchResponseModel {
     required this.vesselName,
     required this.reqStatus,
     required this.mgtStatus,
+    required this.imono,
     required this.reqport,
     required this.reqtype,
     required this.reqQuantity,
+    required this.mmsino,
   });
 
   factory MainSchResponseModel.fromJson(Map<String, dynamic> json) {
@@ -37,10 +41,12 @@ class MainSchResponseModel {
           : "",
       reqStatus: json['REQ_STATUS'] != null ? json['REQ_STATUS'] as String : "",
       mgtStatus: json['MGT_STATUS'] != null ? json['MGT_STATUS'] as String : "",
+      imono: json['REQ_IMO_NO'] != null ? json['REQ_IMO_NO'] as String : "",
       reqport: json['REQ_PORT'] != null ? json['REQ_PORT'] as String : "",
       reqtype: json['REQ_TYPE'] != null ? json['REQ_TYPE'] as String : "",
       reqQuantity:
           json['REQ_QUANTITY'] != null ? json['REQ_QUANTITY'] as String : "",
+      mmsino: json['MMSI_NO'] != null ? json['MMSI_NO'] as String : "",
     );
   }
 }

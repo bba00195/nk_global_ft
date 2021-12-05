@@ -1,9 +1,9 @@
 import 'dart:convert';
-
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
+import 'package:nk_global_ft/api/api_oceanLook.dart';
 import 'package:nk_global_ft/noNetWorkSign.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +28,39 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool hidePW = true;
+
+  APIocean apiOcean = new APIocean();
+  var oceanList;
+  List vesselList = [];
+  List properties = [];
+  List imolist = [];
+  List<int> mmsilist = [];
+  oceanApi() {
+    return Container(
+      child: TextButton(
+        child: Text("ocean Api"),
+        onPressed: () {
+          apiOcean.getOcean().then((value) {
+            oceanList = value["features"];
+            if (value["features"].isNotEmpty) {
+              vesselList.clear();
+              //print(oceanList[0]["properties"]);
+              for (int i = 0; i < oceanList.length; i++) {
+                vesselList.add(oceanList[i]["properties"]);
+              }
+              for (int j = 0; j < vesselList.length; j++) {
+                imolist.add(vesselList[j]["ec_imo"]);
+              }
+              for (int q = 0; q < imolist.length; q++) {
+                print(imolist[q]);
+                // imolist.contains(imono)
+              }
+            }
+          });
+        },
+      ),
+    );
+  }
 
   GlobalKey<FormState> idFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> pwFormKey = GlobalKey<FormState>();
@@ -499,8 +532,7 @@ class _LoginState extends State<Login> {
     return Container(
       height: 50,
       width: 70.w,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(primary: Colors.indigo),
+      child: TextButton(
         child: Text("signature capture"),
         onPressed: () {
           Navigator.push(
@@ -565,7 +597,11 @@ class _LoginState extends State<Login> {
                 ),
                 Center(
                   child: noNetworkSign(),
-                )
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                oceanApi(),
               ],
             ),
           ),

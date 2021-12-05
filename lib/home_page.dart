@@ -8,8 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
+import 'package:nk_global_ft/api/api_oceanLook.dart';
 import 'package:nk_global_ft/asDetail2.dart';
 import 'package:nk_global_ft/imageConfirm.dart';
+import 'package:nk_global_ft/main.dart';
 import 'package:nk_global_ft/model/image_model.dart';
 import 'package:nk_global_ft/model/mainSchedule_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
@@ -46,7 +48,6 @@ class _HomePageState extends State<HomePage> {
   String imgF = "";
   List<String> BList = [];
   List<String> FList = [];
-
   List<String> portdrop = [];
   String selport = 'select port';
   String port1 = "";
@@ -59,11 +60,18 @@ class _HomePageState extends State<HomePage> {
   DateTime datetime = DateTime.now();
   String strDate = '';
 
+  APIocean apiOcean = new APIocean();
+  var oceanList;
+  List vesselList = [];
+  List properties = [];
+  List imolist = [];
+  List<int> mmsilist = [];
   @override
   void initState() {
     super.initState();
     member = widget.member;
     mainSchSearch();
+    oceanApi();
   }
 
   @override
@@ -98,6 +106,23 @@ class _HomePageState extends State<HomePage> {
           }
         } else {}
       });
+    });
+  }
+
+  oceanApi() {
+    apiOcean.getOcean().then((value) {
+      oceanList = value["features"];
+      if (value["features"].isNotEmpty) {
+        vesselList.clear();
+        //print(oceanList[0]["properties"]);
+        for (int i = 0; i < oceanList.length; i++) {
+          vesselList.add(oceanList[i]["properties"]);
+        }
+        for (int j = 0; j < vesselList.length; j++) {
+          imolist.add(vesselList[j]["ec_imo"]);
+        }
+        setState(() {});
+      }
     });
   }
 
@@ -435,9 +460,11 @@ class _HomePageState extends State<HomePage> {
       String startDate,
       String endDate,
       String mgtStatus,
+      String imono,
       String reqport,
       String reqtype,
-      String reqQuantity) {
+      String reqQuantity,
+      String mmsino) {
     String statusName = "Wait on board";
     Color sColor = Colors.green;
     late Function sFunc;
@@ -493,7 +520,32 @@ class _HomePageState extends State<HomePage> {
                       Expanded(
                         flex: 8,
                         child: AutoSizeText(
-                          startDate + " ~ " + endDate,
+                          "ETA : " + startDate,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          minFontSize: 18,
+                          maxLines: 1,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(""),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(flex: 2, child: Text("")),
+                      Expanded(
+                        flex: 8,
+                        child: AutoSizeText(
+                          "ETD : " + endDate,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -572,6 +624,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   SizedBox(
                     height: 20,
+                  ),
+                  Row(
+                    children: [AutoSizeText("IMO_NO  : " + imono)],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -677,45 +732,52 @@ class _HomePageState extends State<HomePage> {
       drawer: NkDrawer(globalKey: scaffoldKey, member: member),
       bottomNavigationBar: nkNaviBottomBar(
           globalKey: scaffoldKey, member: member, selectedIndex: 0),
-      body: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        controller: _refreshController,
-        onRefresh: () {
-          setState(() {
-            mainSchSearch();
-          });
-          _refreshController.refreshCompleted();
+      body: WillPopScope(
+        onWillPop: () {
+          return Future(() => false);
         },
-        onLoading: () {
-          setState(() {
-            mainSchSearch();
-            _refreshController.loadComplete();
-          });
-          _refreshController.refreshCompleted();
-        },
-        child: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height,
-            ),
-            color: Color.fromRGBO(244, 244, 244, 1.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                for (int i = 0; i < mainSchList.length; i++)
-                  schContainer(
-                      mainSchList.elementAt(i).reqNo,
-                      mainSchList.elementAt(i).vesselName,
-                      mainSchList.elementAt(i).startDate,
-                      mainSchList.elementAt(i).endDate,
-                      mainSchList.elementAt(i).mgtStatus,
-                      mainSchList.elementAt(i).reqport,
-                      mainSchList.elementAt(i).reqtype,
-                      mainSchList.elementAt(i).reqQuantity),
-              ],
+        child: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          controller: _refreshController,
+          onRefresh: () {
+            setState(() {
+              mainSchSearch();
+            });
+            _refreshController.refreshCompleted();
+          },
+          onLoading: () {
+            setState(() {
+              mainSchSearch();
+              _refreshController.loadComplete();
+            });
+            _refreshController.refreshCompleted();
+          },
+          child: SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height,
+              ),
+              color: Color.fromRGBO(244, 244, 244, 1.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  for (int i = 0; i < mainSchList.length; i++)
+                    schContainer(
+                        mainSchList.elementAt(i).reqNo,
+                        mainSchList.elementAt(i).vesselName,
+                        mainSchList.elementAt(i).startDate,
+                        mainSchList.elementAt(i).endDate,
+                        mainSchList.elementAt(i).mgtStatus,
+                        mainSchList.elementAt(i).imono,
+                        mainSchList.elementAt(i).reqport,
+                        mainSchList.elementAt(i).reqtype,
+                        mainSchList.elementAt(i).reqQuantity,
+                        mainSchList.elementAt(i).mmsino),
+                ],
+              ),
             ),
           ),
         ),

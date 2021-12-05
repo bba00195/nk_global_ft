@@ -1,23 +1,13 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:flutter/rendering.dart';
-import 'package:cool_alert/cool_alert.dart';
-import 'package:flutter/services.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:nk_global_ft/api/api_Service.dart';
-import 'package:sizer/sizer.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:nk_global_ft/widget/nk_widget.dart';
-import 'package:nk_global_ft/model/Local_auth_api.dart';
-import 'package:flutter_signature_pad/flutter_signature_pad.dart';
-import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'dart:ui' as ui;
-import 'home_page.dart';
-import 'common/common.dart';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
 class SignPage extends StatefulWidget {
   @override
@@ -52,6 +42,20 @@ class _SignPageState extends State<SignPage> {
     await Navigator.of(context)
         .push(MaterialPageRoute(builder: (BuildContext context) {
       return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Text("Saved Signature"),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(
+              Icons.navigate_before,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
         body: Center(
           child: Container(
             color: Colors.grey,
@@ -114,23 +118,39 @@ class _SignPageState extends State<SignPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ElevatedButton(
-                        child: Text("Save"),
-                        onPressed: () async {
-                          _handleSaveButton();
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.indigo),
+                            child: Text("Save"),
+                            onPressed: () async {
+                              _handleSaveButton();
 
-                          // final result = await ImageGallerySaver.saveImage(
-                          //     data!.buffer.asUint8List());
+                              // final result = await ImageGallerySaver.saveImage(
+                              //     data!.buffer.asUint8List());
 
-                          // final encoded =
-                          //     base64.encode(data!.buffer.asUint8List());
-                        },
+                              // final encoded =
+                              //     base64.encode(data!.buffer.asUint8List());
+                            },
+                          ),
+                        ),
                       ),
-                      ElevatedButton(
-                        child: Text("Close"),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.indigo),
+                            child: Text("Close"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
                       )
                     ],
                   )

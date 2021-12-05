@@ -1014,154 +1014,160 @@ class _HistoryPageState extends State<HistoryPage> {
       drawer: NkDrawer(globalKey: scaffoldKey, member: member),
       bottomNavigationBar: nkNaviBottomBar(
           globalKey: scaffoldKey, member: member, selectedIndex: 1),
-      body: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        controller: _refreshController,
-        onRefresh: () {
-          setState(() {
-            mainSchSearch();
-          });
-          _refreshController.refreshCompleted();
-        },
-        onLoading: () {
-          setState(() {
-            mainSchDateSearch();
-            _refreshController.loadComplete();
-          });
-          _refreshController.refreshCompleted();
-        },
-        child: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height,
-            ),
-            color: Color.fromRGBO(244, 244, 244, 1.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  constraints: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width,
-                    minHeight: 60,
-                  ),
-                  color: Colors.white,
-                  child: Row(
-                    children: [
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                              color: Colors.grey,
-                            )),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(left: 5),
-                              child: AutoSizeText(
-                                "${selDate1.toLocal()}".split(' ')[0],
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                                maxFontSize: 16,
-                                minFontSize: 14,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Material(
-                              color: Colors.grey,
-                              child: IconButton(
-                                  onPressed: () {
-                                    _selectDate(context);
-                                  },
-                                  icon: Icon(
-                                    Icons.calendar_today,
-                                    color: Colors.white,
-                                    size: 30,
-                                  )),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: 12,
-                        child: Text(
-                          "~",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                              color: Colors.grey,
-                            )),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(left: 5),
-                              child: AutoSizeText(
-                                "${selDate2.toLocal()}".split(' ')[0],
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                                maxFontSize: 16,
-                                minFontSize: 14,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Material(
-                              color: Colors.grey,
-                              child: IconButton(
-                                  onPressed: () {
-                                    _selectDate2(context);
-                                  },
-                                  icon: Icon(
-                                    Icons.calendar_today,
-                                    color: Colors.white,
-                                    size: 30,
-                                  )),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                          decoration: BoxDecoration(
-                              color: Colors.indigo,
-                              borderRadius: BorderRadius.circular(5)),
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.search,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                            onPressed: () {
-                              mainSchDateSearch();
-                            },
-                          )),
-                    ],
-                  ),
+      body: WillPopScope(
+          child: SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: true,
+            controller: _refreshController,
+            onRefresh: () {
+              setState(() {
+                mainSchSearch();
+              });
+              _refreshController.refreshCompleted();
+            },
+            onLoading: () {
+              setState(() {
+                mainSchDateSearch();
+                _refreshController.loadComplete();
+              });
+              _refreshController.refreshCompleted();
+            },
+            child: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height,
                 ),
-                for (int i = 0; i < mainSchList.length; i++)
-                  schContainer(
-                      mainSchList.elementAt(i).reqNo,
-                      mainSchList.elementAt(i).vesselName,
-                      mainSchList.elementAt(i).startDate,
-                      mainSchList.elementAt(i).endDate,
-                      mainSchList.elementAt(i).mgtStatus,
-                      mainSchList.elementAt(i).reqport),
-              ],
+                color: Color.fromRGBO(244, 244, 244, 1.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      constraints: BoxConstraints(
+                        minWidth: MediaQuery.of(context).size.width,
+                        minHeight: 60,
+                      ),
+                      color: Colors.white,
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 12),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: Colors.grey,
+                                )),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: AutoSizeText(
+                                    "${selDate1.toLocal()}".split(' ')[0],
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                    maxFontSize: 16,
+                                    minFontSize: 14,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Material(
+                                  color: Colors.grey,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        _selectDate(context);
+                                      },
+                                      icon: Icon(
+                                        Icons.calendar_today,
+                                        color: Colors.white,
+                                        size: 30,
+                                      )),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 12,
+                            child: Text(
+                              "~",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: Colors.grey,
+                                )),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: AutoSizeText(
+                                    "${selDate2.toLocal()}".split(' ')[0],
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                    maxFontSize: 16,
+                                    minFontSize: 14,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Material(
+                                  color: Colors.grey,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        _selectDate2(context);
+                                      },
+                                      icon: Icon(
+                                        Icons.calendar_today,
+                                        color: Colors.white,
+                                        size: 30,
+                                      )),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.indigo,
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                                onPressed: () {
+                                  mainSchDateSearch();
+                                },
+                              )),
+                        ],
+                      ),
+                    ),
+                    for (int i = 0; i < mainSchList.length; i++)
+                      schContainer(
+                          mainSchList.elementAt(i).reqNo,
+                          mainSchList.elementAt(i).vesselName,
+                          mainSchList.elementAt(i).startDate,
+                          mainSchList.elementAt(i).endDate,
+                          mainSchList.elementAt(i).mgtStatus,
+                          mainSchList.elementAt(i).reqport),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+          onWillPop: () {
+            return Future(() => false);
+          }),
     );
   }
 }

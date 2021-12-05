@@ -1,4 +1,4 @@
-package com.example.nk_global_ft
+package com.nk.nk_global_service
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine

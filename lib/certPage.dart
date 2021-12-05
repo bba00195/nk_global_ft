@@ -64,94 +64,98 @@ class _certPageState extends State<certPage> {
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
-      return Scaffold(
-          key: scaffoldKey,
-          appBar: NkAppBar(
-            globalKey: scaffoldKey,
-            member: member,
-            menuName: 'CERT Management',
-          ),
-          drawer: NkDrawer(
-            globalKey: scaffoldKey,
-            member: member,
-          ),
-          bottomNavigationBar: nkNaviBottomBar(
-            selectedIndex: 3,
-            globalKey: scaffoldKey,
-            member: member,
-          ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 2.h,
+      return WillPopScope(
+          child: Scaffold(
+              key: scaffoldKey,
+              appBar: NkAppBar(
+                globalKey: scaffoldKey,
+                member: member,
+                menuName: 'CERT Management',
               ),
-              Container(
-                margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                height: 65.h,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 1),
-                ),
-                child: const PDF(
-                  enableSwipe: true,
-                  swipeHorizontal: true,
-                  autoSpacing: true,
-                ).cachedFromUrl(url),
+              drawer: NkDrawer(
+                globalKey: scaffoldKey,
+                member: member,
               ),
-              // Container(
-              //   margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              //   height: 40,
-              //   decoration: BoxDecoration(
-              //     border: Border(
-              //       bottom: BorderSide(color: Colors.black, width: 1),
-              //       left: BorderSide(color: Colors.black, width: 1),
-              //       right: BorderSide(color: Colors.black, width: 1),
-              //     ),
-              //   ),
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-              //     children: [
-              //       IconButton(
-              //         icon: Icon(CupertinoIcons.chevron_left_2),
-              //         onPressed: () {},
-              //       ), //onpress , ontap 구현해야함
-              //       IconButton(
-              //         icon: Icon(CupertinoIcons.chevron_left),
-              //         onPressed: () {},
-              //       ),
-              //       IconButton(
-              //         icon: Icon(CupertinoIcons.chevron_right),
-              //         onPressed: () {},
-              //       ),
-              //       IconButton(
-              //         icon: Icon(CupertinoIcons.chevron_right_2),
-              //         onPressed: () {},
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              SizedBox(
-                height: 10,
+              bottomNavigationBar: nkNaviBottomBar(
+                selectedIndex: 3,
+                globalKey: scaffoldKey,
+                member: member,
               ),
-              Center(
-                child: Container(
-                  width: 70.w,
-                  child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.indigo,
-                      ),
-                      onPressed: () {
-                        UrlLauncher().launchURL(url);
-                      },
-                      icon: Icon(Icons.print),
-                      label: Text(
-                        "PRINT",
-                        style: TextStyle(color: Colors.white),
-                      )),
-                ),
-              )
-            ],
-          ));
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 2.h,
+                  ),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    height: 65.h,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black, width: 1),
+                    ),
+                    child: const PDF(
+                      enableSwipe: true,
+                      swipeHorizontal: true,
+                      autoSpacing: true,
+                    ).cachedFromUrl(url),
+                  ),
+                  // Container(
+                  //   margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  //   height: 40,
+                  //   decoration: BoxDecoration(
+                  //     border: Border(
+                  //       bottom: BorderSide(color: Colors.black, width: 1),
+                  //       left: BorderSide(color: Colors.black, width: 1),
+                  //       right: BorderSide(color: Colors.black, width: 1),
+                  //     ),
+                  //   ),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //     children: [
+                  //       IconButton(
+                  //         icon: Icon(CupertinoIcons.chevron_left_2),
+                  //         onPressed: () {},
+                  //       ), //onpress , ontap 구현해야함
+                  //       IconButton(
+                  //         icon: Icon(CupertinoIcons.chevron_left),
+                  //         onPressed: () {},
+                  //       ),
+                  //       IconButton(
+                  //         icon: Icon(CupertinoIcons.chevron_right),
+                  //         onPressed: () {},
+                  //       ),
+                  //       IconButton(
+                  //         icon: Icon(CupertinoIcons.chevron_right_2),
+                  //         onPressed: () {},
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Center(
+                    child: Container(
+                      width: 70.w,
+                      child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.indigo,
+                          ),
+                          onPressed: () {
+                            UrlLauncher().launchURL(url);
+                          },
+                          icon: Icon(Icons.print),
+                          label: Text(
+                            "PRINT",
+                            style: TextStyle(color: Colors.white),
+                          )),
+                    ),
+                  )
+                ],
+              )),
+          onWillPop: () {
+            return Future(() => false);
+          });
     });
   }
 }
