@@ -574,233 +574,231 @@ class _ImageConfirmState extends State<ImageConfirm> {
     //     context.findAncestorStateOfType<_ImageConfirmState>();
     return Sizer(builder: (context, orientation, deviceType) {
       return WillPopScope(
-        child: Scaffold(
-          key: scaffoldKey,
-          backgroundColor: Color.fromRGBO(255, 255, 255, 1.0),
-          appBar: NkAppBar(
-              globalKey: scaffoldKey, member: member, menuName: "A/S Result"),
-          drawer: NkDrawer(globalKey: scaffoldKey, member: member),
-          body: GestureDetector(
-            child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(),
-                child: Container(
-                  margin: EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                      border: Border(
-                          top: BorderSide(color: Colors.grey, width: 2.0))),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.fromLTRB(3, 2, 0, 1),
-                        height: 20,
-                        width: 100.w,
-                        color: Colors.grey,
-                        child: Text(
-                          "Information",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      asTable(reqName, shipCust, vesselName, mmsiNo, reqComment,
-                          reqDate),
-                      bigo(reqComment),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Center(
-                        child: Container(
-                          padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Text(
-                            "A/S Before",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            Row(
-                              children: [
-                                // FutureBuilder(
-                                //   future: mainSchSearch(),
-                                //   builder: (context, snapshot) {
-                                //     if (snapshot.hasData) {
-                                //      for(int i =0; i< BList.length; i++){
-                                //        testImage(i);
-                                //      }
-
-                                //     } else if (snapshot.hasError) {
-                                //       return Text("error");
-                                //     }
-                                //     return CircularProgressIndicator();
-                                //   },
-
-                                // )
-                                if (BList.length > 0)
-                                  for (int i = 0; i < BList.length; i++)
-                                    testImage(i),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Center(
-                        child: Container(
-                          padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Text("A/S After",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold)),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            Row(
-                              children: [
-                                if (FList.length > 0)
-                                  for (int j = 0; j < FList.length; j++)
-                                    testImage2(j),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Row(
+          onWillPop: () {
+            return Future(() => false);
+          },
+          child: Scaffold(
+              key: scaffoldKey,
+              backgroundColor: Color.fromRGBO(255, 255, 255, 1.0),
+              appBar: NkAppBar(
+                  globalKey: scaffoldKey,
+                  member: member,
+                  menuName: "A/S Result"),
+              drawer: NkDrawer(globalKey: scaffoldKey, member: member),
+              body: GestureDetector(
+                child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(),
+                    child: Container(
+                      margin: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              top: BorderSide(color: Colors.grey, width: 2.0))),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            flex: 3,
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                CoolAlert.show(
-                                    context: context,
-                                    type: CoolAlertType.confirm,
-                                    text: "업로드된 사진을 재등록 하시겠습니까?",
-                                    confirmBtnText: "Allow",
-                                    confirmBtnColor: Colors.indigo,
-                                    cancelBtnText: "Deny",
-                                    cancelBtnTextStyle:
-                                        TextStyle(color: Colors.black),
-                                    onConfirmBtnTap: () async {
-                                      histroyDelete(reqNo);
-                                      Navigator.pushReplacement(
-                                          context,
-                                          CupertinoPageRoute(
-                                              builder: (context) =>
-                                                  ASmanagement2(
-                                                    member: member,
-                                                    reqNo: reqNo,
-                                                    split12: '',
-                                                  )));
-                                    });
-                                // showDialog(
-                                //     context: context,
-                                //     builder: (context) {
-                                //       return CupertinoAlertDialog(
-                                //         title: Text("Waring!!!"),
-                                //         content:
-                                //             Text("업로드된 서명과 사진을 새로 등록하시겠습니까?"),
-                                //         actions: [
-                                //           CupertinoDialogAction(
-                                //             child: Text("yes"),
-                                //             onPressed: () async {
-                                //               histroyDelete(reqNo);
-                                //               Navigator.pushReplacement(
-                                //                   context,
-                                //                   CupertinoPageRoute(
-                                //                       builder: (context) =>
-                                //                           ASmodify(
-                                //                               member: member,
-                                //                               reqNo: reqNo)));
-                                //             },
-                                //           ),
-                                //           CupertinoDialogAction(
-                                //             child: Text("No"),
-                                //             onPressed: () {
-                                //               Navigator.pop(context);
-                                //             },
-                                //           ),
-                                //         ],
-                                //       );
-                                //     });
-                              },
-                              child: Text("Re-Upload"),
-                              style: ElevatedButton.styleFrom(
-                                  primary: Colors.indigo),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(3, 2, 0, 1),
+                            height: 20,
+                            width: 100.w,
+                            color: Colors.grey,
+                            child: Text(
+                              "Information",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          asTable(reqName, shipCust, vesselName, mmsiNo,
+                              reqComment, reqDate),
+                          bigo(reqComment),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Center(
+                            child: Container(
+                              padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              child: Text(
+                                "A/S Before",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                           SizedBox(
-                            width: 10,
+                            height: 10,
                           ),
-                          Expanded(
-                            flex: 3,
-                            child: ElevatedButton(
-                              child: Text("Signature"),
-                              style: ElevatedButton.styleFrom(
-                                  primary: Colors.indigo),
-                              onPressed: () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    CupertinoPageRoute(
-                                        builder: (context) => SignaturePage(
-                                            reqNo: reqNo, member: member)));
-                              },
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                Row(
+                                  children: [
+                                    // FutureBuilder(
+                                    //   future: mainSchSearch(),
+                                    //   builder: (context, snapshot) {
+                                    //     if (snapshot.hasData) {
+                                    //      for(int i =0; i< BList.length; i++){
+                                    //        testImage(i);
+                                    //      }
+
+                                    //     } else if (snapshot.hasError) {
+                                    //       return Text("error");
+                                    //     }
+                                    //     return CircularProgressIndicator();
+                                    //   },
+
+                                    // )
+                                    if (BList.length > 0)
+                                      for (int i = 0; i < BList.length; i++)
+                                        testImage(i),
+                                  ],
+                                )
+                              ],
                             ),
                           ),
                           SizedBox(
-                            width: 10,
+                            height: 20,
                           ),
-                          Expanded(
-                            flex: 3,
-                            child: ElevatedButton(
-                              child: Text("Cancel"),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                        builder: (context) =>
-                                            HomePage(member: member)));
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  primary: Colors.indigo),
+                          Center(
+                            child: Container(
+                              padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              child: Text("A/S After",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
                             ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                Row(
+                                  children: [
+                                    if (FList.length > 0)
+                                      for (int j = 0; j < FList.length; j++)
+                                        testImage2(j),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    CoolAlert.show(
+                                        context: context,
+                                        type: CoolAlertType.confirm,
+                                        text: "업로드된 사진을 재등록 하시겠습니까?",
+                                        confirmBtnText: "Allow",
+                                        confirmBtnColor: Colors.indigo,
+                                        cancelBtnText: "Deny",
+                                        cancelBtnTextStyle:
+                                            TextStyle(color: Colors.black),
+                                        onConfirmBtnTap: () async {
+                                          histroyDelete(reqNo);
+                                          Navigator.pushReplacement(
+                                              context,
+                                              CupertinoPageRoute(
+                                                  builder: (context) =>
+                                                      ASmanagement2(
+                                                        member: member,
+                                                        reqNo: reqNo,
+                                                        split12: '',
+                                                      )));
+                                        });
+                                    // showDialog(
+                                    //     context: context,
+                                    //     builder: (context) {
+                                    //       return CupertinoAlertDialog(
+                                    //         title: Text("Waring!!!"),
+                                    //         content:
+                                    //             Text("업로드된 서명과 사진을 새로 등록하시겠습니까?"),
+                                    //         actions: [
+                                    //           CupertinoDialogAction(
+                                    //             child: Text("yes"),
+                                    //             onPressed: () async {
+                                    //               histroyDelete(reqNo);
+                                    //               Navigator.pushReplacement(
+                                    //                   context,
+                                    //                   CupertinoPageRoute(
+                                    //                       builder: (context) =>
+                                    //                           ASmodify(
+                                    //                               member: member,
+                                    //                               reqNo: reqNo)));
+                                    //             },
+                                    //           ),
+                                    //           CupertinoDialogAction(
+                                    //             child: Text("No"),
+                                    //             onPressed: () {
+                                    //               Navigator.pop(context);
+                                    //             },
+                                    //           ),
+                                    //         ],
+                                    //       );
+                                    //     });
+                                  },
+                                  child: Text("Re-Upload"),
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.indigo),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: ElevatedButton(
+                                  child: Text("Signature"),
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.indigo),
+                                  onPressed: () {
+                                    Navigator.pushReplacement(
+                                        context,
+                                        CupertinoPageRoute(
+                                            builder: (context) => SignaturePage(
+                                                reqNo: reqNo, member: member)));
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: ElevatedButton(
+                                  child: Text("Cancel"),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                            builder: (context) =>
+                                                HomePage(member: member)));
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.indigo),
+                                ),
+                              )
+                            ],
                           )
                         ],
-                      )
-                    ],
-                  ),
-                )),
-          ),
-        ),
-        onWillPop: () {
-          return Future(() => false);
-        },
-      );
+                      ),
+                    )),
+              )));
     });
   }
 }
-
-// if (imgList.length > 0)
-//                   for (int i = 0; i < imgList.length; i++) testImage(i),
