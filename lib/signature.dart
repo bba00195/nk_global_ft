@@ -149,12 +149,6 @@ class _SignaturePageState extends State<SignaturePage> {
     );
   }
 
-  // void _XfiletoFile(List<XFile> _picksign){
-  //   _picksign.forEach((element) {
-  //     filelist.add(File(element.path));
-  //   })
-  // }
-
   Future<void> imageSign() async {
     void imageSign() async {
       final List<XFile>? signs = await _picker.pickMultiImage();
@@ -167,132 +161,128 @@ class _SignaturePageState extends State<SignaturePage> {
         });
       }
     }
+  }
 
-    @override
-    Widget build(BuildContext context) {
-      return WillPopScope(
-        child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.white,
-              title: Text(
-                "Signature",
-                style: TextStyle(color: Colors.black),
-              ),
-              centerTitle: true,
-              leading: IconButton(
-                icon: Icon(
-                  Icons.navigate_before,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          builder: (context) => ImageConfirm(
-                              reqNo: reqNo, member: member, split12: "")));
-                },
-              ),
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: Text(
+              "Signature",
+              style: TextStyle(color: Colors.black),
             ),
-            body: Center(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 45.w,
-                  ),
-                  box2(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        child: IconButton(
-                          iconSize: 30,
-                          icon: Icon(
-                            Icons.refresh,
-                            color: Colors.green,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              final sign = _sign.currentState;
-                              if (sign != null) {
-                                sign.clear();
-                              } else
-                                _picksign.clear();
-
-                              setState(() {
-                                _signimg = ByteData(0);
-                              });
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: 40,
-                      ),
-                      Container(
-                        child: IconButton(
-                            iconSize: 30,
-                            onPressed: () {
-                              imageSign();
-                            },
-                            icon: Icon(
-                              Icons.upload,
-                              color: Colors.blue,
-                            )),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Container(
-                    width: 50.w,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(primary: Colors.indigo),
-                        onPressed: () async {
-                          if (_picksign.isNotEmpty) {
-                            setState(() {
-                              signsrc = sign64;
-                              signname = member.user.userId +
-                                  "_" +
-                                  "signature" +
-                                  ".png";
-                              as_Signature_upload(reqNo, signCode,
-                                  member.user.userId, signname, sign64);
-                            });
-                          } else {
-                            final sign = _sign.currentState;
-                            final img = await sign!.getData();
-
-                            var data = await img.toByteData(
-                                format: ui.ImageByteFormat.png);
-                            List<int> encode = data!.buffer.asUint8List();
-                            setState(() {
-                              _signimg = data;
-                              signsrc = "${base64Encode(encode)}";
-                              signname = member.user.userId +
-                                  "_" +
-                                  "signature" +
-                                  ".png";
-                              as_Signature_upload(reqNo, signCode,
-                                  member.user.userId, signname, signsrc);
-                            });
-                          }
-                          masterUpdate2(reqNo);
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  builder: (context) =>
-                                      HomePage(member: member)));
-                        },
-                        child: Text("Submit")),
-                  )
-                ],
+            centerTitle: true,
+            leading: IconButton(
+              icon: Icon(
+                Icons.navigate_before,
+                color: Colors.black,
               ),
-            )),
-        onWillPop: () {
-          return Future(() => false);
-        },
-      );
-    }
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => ImageConfirm(
+                            reqNo: reqNo, member: member, split12: "")));
+              },
+            ),
+          ),
+          body: Center(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 45.w,
+                ),
+                box2(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: IconButton(
+                        iconSize: 30,
+                        icon: Icon(
+                          Icons.refresh,
+                          color: Colors.green,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            final sign = _sign.currentState;
+                            if (sign != null) {
+                              sign.clear();
+                            } else
+                              _picksign.clear();
+
+                            setState(() {
+                              _signimg = ByteData(0);
+                            });
+                          });
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 40,
+                    ),
+                    Container(
+                      child: IconButton(
+                          iconSize: 30,
+                          onPressed: () {
+                            imageSign();
+                          },
+                          icon: Icon(
+                            Icons.upload,
+                            color: Colors.blue,
+                          )),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                  width: 50.w,
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(primary: Colors.indigo),
+                      onPressed: () async {
+                        if (_picksign.isNotEmpty) {
+                          setState(() {
+                            signsrc = sign64;
+                            signname =
+                                member.user.userId + "_" + "signature" + ".png";
+                            as_Signature_upload(reqNo, signCode,
+                                member.user.userId, signname, sign64);
+                          });
+                        } else {
+                          final sign = _sign.currentState;
+                          final img = await sign!.getData();
+
+                          var data = await img.toByteData(
+                              format: ui.ImageByteFormat.png);
+                          List<int> encode = data!.buffer.asUint8List();
+                          setState(() {
+                            _signimg = data;
+                            signsrc = "${base64Encode(encode)}";
+                            signname =
+                                member.user.userId + "_" + "signature" + ".png";
+                            as_Signature_upload(reqNo, signCode,
+                                member.user.userId, signname, signsrc);
+                          });
+                        }
+                        masterUpdate2(reqNo);
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) =>
+                                    HomePage(member: member)));
+                      },
+                      child: Text("Submit")),
+                )
+              ],
+            ),
+          )),
+      onWillPop: () {
+        return Future(() => false);
+      },
+    );
   }
 }
