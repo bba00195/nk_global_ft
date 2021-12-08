@@ -281,7 +281,7 @@ class nkNaviBottomBar extends StatelessWidget implements PreferredSizeWidget {
           //   crossAxisAlignment: CrossAxisAlignment.end,
           //   children: [
           Container(
-        height: 70,
+        height: 90,
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,

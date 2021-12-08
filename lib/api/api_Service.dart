@@ -9,7 +9,7 @@ import 'package:nk_global_ft/model/master_model.dart';
 import 'package:nk_global_ft/model/schedule_model.dart';
 
 class APIService {
-  var url = Uri.parse('http://gss.thesafety.com/flutter/DBHelper.php');
+  var url = Uri.parse('https://www.kuls.co.kr/NK/flutter/DBHelper.php');
 
   Future getSelect(String sFunctionName, List<String> sParam) async {
     var result;

@@ -349,10 +349,10 @@ class _HomePageState extends State<HomePage> {
                             "Cancel the ride",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 10,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white),
-                            minFontSize: 14,
+                            maxFontSize: 13,
                             maxLines: 1,
                           ),
                         ),
@@ -381,7 +381,7 @@ class _HomePageState extends State<HomePage> {
                                       builder: (context) => ImageConfirm(
                                           reqNo: reqNo,
                                           member: member,
-                                          split12: sellist)));
+                                          split12: split12)));
                         },
                         child: Container(
                           alignment: Alignment.center,

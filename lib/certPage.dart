@@ -9,7 +9,6 @@ import 'package:nk_global_ft/widget/Url_widget.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:swipe_cards/swipe_cards.dart';
@@ -65,23 +64,27 @@ class _certPageState extends State<certPage> {
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
       return WillPopScope(
-          child: Scaffold(
-              key: scaffoldKey,
-              appBar: NkAppBar(
-                globalKey: scaffoldKey,
-                member: member,
-                menuName: 'CERT Management',
-              ),
-              drawer: NkDrawer(
-                globalKey: scaffoldKey,
-                member: member,
-              ),
-              bottomNavigationBar: nkNaviBottomBar(
-                selectedIndex: 3,
-                globalKey: scaffoldKey,
-                member: member,
-              ),
-              body: Column(
+        onWillPop: () {
+          return Future(() => false);
+        },
+        child: Scaffold(
+            key: scaffoldKey,
+            appBar: NkAppBar(
+              globalKey: scaffoldKey,
+              member: member,
+              menuName: 'CERT Management',
+            ),
+            drawer: NkDrawer(
+              globalKey: scaffoldKey,
+              member: member,
+            ),
+            bottomNavigationBar: nkNaviBottomBar(
+              selectedIndex: 3,
+              globalKey: scaffoldKey,
+              member: member,
+            ),
+            body: SingleChildScrollView(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(
@@ -152,10 +155,9 @@ class _certPageState extends State<certPage> {
                     ),
                   )
                 ],
-              )),
-          onWillPop: () {
-            return Future(() => false);
-          });
+              ),
+            )),
+      );
     });
   }
 }
