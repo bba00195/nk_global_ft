@@ -65,6 +65,8 @@ dependencies:
   syncfusion_flutter_signaturepad: ^19.3.54
   image_gallery_saver: ^1.7.1
   flutter_screenutil: ^5.0.1
+  fluttertoast: ^8.0.8
+  double_back_to_close_app: ^2.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

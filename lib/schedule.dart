@@ -3,6 +3,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
 import 'package:nk_global_ft/asDetail.dart';
@@ -28,6 +30,7 @@ class Schedule extends StatefulWidget {
 }
 
 class _ScheduleState extends State<Schedule> {
+  DateTime? backpressbtntime;
   late UserManager member;
   APIService apiService = new APIService();
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -647,6 +650,117 @@ class _ScheduleState extends State<Schedule> {
     );
   }
 
+  Future<bool> _onwillPop() async {
+    DateTime now = DateTime.now();
+    if (backpressbtntime == null ||
+        now.difference(backpressbtntime!) > Duration(seconds: 2)) {
+      backpressbtntime = now;
+      Fluttertoast.showToast(msg: 'One more tap to Exit app Alert');
+      return Future.value(false);
+    }
+    return (await showDialog(
+      context: context,
+      builder: (context) => Material(
+        type: MaterialType.transparency,
+        child: Center(
+          child: Container(
+            height: 250,
+            margin: EdgeInsets.only(
+              left: 35,
+              right: 35,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(25),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  height: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(25),
+                      topRight: Radius.circular(25),
+                    ),
+                    image: DecorationImage(
+                      image: AssetImage('assets/nk_logo.jpg'),
+                      fit: BoxFit.none,
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  decoration: BoxDecoration(),
+                  child: Text(
+                    'Close the Application?',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontFamily: 'NotoSansKR',
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[400],
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(25),
+                          ),
+                        ),
+                        height: 50,
+                        child: TextButton(
+                          child: Text(
+                            "No",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: 'NotoSansKR',
+                            ),
+                          ),
+                          onPressed: () => Navigator.pop(context, false),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 6,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(63, 81, 181, 1.0),
+                          borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(25),
+                          ),
+                        ),
+                        height: 50,
+                        child: TextButton(
+                          child: Text(
+                            "Yes",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: 'NotoSansKR',
+                            ),
+                          ),
+                          onPressed: () => SystemNavigator.pop(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -847,9 +961,7 @@ class _ScheduleState extends State<Schedule> {
             ),
           ],
         ),
-        onWillPop: () {
-          return Future(() => false);
-        },
+        onWillPop: _onwillPop,
       ),
     );
   }

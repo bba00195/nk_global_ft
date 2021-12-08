@@ -1,6 +1,7 @@
 // Copyright 2019 Aleksander Woźniak
 // SPDX-License-Identifier: Apache-2.0
 
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cool_alert/cool_alert.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
 import 'package:nk_global_ft/asFinish.dart';
@@ -34,6 +36,7 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
+  DateTime? backpressbtntime;
   late UserManager member;
   APIService apiService = new APIService();
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -1007,6 +1010,117 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  Future<bool> _onwillPop() async {
+    DateTime now = DateTime.now();
+    if (backpressbtntime == null ||
+        now.difference(backpressbtntime!) > Duration(seconds: 2)) {
+      backpressbtntime = now;
+      Fluttertoast.showToast(msg: 'One more tap to Exit app Alert');
+      return Future.value(false);
+    }
+    return (await showDialog(
+      context: context,
+      builder: (context) => Material(
+        type: MaterialType.transparency,
+        child: Center(
+          child: Container(
+            height: 250,
+            margin: EdgeInsets.only(
+              left: 35,
+              right: 35,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(25),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  height: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(25),
+                      topRight: Radius.circular(25),
+                    ),
+                    image: DecorationImage(
+                      image: AssetImage('assets/nk_logo.jpg'),
+                      fit: BoxFit.none,
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  decoration: BoxDecoration(),
+                  child: Text(
+                    'Close the Application?',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontFamily: 'NotoSansKR',
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[400],
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(25),
+                          ),
+                        ),
+                        height: 50,
+                        child: TextButton(
+                          child: Text(
+                            "No",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: 'NotoSansKR',
+                            ),
+                          ),
+                          onPressed: () => Navigator.pop(context, false),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 6,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(63, 81, 181, 1.0),
+                          borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(25),
+                          ),
+                        ),
+                        height: 50,
+                        child: TextButton(
+                          child: Text(
+                            "Yes",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: 'NotoSansKR',
+                            ),
+                          ),
+                          onPressed: () => SystemNavigator.pop(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -1019,159 +1133,158 @@ class _HistoryPageState extends State<HistoryPage> {
         bottomNavigationBar: nkNaviBottomBar(
             globalKey: scaffoldKey, member: member, selectedIndex: 1),
         body: WillPopScope(
-            child: SmartRefresher(
-              enablePullDown: true,
-              enablePullUp: true,
-              controller: _refreshController,
-              onRefresh: () {
-                setState(() {
-                  mainSchSearch();
-                });
-                _refreshController.refreshCompleted();
-              },
-              onLoading: () {
-                setState(() {
-                  mainSchDateSearch();
-                  _refreshController.loadComplete();
-                });
-                _refreshController.refreshCompleted();
-              },
-              child: SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  constraints: BoxConstraints(
-                    minHeight: MediaQuery.of(context).size.height,
-                  ),
-                  color: Color.fromRGBO(244, 244, 244, 1.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        constraints: BoxConstraints(
-                          minWidth: MediaQuery.of(context).size.width,
-                          minHeight: 60,
-                        ),
-                        color: Colors.white,
-                        child: Row(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 2),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(
-                                    color: Colors.grey,
-                                  )),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.only(left: 5),
-                                    child: AutoSizeText(
-                                      "${selDate1.toLocal()}".split(' ')[0],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      maxFontSize: 16,
-                                      minFontSize: 14,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Material(
-                                    color: Colors.grey,
-                                    child: IconButton(
-                                        onPressed: () {
-                                          _selectDate(context);
-                                        },
-                                        icon: Icon(
-                                          Icons.calendar_today,
-                                          color: Colors.white,
-                                          size: 25,
-                                        )),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                              child: Text(
-                                "~",
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 10),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(
-                                    color: Colors.grey,
-                                  )),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.only(left: 5),
-                                    child: AutoSizeText(
-                                      "${selDate2.toLocal()}".split(' ')[0],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      maxFontSize: 16,
-                                      minFontSize: 14,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Material(
-                                    color: Colors.grey,
-                                    child: IconButton(
-                                        onPressed: () {
-                                          _selectDate2(context);
-                                        },
-                                        icon: Icon(
-                                          Icons.calendar_today,
-                                          color: Colors.white,
-                                          size: 25,
-                                        )),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.indigo,
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.search,
-                                    color: Colors.white,
-                                    size: 25,
-                                  ),
-                                  onPressed: () {
-                                    mainSchDateSearch();
-                                  },
-                                )),
-                          ],
-                        ),
+          child: SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: true,
+            controller: _refreshController,
+            onRefresh: () {
+              setState(() {
+                mainSchSearch();
+              });
+              _refreshController.refreshCompleted();
+            },
+            onLoading: () {
+              setState(() {
+                mainSchDateSearch();
+                _refreshController.loadComplete();
+              });
+              _refreshController.refreshCompleted();
+            },
+            child: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height,
+                ),
+                color: Color.fromRGBO(244, 244, 244, 1.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      constraints: BoxConstraints(
+                        minWidth: MediaQuery.of(context).size.width,
+                        minHeight: 60,
                       ),
-                      for (int i = 0; i < mainSchList.length; i++)
-                        schContainer(
-                            mainSchList.elementAt(i).reqNo,
-                            mainSchList.elementAt(i).vesselName,
-                            mainSchList.elementAt(i).startDate,
-                            mainSchList.elementAt(i).endDate,
-                            mainSchList.elementAt(i).mgtStatus,
-                            mainSchList.elementAt(i).reqport),
-                    ],
-                  ),
+                      color: Colors.white,
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 2),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: Colors.grey,
+                                )),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: AutoSizeText(
+                                    "${selDate1.toLocal()}".split(' ')[0],
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                    maxFontSize: 16,
+                                    minFontSize: 14,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Material(
+                                  color: Colors.grey,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        _selectDate(context);
+                                      },
+                                      icon: Icon(
+                                        Icons.calendar_today,
+                                        color: Colors.white,
+                                        size: 25,
+                                      )),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                            child: Text(
+                              "~",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: Colors.grey,
+                                )),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: AutoSizeText(
+                                    "${selDate2.toLocal()}".split(' ')[0],
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                    maxFontSize: 16,
+                                    minFontSize: 14,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Material(
+                                  color: Colors.grey,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        _selectDate2(context);
+                                      },
+                                      icon: Icon(
+                                        Icons.calendar_today,
+                                        color: Colors.white,
+                                        size: 25,
+                                      )),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.indigo,
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                  size: 25,
+                                ),
+                                onPressed: () {
+                                  mainSchDateSearch();
+                                },
+                              )),
+                        ],
+                      ),
+                    ),
+                    for (int i = 0; i < mainSchList.length; i++)
+                      schContainer(
+                          mainSchList.elementAt(i).reqNo,
+                          mainSchList.elementAt(i).vesselName,
+                          mainSchList.elementAt(i).startDate,
+                          mainSchList.elementAt(i).endDate,
+                          mainSchList.elementAt(i).mgtStatus,
+                          mainSchList.elementAt(i).reqport),
+                  ],
                 ),
               ),
             ),
-            onWillPop: () {
-              return Future(() => false);
-            }),
+          ),
+          onWillPop: _onwillPop,
+        ),
       ),
     );
   }
