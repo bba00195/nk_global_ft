@@ -43,10 +43,12 @@ class _HomePageState extends State<HomePage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  late SharedPreferences _prefs;
+
   List<MainSchResponseModel> mainSchList = [];
   List<ImageResponseModel> imgVal = [];
   List<ImageResponseModel> imgVal2 = [];
-
+  String storedPort = '';
   String imgB = "";
   String imgF = "";
   List<String> BList = [];
@@ -74,12 +76,21 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     member = widget.member;
     mainSchSearch();
-    oceanApi();
+    // oceanApi();
+    loadSelport();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  loadSelport() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      storedPort = (_prefs.getString('selport') ?? '');
+      print(sellist);
+    });
   }
 
   imageSelect(String reqNo) async {
@@ -375,7 +386,7 @@ class _HomePageState extends State<HomePage> {
                                     builder: (context) => ASmanagement2(
                                         member: member,
                                         reqNo: reqNo,
-                                        split12: sellist),
+                                        split12: storedPort),
                                   ),
                                 )
                               : Navigator.push(
@@ -384,7 +395,7 @@ class _HomePageState extends State<HomePage> {
                                       builder: (context) => ImageConfirm(
                                           reqNo: reqNo,
                                           member: member,
-                                          split12: split12)));
+                                          split12: storedPort)));
                         },
                         child: Container(
                           alignment: Alignment.center,
@@ -671,6 +682,7 @@ class _HomePageState extends State<HomePage> {
                                       setState(() {
                                         selected = x;
                                         sellist = selected[0];
+                                        _prefs.setString('selport', sellist);
                                       });
                                     },
                                     whenEmpty: 'select port'),
