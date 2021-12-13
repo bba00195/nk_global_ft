@@ -71,12 +71,15 @@ class _HomePageState extends State<HomePage> {
   List properties = [];
   List imolist = [];
   List<int> mmsilist = [];
+  List etalist = [];
+  var map1;
+
   @override
   void initState() {
     super.initState();
+    oceanApi();
     member = widget.member;
     mainSchSearch();
-    // oceanApi();
     loadSelport();
   }
 
@@ -123,8 +126,8 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  oceanApi() {
-    apiOcean.getOcean().then((value) {
+  oceanApi() async {
+    await apiOcean.getOcean().then((value) {
       oceanList = value["features"];
       if (value["features"].isNotEmpty) {
         vesselList.clear();
@@ -135,8 +138,14 @@ class _HomePageState extends State<HomePage> {
         for (int j = 0; j < vesselList.length; j++) {
           imolist.add(vesselList[j]["ec_imo"]);
         }
-        setState(() {});
+        for (int k = 0; k < imolist.length; k++) {
+          etalist.add(vesselList[k]["ec_eta"]);
+        }
       }
+      setState(() {
+        var map1 = Map.fromIterables(imolist, etalist);
+        print(map1);
+      });
     });
   }
 

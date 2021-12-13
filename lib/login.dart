@@ -36,11 +36,17 @@ class _LoginState extends State<Login> {
   List properties = [];
   List imolist = [];
   List<int> mmsilist = [];
+  List etalist = [];
+  var map1;
+
   oceanApi() {
     return Container(
       child: TextButton(
         child: Text("ocean Api"),
         onPressed: () {
+          imolist.clear();
+          etalist.clear();
+          vesselList.clear();
           apiOcean.getOcean().then((value) {
             oceanList = value["features"];
             if (value["features"].isNotEmpty) {
@@ -54,9 +60,15 @@ class _LoginState extends State<Login> {
               }
               for (int q = 0; q < imolist.length; q++) {
                 print(imolist[q]);
-                // imolist.contains(imono)
+              }
+              for (int w = 0; w < imolist.length; w++) {
+                etalist.add(vesselList[w]["ec_eta"]);
               }
             }
+            setState(() {
+              var map1 = Map.fromIterables(imolist, etalist);
+              print(map1);
+            });
           });
         },
       ),

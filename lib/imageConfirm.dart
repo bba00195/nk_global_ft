@@ -706,9 +706,8 @@ class _ImageConfirmState extends State<ImageConfirm> {
                                       Navigator.pushReplacement(
                                           context,
                                           CupertinoPageRoute(
-                                              builder: (context) => HomePage(
-                                                    member: member,
-                                                  )));
+                                              builder: (context) =>
+                                                  HomePage(member: member)));
                                     });
                                 // showDialog(
                                 //     context: context,
