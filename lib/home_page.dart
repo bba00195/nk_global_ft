@@ -154,9 +154,9 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  mainSchSearch() {
+  mainSchSearch() async {
     List<String> sParam = [member.user.userId];
-    apiService.getSelect("MAIN_S1", sParam).then((value) {
+    await apiService.getSelect("MAIN_S1", sParam).then((value) {
       setState(() {
         if (value.mainSch.isNotEmpty) {
           mainSchList = value.mainSch;
