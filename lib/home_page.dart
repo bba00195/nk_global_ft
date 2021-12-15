@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
   DateFormat format2 = DateFormat("yyyy-MM-dd HH:mm:ss");
   DateFormat format3 = DateFormat("MM-dd HH:mm");
   DateTime? etadate;
-  late String etaval;
+  // late String etaval;
   String etareslut = '';
 
   List etavalList = [];
@@ -163,7 +163,7 @@ class _HomePageState extends State<HomePage> {
           for (int i = 0; i < mainSchList.length; i++) {
             eta1.add(mainSchList.elementAt(i).imono);
           }
-          shoeta2();
+          // shoeta2();
         } else {}
       });
     });
