@@ -61,7 +61,12 @@ class _HomePageState extends State<HomePage> {
   List<String> selected = [];
   String split12 = '';
   DateFormat format2 = DateFormat("yyyy-MM-dd HH:mm:ss");
+  DateFormat format3 = DateFormat("MM-dd HH:mm");
+  DateTime? etadate;
+  late String etaval;
+  String etareslut = '';
 
+  List etavalList = [];
   DateTime datetime = DateTime.now();
   String strDate = '';
 
@@ -72,15 +77,16 @@ class _HomePageState extends State<HomePage> {
   List imolist = [];
   List<int> mmsilist = [];
   List etalist = [];
-  var map1;
+  Map? map1;
+  List eta1 = [];
 
   @override
   void initState() {
-    super.initState();
     oceanApi();
     member = widget.member;
     mainSchSearch();
     loadSelport();
+    super.initState();
   }
 
   @override
@@ -126,11 +132,13 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  oceanApi() async {
-    await apiOcean.getOcean().then((value) {
+  oceanApi() {
+    apiOcean.getOcean().then((value) {
+      vesselList.clear();
+      imolist.clear();
+      etalist.clear();
       oceanList = value["features"];
       if (value["features"].isNotEmpty) {
-        vesselList.clear();
         //print(oceanList[0]["properties"]);
         for (int i = 0; i < oceanList.length; i++) {
           vesselList.add(oceanList[i]["properties"]);
@@ -141,20 +149,21 @@ class _HomePageState extends State<HomePage> {
         for (int k = 0; k < imolist.length; k++) {
           etalist.add(vesselList[k]["ec_eta"]);
         }
+        map1 = Map.fromIterables(imolist, etalist);
       }
-      setState(() {
-        var map1 = Map.fromIterables(imolist, etalist);
-        print(map1);
-      });
     });
   }
 
-  mainSchSearch() async {
+  mainSchSearch() {
     List<String> sParam = [member.user.userId];
-    await apiService.getSelect("MAIN_S1", sParam).then((value) {
+    apiService.getSelect("MAIN_S1", sParam).then((value) {
       setState(() {
         if (value.mainSch.isNotEmpty) {
           mainSchList = value.mainSch;
+          for (int i = 0; i < mainSchList.length; i++) {
+            eta1.add(mainSchList.elementAt(i).imono);
+          }
+          shoeta2();
         } else {}
       });
     });
@@ -249,6 +258,33 @@ class _HomePageState extends State<HomePage> {
       });
     });
     await mainSchSearch();
+  }
+
+  // showeta() {
+  //   if (map1!.containsKey(eta1)) {
+  //     for (int i = 0; i < map1!.length; i++) {
+  //       if (imolist[i] == eta1) {
+  //         etaval = etalist[i];
+
+  //         return etaval;
+  //       }
+  //     }
+  //   }
+  // }
+
+////////////////////////////////////////////////////
+
+  shoeta2() {
+    for (int i = 0; i < mainSchList.length; i++) {
+      for (int j = 0; j < map1!.length; j++) {
+        if (map1!.containsKey(eta1[i])) {
+          if (imolist[j] == eta1[i]) {
+            // etaval = etalist[j];
+            etavalList.add(etalist[j]);
+          }
+        }
+      }
+    }
   }
 
   mainSchPopup(String reqNo, String vesselName, String startDate,
@@ -476,18 +512,22 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+  // Widget setConEta(String etaval) {
+  //   return
+  // }
 
   Widget schContainer(
-      String reqNo,
-      String vesselName,
-      String startDate,
-      String endDate,
-      String mgtStatus,
-      String imono,
-      String reqport,
-      String reqtype,
-      String reqQuantity,
-      String mmsino) {
+    String reqNo,
+    String vesselName,
+    String startDate,
+    String endDate,
+    String mgtStatus,
+    String imono,
+    String reqport,
+    String reqtype,
+    String reqQuantity,
+    String mmsino,
+  ) {
     String statusName = "Wait on board";
     Color sColor = Colors.green;
     late Function sFunc;
@@ -543,32 +583,7 @@ class _HomePageState extends State<HomePage> {
                       Expanded(
                         flex: 8,
                         child: AutoSizeText(
-                          "ETA : " + startDate,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          minFontSize: 18,
-                          maxLines: 1,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(""),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(flex: 2, child: Text("")),
-                      Expanded(
-                        flex: 8,
-                        child: AutoSizeText(
-                          "ETD : " + endDate,
+                          "ETA : " + "etaval",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -647,9 +662,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                   SizedBox(
                     height: 20,
-                  ),
-                  Row(
-                    children: [AutoSizeText("IMO_NO  : " + imono)],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -899,16 +911,17 @@ class _HomePageState extends State<HomePage> {
                 children: <Widget>[
                   for (int i = 0; i < mainSchList.length; i++)
                     schContainer(
-                        mainSchList.elementAt(i).reqNo,
-                        mainSchList.elementAt(i).vesselName,
-                        mainSchList.elementAt(i).startDate,
-                        mainSchList.elementAt(i).endDate,
-                        mainSchList.elementAt(i).mgtStatus,
-                        mainSchList.elementAt(i).imono,
-                        mainSchList.elementAt(i).reqport,
-                        mainSchList.elementAt(i).reqtype,
-                        mainSchList.elementAt(i).reqQuantity,
-                        mainSchList.elementAt(i).mmsino),
+                      mainSchList.elementAt(i).reqNo,
+                      mainSchList.elementAt(i).vesselName,
+                      mainSchList.elementAt(i).startDate,
+                      mainSchList.elementAt(i).endDate,
+                      mainSchList.elementAt(i).mgtStatus,
+                      mainSchList.elementAt(i).imono,
+                      mainSchList.elementAt(i).reqport,
+                      mainSchList.elementAt(i).reqtype,
+                      mainSchList.elementAt(i).reqQuantity,
+                      mainSchList.elementAt(i).mmsino,
+                    ),
                 ],
               ),
             ),

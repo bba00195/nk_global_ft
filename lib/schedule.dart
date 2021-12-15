@@ -418,7 +418,7 @@ class _ScheduleState extends State<Schedule> {
       sText = "        wait on board  ";
       sColor = Colors.indigo;
     } else if (mgtStatusVal == 30) {
-      sText = "        Proceeding  ";
+      sText = "        On boarding  ";
       sColor = Colors.green;
     } else {
       sText = "        Finish task  ";

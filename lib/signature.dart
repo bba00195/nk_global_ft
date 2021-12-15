@@ -274,7 +274,10 @@ class _SignaturePageState extends State<SignaturePage> {
                         });
                       }
                       masterUpdate2(reqNo);
-                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => HomePage(member: member)));
                     },
                     child: Text("Submit"))
               ],

@@ -81,7 +81,7 @@ class _SignPageState extends State<SignPage> {
                   ),
                   Center(
                     child: Text(
-                      "Signature plz",
+                      "Signature Pad",
                       style:
                           TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                     ),

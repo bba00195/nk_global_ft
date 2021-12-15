@@ -47,7 +47,7 @@ class _HistoryPageState extends State<HistoryPage> {
   List<MainSchResponseModel> mainDateSchList = [];
   List<responseModel> result = [];
 
-  DateFormat df = DateFormat('yy-MM-dd');
+  DateFormat df = DateFormat('yyyy-MM-dd');
   DateTime selDate1 = DateTime.now();
   DateTime selDate2 = DateTime.now();
   DateTime dateTime2 = DateTime.now();
