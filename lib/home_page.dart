@@ -61,9 +61,8 @@ class _HomePageState extends State<HomePage> {
   List<String> selected = [];
   String split12 = '';
   DateFormat format2 = DateFormat("yyyy-MM-dd HH:mm:ss");
-  DateFormat format3 = DateFormat("MM-dd HH:mm");
   DateTime? etadate;
-  // late String etaval;
+  String etaval = '';
   String etareslut = '';
 
   List etavalList = [];
@@ -98,7 +97,6 @@ class _HomePageState extends State<HomePage> {
     _prefs = await SharedPreferences.getInstance();
     setState(() {
       storedPort = (_prefs.getString('selport') ?? '');
-      print(sellist);
     });
   }
 
@@ -132,23 +130,25 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  oceanApi() {
-    apiOcean.getOcean().then((value) {
-      vesselList.clear();
-      imolist.clear();
-      etalist.clear();
+  oceanApi() async {
+    await apiOcean.getOcean().then((value) {
       oceanList = value["features"];
       if (value["features"].isNotEmpty) {
-        //print(oceanList[0]["properties"]);
+        vesselList.clear();
+        imolist.clear();
+        etalist.clear();
+
         for (int i = 0; i < oceanList.length; i++) {
-          vesselList.add(oceanList[i]["properties"]);
+          imolist.add(oceanList[i]["properties"]["ec_imo"]);
+          etalist.add(oceanList[i]["properties"]["ec_eta"]);
         }
-        for (int j = 0; j < vesselList.length; j++) {
-          imolist.add(vesselList[j]["ec_imo"]);
-        }
-        for (int k = 0; k < imolist.length; k++) {
-          etalist.add(vesselList[k]["ec_eta"]);
-        }
+
+        // for (int j = 0; j < vesselList.length; j++) {
+        //   imolist.add(vesselList[j]["ec_imo"]);
+        // }
+        // for (int k = 0; k < imolist.length; k++) {
+        //   etalist.add(vesselList[k]["ec_eta"]);
+        // }
         map1 = Map.fromIterables(imolist, etalist);
       }
     });
@@ -163,10 +163,10 @@ class _HomePageState extends State<HomePage> {
           for (int i = 0; i < mainSchList.length; i++) {
             eta1.add(mainSchList.elementAt(i).imono);
           }
-          // shoeta2();
         } else {}
       });
     });
+    await oceanApi();
   }
 
   masterUpdate(String reqNo) async {
@@ -272,20 +272,21 @@ class _HomePageState extends State<HomePage> {
   //   }
   // }
 
-////////////////////////////////////////////////////
-
-  shoeta2() {
-    for (int i = 0; i < mainSchList.length; i++) {
-      for (int j = 0; j < map1!.length; j++) {
-        if (map1!.containsKey(eta1[i])) {
-          if (imolist[j] == eta1[i]) {
-            // etaval = etalist[j];
-            etavalList.add(etalist[j]);
-          }
-        }
-      }
-    }
-  }
+  // shoeta2() {
+  //   for (int i = 0; i < mainSchList.length; i++) {
+  //     for (int j = 0; j < map1!.length; j++) {
+  //       if (map1!.containsKey(eta1[i])) {
+  //         if (imolist[j] == eta1[i]) {
+  //           // etaval = etalist[j];
+  //           etavalList.add(etalist[j]);
+  //           setState(() {
+  //             // etaval = etavalList[i];
+  //           });
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   mainSchPopup(String reqNo, String vesselName, String startDate,
       String endDate, String mgtStatus) {
@@ -533,12 +534,20 @@ class _HomePageState extends State<HomePage> {
     late Function sFunc;
     split = reqport.split('/');
 
+    String etaValue = '';
+
     if (mgtStatus == "20") {
       statusName = "Wait on board";
       sColor = Color.fromRGBO(8, 93, 216, 1.0);
     } else if (mgtStatus == "30") {
       statusName = "On board";
       sColor = Color.fromRGBO(63, 198, 68, 1.0);
+    }
+
+    for (int i = 0; i < imolist.length; i++) {
+      if (imono == imolist[i]) {
+        etaValue = etalist[i];
+      }
     }
 
     return Card(
@@ -570,34 +579,70 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Icon(
-                          Icons.calendar_today,
-                          size: 18,
+                  etaValue == ''
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Icon(
+                                Icons.calendar_today,
+                                size: 18,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 8,
+                              child: AutoSizeText(
+                                "ETA : " + etaValue,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                minFontSize: 18,
+                                maxLines: 1,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Text(""),
+                            ),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Icon(
+                                Icons.calendar_today,
+                                size: 18,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 8,
+                              child: AutoSizeText(
+                                "ETA : " +
+                                    etaValue.substring(0, 2) +
+                                    "/" +
+                                    etaValue.substring(2, 4) +
+                                    ",  " +
+                                    etaValue.substring(4, 6) +
+                                    ":" +
+                                    etaValue.substring(6),
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                minFontSize: 18,
+                                maxLines: 1,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Text(""),
+                            ),
+                          ],
                         ),
-                      ),
-                      Expanded(
-                        flex: 8,
-                        child: AutoSizeText(
-                          "ETA : " + "etaval",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          minFontSize: 18,
-                          maxLines: 1,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(""),
-                      ),
-                    ],
-                  ),
                   SizedBox(
                     height: 15,
                   ),
@@ -716,6 +761,7 @@ class _HomePageState extends State<HomePage> {
                           }
                         },
                       ),
+
                       // InkWell(
                       //   onTap: () async {
                       //     if (mgtStatus == "20") {
@@ -921,6 +967,7 @@ class _HomePageState extends State<HomePage> {
                       mainSchList.elementAt(i).reqtype,
                       mainSchList.elementAt(i).reqQuantity,
                       mainSchList.elementAt(i).mmsino,
+                      // etaval = etavalList[i],
                     ),
                 ],
               ),
