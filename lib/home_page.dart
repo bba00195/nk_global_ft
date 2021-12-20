@@ -593,7 +593,7 @@ class _HomePageState extends State<HomePage> {
                             Expanded(
                               flex: 8,
                               child: AutoSizeText(
-                                "ETA : " + etaValue,
+                                "ETA : " + "Pull to refresh",
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
