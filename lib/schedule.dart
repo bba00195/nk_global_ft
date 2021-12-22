@@ -106,7 +106,8 @@ class _ScheduleState extends State<Schedule> {
   }
 
   imageSelect(String reqNo) async {
-    List<String> sParam = [reqNo];
+    List<String> sParam = [reqNo,
+      member.user.userId];
     await apiService.getSelect("IMAGE_S1", sParam).then((value) {
       setState(() {
         if (value.image.isNotEmpty) {
@@ -121,7 +122,8 @@ class _ScheduleState extends State<Schedule> {
   }
 
   imageSelect2() async {
-    List<String> sParam = [reqNo];
+    List<String> sParam = [reqNo,
+      member.user.userId];
     await apiService.getSelect("IMAGE_S2", sParam).then((value) {
       setState(() {
         if (value.image.isNotEmpty) {

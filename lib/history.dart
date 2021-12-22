@@ -93,7 +93,8 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   imageSelect(String reqNo) async {
-    List<String> sParam = [reqNo];
+    List<String> sParam = [reqNo,
+      member.user.userId];
     await apiService.getSelect("IMAGE_S1", sParam).then((value) {
       setState(() {
         if (value.image.isNotEmpty) {
