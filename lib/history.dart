@@ -20,6 +20,7 @@ import 'package:nk_global_ft/asDetail2.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'common/common.dart';
 import 'model/common_model.dart';
@@ -38,6 +39,7 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   DateTime? backpressbtntime;
   late UserManager member;
+  late SharedPreferences _prefs;
   APIService apiService = new APIService();
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   RefreshController _refreshController =
@@ -59,6 +61,7 @@ class _HistoryPageState extends State<HistoryPage> {
   String strDate = '';
   String sellist = '';
 
+  String storedPort = '';
   List<ImageResponseModel> imgVal = [];
   List<ImageResponseModel> imgVal2 = [];
 
@@ -80,6 +83,13 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  loadSelport() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      storedPort = (_prefs.getString('selport') ?? '');
+    });
   }
 
   imageSelect(String reqNo) async {
@@ -1169,9 +1179,12 @@ class _HistoryPageState extends State<HistoryPage> {
                       color: Colors.white,
                       child: Row(
                         children: [
+                          SizedBox(
+                            width: 10,
+                          ),
                           Container(
                             margin: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 2),
+                                vertical: 10, horizontal: 5),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
                                 border: Border.all(

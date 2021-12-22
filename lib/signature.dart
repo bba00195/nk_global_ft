@@ -125,8 +125,10 @@ class _SignaturePageState extends State<SignaturePage> {
         (_picksign.length == 0)
             ? Container(
                 height: 250,
+                margin: EdgeInsets.symmetric(horizontal: 5),
                 decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 1)),
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey, width: 2)),
                 child: Signature(
                   color: Colors.black,
                   key: _sign,

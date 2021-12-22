@@ -530,11 +530,20 @@ class _HomePageState extends State<HomePage> {
     String mmsino,
   ) {
     String statusName = "Wait on board";
+    String oneport = '';
+
     Color sColor = Colors.green;
     late Function sFunc;
-    split = reqport.split('/');
+    // split = reqport.split('/');
+
+    // if (reqport.contains('/') == true) {
+    //   split = reqport.split('/');
+    // } else {
+    //   oneport = reqport;
+    // }
 
     String etaValue = '';
+    split.clear();
 
     if (mgtStatus == "20") {
       statusName = "Wait on board";
@@ -548,6 +557,10 @@ class _HomePageState extends State<HomePage> {
       if (imono == imolist[i]) {
         etaValue = etalist[i];
       }
+    }
+
+    for (int j = 0; j < mainSchList.length; j++) {
+      split.add(mainSchList.elementAt(j).reqport);
     }
 
     return Card(
@@ -731,7 +744,7 @@ class _HomePageState extends State<HomePage> {
                               maxLines: 1,
                             )),
                         onPressed: () async {
-                          // var split12 = reqport.split('/');
+                          split = reqport.split('/');
 
                           if (mgtStatus == "20") {
                             CoolAlert.show(
@@ -740,7 +753,7 @@ class _HomePageState extends State<HomePage> {
                                 text: "Select Port",
                                 confirmBtnText: "On Board",
                                 confirmBtnColor: Colors.indigo,
-                                barrierDismissible: false,
+                                barrierDismissible: true,
                                 widget: DropDownMultiSelect(
                                     options: split,
                                     selectedValues: selected,
@@ -756,8 +769,8 @@ class _HomePageState extends State<HomePage> {
                                   await masterUpdate(reqNo);
                                 });
                           } else if (mgtStatus == "30") {
-                            mainSchPopup(reqNo, vesselName, startDate, endDate,
-                                mgtStatus);
+                            await mainSchPopup(reqNo, vesselName, startDate,
+                                endDate, mgtStatus);
                           }
                         },
                       ),

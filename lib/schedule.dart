@@ -12,6 +12,7 @@ import 'package:nk_global_ft/asDetail2.dart';
 import 'package:nk_global_ft/imageConfirm.dart';
 import 'package:nk_global_ft/model/schedule_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:cool_alert/cool_alert.dart';
@@ -33,6 +34,7 @@ class _ScheduleState extends State<Schedule> {
   DateTime? backpressbtntime;
   late UserManager member;
   APIService apiService = new APIService();
+  late SharedPreferences _prefs;
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
   late final PageController _pageController;
@@ -47,6 +49,7 @@ class _ScheduleState extends State<Schedule> {
   DateFormat df3 = DateFormat("yyyy-MM-dd HH:mm:ss");
 
   String strDate = '';
+  String storedPort = '';
 
   List<ScheduleResponseModel> scheduleValue = [];
 
@@ -93,6 +96,13 @@ class _ScheduleState extends State<Schedule> {
     _selectedEvents.dispose();
     _selectedMgtEvents.dispose();
     super.dispose();
+  }
+
+  loadSelport() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      storedPort = (_prefs.getString('selport') ?? '');
+    });
   }
 
   imageSelect(String reqNo) async {
@@ -511,6 +521,7 @@ class _ScheduleState extends State<Schedule> {
                     setState(() {
                       selected = x;
                       sellist = selected[0];
+                      _prefs.setString('selport', sellist);
                     });
                   },
                   whenEmpty: 'select port'),
