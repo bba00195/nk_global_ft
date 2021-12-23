@@ -89,6 +89,7 @@ class _ScheduleState extends State<Schedule> {
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
     _selectedMgtEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    loadSelport();
   }
 
   @override
@@ -106,7 +107,7 @@ class _ScheduleState extends State<Schedule> {
   }
 
   imageSelect(String reqNo) async {
-    List<String> sParam = [reqNo];
+    List<String> sParam = [reqNo, member.user.userId];
     await apiService.getSelect("IMAGE_S1", sParam).then((value) {
       setState(() {
         if (value.image.isNotEmpty) {
@@ -121,7 +122,7 @@ class _ScheduleState extends State<Schedule> {
   }
 
   imageSelect2() async {
-    List<String> sParam = [reqNo];
+    List<String> sParam = [reqNo, member.user.userId];
     await apiService.getSelect("IMAGE_S2", sParam).then((value) {
       setState(() {
         if (value.image.isNotEmpty) {
@@ -558,7 +559,7 @@ class _ScheduleState extends State<Schedule> {
               type: CoolAlertType.confirm,
               text: 'Route A/S Report Page or Cancel the On Board',
               confirmBtnText: "Report",
-              cancelBtnText: "승선취소",
+              cancelBtnText: "Cancellation",
               cancelBtnTextStyle: TextStyle(
                 color: Colors.black,
               ),
