@@ -167,6 +167,7 @@ class _ImageConfirmState extends State<ImageConfirm> {
 
   mainSchSearch() async {
     List<String> sParam = [reqNo, member.user.userId];
+
     await apiService.getSelect("IMAGE_S1", sParam).then((value) {
       setState(() {
         if (value.image.isNotEmpty) {
@@ -184,6 +185,7 @@ class _ImageConfirmState extends State<ImageConfirm> {
 
   mainSch2Search() async {
     List<String> sParam = [reqNo, member.user.userId];
+
     await apiService.getSelect("IMAGE_S2", sParam).then((value) {
       setState(() {
         if (value.image.isNotEmpty) {
