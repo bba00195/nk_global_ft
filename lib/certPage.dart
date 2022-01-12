@@ -31,7 +31,7 @@ class _certPageState extends State<certPage> {
   var pdf = pw.Document();
 
   String engName = "";
-  late String url = 'https://www.kuls.co.kr/NK/thema/print.php?name=$engName';
+  late String url = 'http://gss.thesafety.com/thema/print.php?name=$engName';
 
   @override
   void initState() {

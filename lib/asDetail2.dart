@@ -88,6 +88,8 @@ class _ASmanagementState2 extends State<ASmanagement2> {
   String reqtype = '';
   String reqquantity = '';
 
+  bool isload = false;
+
   String errmsg = 'Error Uploading Image';
   String uri = 'http://www.kuls.co.kr/NK/flutter/DBHelper.php';
 
@@ -813,128 +815,56 @@ class _ASmanagementState2 extends State<ASmanagement2> {
         onWillPop: () {
           return Future(() => false);
         },
-        child: Scaffold(
-            key: scaffoldKey,
-            appBar: NkAppBar(
-              globalKey: scaffoldKey,
-              member: member,
-              menuName: 'A/S Management',
-            ),
-            drawer: NkDrawer(
-              globalKey: scaffoldKey,
-              member: member,
-            ),
-            body: SingleChildScrollView(
-              child: Container(
-                margin: EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                    border: Border(
-                        top: BorderSide(color: Colors.grey, width: 2.0))),
+        child: isload
+            ? Container(
+                decoration: BoxDecoration(color: Colors.white),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(3, 2, 0, 1),
-                      height: 20,
-                      width: 100.w,
-                      color: Colors.grey,
-                      child: Text(
-                        "Information",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    asTable(reqName, shipCust, vesselName, mmsiNo, reqComment,
-                        reqDate, split12),
-                    bigo(reqComment),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Column(
+                    CircularProgressIndicator(
+                      color: Colors.indigo,
+                    )
+                  ],
+                ),
+              )
+            : Scaffold(
+                key: scaffoldKey,
+                appBar: NkAppBar(
+                  globalKey: scaffoldKey,
+                  member: member,
+                  menuName: 'A/S Management',
+                ),
+                drawer: NkDrawer(
+                  globalKey: scaffoldKey,
+                  member: member,
+                ),
+                body: SingleChildScrollView(
+                  child: Container(
+                    margin: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                        border: Border(
+                            top: BorderSide(color: Colors.grey, width: 2.0))),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          child: ExpansionTile(
-                            leading: Icon(
-                              Icons.check_rounded,
-                            ),
-                            title: Text("A/S Before",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w700)),
-                            children: [
-                              Imagelist2!.isEmpty
-                                  ? Container(
-                                      height: 200,
-                                      width: MediaQuery.of(context).size.width,
-                                      child: DottedBorder(
-                                        child: Container(
-                                          child: Center(
-                                            child: IconButton(
-                                              onPressed: () {
-                                                getImage2();
-                                              },
-                                              icon: Icon(CupertinoIcons.camera),
-                                            ),
-                                          ),
-                                        ),
-                                        color: Colors.grey,
-                                        dashPattern: [5, 3],
-                                        borderType: BorderType.RRect,
-                                        radius: Radius.circular(10),
-                                      ),
-                                    )
-                                  : Container(
-                                      height: 200,
-                                      width: MediaQuery.of(context).size.width,
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: Imagelist2!.length + 1,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          if (index == 0) {
-                                            return addpick2();
-                                          }
-                                          Asset asset = Imagelist2![index - 1];
-                                          return Stack(children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                              child: AssetThumb(
-                                                asset: asset,
-                                                width: 200,
-                                                height: 200,
-                                              ),
-                                            ),
-                                            Positioned(
-                                                right: -2,
-                                                top: -9,
-                                                child: IconButton(
-                                                    icon: Icon(
-                                                      Icons.cancel,
-                                                      color: Colors.red
-                                                          .withOpacity(0.8),
-                                                      size: 25,
-                                                    ),
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        Imagelist2!.removeAt(
-                                                            index - 1);
-                                                      });
-                                                    }))
-                                          ]);
-                                        },
-                                      ),
-                                    ),
-
-                              // ElevatedButton(
-                              //   child: Text("test"),
-                              //   onPressed: () {
-                              //     getImage2();
-                              //   },
-                              // )
-                            ],
+                          padding: EdgeInsets.fromLTRB(3, 2, 0, 1),
+                          height: 20,
+                          width: 100.w,
+                          color: Colors.grey,
+                          child: Text(
+                            "Information",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
                           ),
+                        ),
+                        asTable(reqName, shipCust, vesselName, mmsiNo,
+                            reqComment, reqDate, split12),
+                        bigo(reqComment),
+                        SizedBox(
+                          height: 15,
                         ),
                         Column(
                           children: [
@@ -943,12 +873,12 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                 leading: Icon(
                                   Icons.check_rounded,
                                 ),
-                                title: Text("A/S After",
+                                title: Text("A/S Before",
                                     style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w700)),
                                 children: [
-                                  Imagelist!.isEmpty
+                                  Imagelist2!.isEmpty
                                       ? Container(
                                           height: 200,
                                           width:
@@ -958,7 +888,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                               child: Center(
                                                 child: IconButton(
                                                   onPressed: () {
-                                                    getImage();
+                                                    getImage2();
                                                   },
                                                   icon: Icon(
                                                       CupertinoIcons.camera),
@@ -977,23 +907,24 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                               MediaQuery.of(context).size.width,
                                           child: ListView.builder(
                                             scrollDirection: Axis.horizontal,
-                                            itemCount: Imagelist!.length + 1,
+                                            itemCount: Imagelist2!.length + 1,
                                             itemBuilder: (BuildContext context,
                                                 int index) {
                                               if (index == 0) {
-                                                return addpick();
+                                                return addpick2();
                                               }
                                               Asset asset =
-                                                  Imagelist![index - 1];
+                                                  Imagelist2![index - 1];
                                               return Stack(children: [
                                                 ClipRRect(
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           8.0),
                                                   child: AssetThumb(
-                                                      asset: asset,
-                                                      width: 200,
-                                                      height: 200),
+                                                    asset: asset,
+                                                    width: 200,
+                                                    height: 200,
+                                                  ),
                                                 ),
                                                 Positioned(
                                                     right: -2,
@@ -1007,127 +938,231 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                                         ),
                                                         onPressed: () {
                                                           setState(() {
-                                                            Imagelist!.removeAt(
-                                                                index - 1);
+                                                            Imagelist2!
+                                                                .removeAt(
+                                                                    index - 1);
                                                           });
-                                                        })),
+                                                        }))
                                               ]);
                                             },
                                           ),
                                         ),
+
+                                  // ElevatedButton(
+                                  //   child: Text("test"),
+                                  //   onPressed: () {
+                                  //     getImage2();
+                                  //   },
+                                  // )
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        Row(children: [
-                          Expanded(
-                              flex: 5,
-                              child: Container(
-                                  width: 70.w,
-                                  child: ElevatedButton(
-                                      child: Text("SAVE"),
-                                      style: ElevatedButton.styleFrom(
-                                          primary: Colors.indigo),
-                                      onPressed: () async {
-                                        CoolAlert.show(
-                                            context: context,
-                                            type: CoolAlertType.confirm,
-                                            text:
-                                                "Do you want to complete the task?",
-                                            confirmBtnText: "Allow",
-                                            confirmBtnColor: Colors.indigo,
-                                            cancelBtnText: "Deny",
-                                            cancelBtnTextStyle:
-                                                TextStyle(color: Colors.black),
-                                            onConfirmBtnTap: () async {
-                                              for (int i = 0;
-                                                  i < Imagelist2!.length;
-                                                  i++) {
-                                                ByteData byteData2 =
-                                                    await Imagelist2![i]
-                                                        .getByteData(
-                                                            quality: 5);
-                                                List<int> imgData2 = byteData2
-                                                    .buffer
-                                                    .asUint8List();
-                                                filename2 =
-                                                    Imagelist2![i].name!;
-                                                filesrc2 =
-                                                    "${base64Encode(imgData2)}";
-
-                                                as_Before_fileUpload(
-                                                    reqNo,
-                                                    asBefore,
-                                                    member.user.userId,
-                                                    filename2,
-                                                    filesrc2);
-                                              }
-
-                                              for (int i = 0;
-                                                  i < Imagelist!.length;
-                                                  i++) {
-                                                ByteData byteData =
-                                                    await Imagelist![i]
-                                                        .getByteData(
-                                                            quality: 20);
-                                                List<int> imgData = byteData
-                                                    .buffer
-                                                    .asUint8List();
-                                                filename = Imagelist![i].name!;
-                                                filesrc =
-                                                    "${base64Encode(imgData)}";
-
-                                                as_After_fileUpload(
-                                                    reqNo,
-                                                    asAfter,
-                                                    member.user.userId,
-                                                    filename,
-                                                    filesrc);
-                                              }
-
-                                              Navigator.push(
-                                                  context,
-                                                  CupertinoPageRoute(
-                                                      builder: (context) =>
-                                                          ImageConfirm(
-                                                            member: member,
-                                                            reqNo: reqNo,
-                                                            split12: split12,
-                                                          )));
-                                            });
-                                      }))),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                              flex: 5,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.indigo,
+                            Column(
+                              children: [
+                                Container(
+                                  child: ExpansionTile(
+                                    leading: Icon(
+                                      Icons.check_rounded,
+                                    ),
+                                    title: Text("A/S After",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700)),
+                                    children: [
+                                      Imagelist!.isEmpty
+                                          ? Container(
+                                              height: 200,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              child: DottedBorder(
+                                                child: Container(
+                                                  child: Center(
+                                                    child: IconButton(
+                                                      onPressed: () {
+                                                        getImage();
+                                                      },
+                                                      icon: Icon(CupertinoIcons
+                                                          .camera),
+                                                    ),
+                                                  ),
+                                                ),
+                                                color: Colors.grey,
+                                                dashPattern: [5, 3],
+                                                borderType: BorderType.RRect,
+                                                radius: Radius.circular(10),
+                                              ),
+                                            )
+                                          : Container(
+                                              height: 200,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              child: ListView.builder(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount:
+                                                    Imagelist!.length + 1,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  if (index == 0) {
+                                                    return addpick();
+                                                  }
+                                                  Asset asset =
+                                                      Imagelist![index - 1];
+                                                  return Stack(children: [
+                                                    ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8.0),
+                                                      child: AssetThumb(
+                                                          asset: asset,
+                                                          width: 200,
+                                                          height: 200),
+                                                    ),
+                                                    Positioned(
+                                                        right: -2,
+                                                        top: -9,
+                                                        child: IconButton(
+                                                            icon: Icon(
+                                                              Icons.cancel,
+                                                              color: Colors.red
+                                                                  .withOpacity(
+                                                                      0.8),
+                                                              size: 25,
+                                                            ),
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                Imagelist!
+                                                                    .removeAt(
+                                                                        index -
+                                                                            1);
+                                                              });
+                                                            })),
+                                                  ]);
+                                                },
+                                              ),
+                                            ),
+                                    ],
+                                  ),
                                 ),
-                                child: Text("Cancel"),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      CupertinoPageRoute(
-                                          builder: (context) =>
-                                              HomePage(member: member)));
-                                },
-                              ))
-                        ])
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            Row(children: [
+                              Expanded(
+                                  flex: 5,
+                                  child: Container(
+                                      width: 70.w,
+                                      child: ElevatedButton(
+                                          child: Text("SAVE"),
+                                          style: ElevatedButton.styleFrom(
+                                              primary: Colors.indigo),
+                                          onPressed: () async {
+                                            CoolAlert.show(
+                                                context: context,
+                                                type: CoolAlertType.confirm,
+                                                text:
+                                                    "Do you want to complete the task?",
+                                                confirmBtnText: "Allow",
+                                                confirmBtnColor: Colors.indigo,
+                                                cancelBtnText: "Deny",
+                                                cancelBtnTextStyle: TextStyle(
+                                                    color: Colors.black),
+                                                onConfirmBtnTap: () async {
+                                                  setState(() {
+                                                    isload = true;
+                                                    Navigator.pop(context);
+                                                  });
+                                                  for (int i = 0;
+                                                      i < Imagelist2!.length;
+                                                      i++) {
+                                                    ByteData byteData2 =
+                                                        await Imagelist2![i]
+                                                            .getByteData(
+                                                                quality: 5);
+                                                    List<int> imgData2 =
+                                                        byteData2.buffer
+                                                            .asUint8List();
+                                                    filename2 =
+                                                        Imagelist2![i].name!;
+                                                    filesrc2 =
+                                                        "${base64Encode(imgData2)}";
+
+                                                    await as_Before_fileUpload(
+                                                        reqNo,
+                                                        asBefore,
+                                                        member.user.userId,
+                                                        filename2,
+                                                        filesrc2);
+                                                  }
+
+                                                  for (int i = 0;
+                                                      i < Imagelist!.length;
+                                                      i++) {
+                                                    ByteData byteData =
+                                                        await Imagelist![i]
+                                                            .getByteData(
+                                                                quality: 5);
+                                                    List<int> imgData = byteData
+                                                        .buffer
+                                                        .asUint8List();
+                                                    filename =
+                                                        Imagelist![i].name!;
+                                                    filesrc =
+                                                        "${base64Encode(imgData)}";
+
+                                                    await as_After_fileUpload(
+                                                        reqNo,
+                                                        asAfter,
+                                                        member.user.userId,
+                                                        filename,
+                                                        filesrc);
+                                                  }
+
+                                                  Navigator.push(
+                                                      context,
+                                                      CupertinoPageRoute(
+                                                          builder: (context) =>
+                                                              ImageConfirm(
+                                                                member: member,
+                                                                reqNo: reqNo,
+                                                                split12:
+                                                                    split12,
+                                                              )));
+                                                });
+                                          }))),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                  flex: 5,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.indigo,
+                                    ),
+                                    child: Text("Cancel"),
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          CupertinoPageRoute(
+                                              builder: (context) =>
+                                                  HomePage(member: member)));
+                                    },
+                                  ))
+                            ])
+                          ],
+                        )
                       ],
-                    )
-                  ],
-                ),
-              ),
-            )),
+                    ),
+                  ),
+                )),
       );
     });
   }

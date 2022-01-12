@@ -152,8 +152,7 @@ class _AsFinishState extends State<AsFinish> with TickerProviderStateMixin {
   }
 
   mainSchSearch() async {
-    List<String> sParam = [reqNo,
-      member.user.userId];
+    List<String> sParam = [reqNo, member.user.userId];
     await apiService.getSelect("IMAGE_S1", sParam).then((value) {
       setState(() {
         if (value.image.isNotEmpty) {
@@ -170,8 +169,7 @@ class _AsFinishState extends State<AsFinish> with TickerProviderStateMixin {
   }
 
   mainSch2Search() async {
-    List<String> sParam = [reqNo,
-      member.user.userId];
+    List<String> sParam = [reqNo, member.user.userId];
     await apiService.getSelect("IMAGE_S2", sParam).then((value) {
       setState(() {
         if (value.image.isNotEmpty) {
@@ -654,7 +652,7 @@ class _AsFinishState extends State<AsFinish> with TickerProviderStateMixin {
                                 CoolAlert.show(
                                     context: context,
                                     type: CoolAlertType.confirm,
-                                    text: "삭제 -> 승선대기상태?",
+                                    text: "Return to wait on boarding?",
                                     confirmBtnText: "Allow",
                                     confirmBtnColor: Colors.indigo,
                                     cancelBtnText: "Deny",
@@ -700,7 +698,7 @@ class _AsFinishState extends State<AsFinish> with TickerProviderStateMixin {
                                 //       );
                                 //     });
                               },
-                              child: Text("Delete"),
+                              child: Text("Rework"),
                               style: ElevatedButton.styleFrom(
                                   primary: Colors.indigo),
                             ),

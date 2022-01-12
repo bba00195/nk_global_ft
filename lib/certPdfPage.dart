@@ -19,7 +19,7 @@ class CertPdf extends StatefulWidget {
 class _CertPdfState extends State<CertPdf> {
   late UserManager member;
   String engName = '';
-  late String url = 'https://www.kuls.co.kr/NK/thema/print.php?name=$engName';
+  late String url = 'http://gss.thesafety.com/thema/print.php?name=$engName';
 
   @override
   void initState() {
@@ -34,7 +34,6 @@ class _CertPdfState extends State<CertPdf> {
 
   @override
   Widget build(BuildContext context) {
-    engName = 'sezairi';
     return SafeArea(
         child: Scaffold(
             body: const PDF().cachedFromUrl(

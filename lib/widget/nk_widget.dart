@@ -273,130 +273,132 @@ class nkNaviBottomBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     int _selectedIndex = selectedIndex;
-    return Container(
-      decoration: BoxDecoration(),
-      child:
-          // Column(
-          //   mainAxisAlignment: MainAxisAlignment.end,
-          //   crossAxisAlignment: CrossAxisAlignment.end,
-          //   children: [
-          Container(
-        height: 90,
-        child: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          selectedItemColor: Color.fromRGBO(66, 91, 168, 1),
-          unselectedItemColor: Color.fromRGBO(198, 198, 198, 1),
-          selectedFontSize: 14,
-          unselectedFontSize: 14,
-          currentIndex: _selectedIndex, //현재 선택된 Index
-          onTap: (int index) {
-            if (index == 0) {
-              Navigator.pushReplacement(
-                  context,
-                  CupertinoPageRoute(
-                      builder: (context) => HomePage(
-                            member: member,
-                          )));
-            } else if (index == 1) {
-              Navigator.pushReplacement(
-                  context,
-                  CupertinoPageRoute(
-                      builder: (context) => HistoryPage(member: member)));
-            } else if (index == 2) {
-              Navigator.pushReplacement(
-                  context,
-                  CupertinoPageRoute(
-                      builder: (context) => Schedule(member: member)));
-            } else if (index == 3) {
-              Navigator.pushReplacement(
-                  context,
-                  CupertinoPageRoute(
-                      builder: (context) => certPage(member: member)));
-            }
+    return SafeArea(
+      child: Container(
+        decoration: BoxDecoration(),
+        child:
+            // Column(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   crossAxisAlignment: CrossAxisAlignment.end,
+            //   children: [
+            Container(
+          height: 90,
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.white,
+            selectedItemColor: Color.fromRGBO(66, 91, 168, 1),
+            unselectedItemColor: Color.fromRGBO(198, 198, 198, 1),
+            selectedFontSize: 14,
+            unselectedFontSize: 14,
+            currentIndex: _selectedIndex, //현재 선택된 Index
+            onTap: (int index) {
+              if (index == 0) {
+                Navigator.pushReplacement(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => HomePage(
+                              member: member,
+                            )));
+              } else if (index == 1) {
+                Navigator.pushReplacement(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => HistoryPage(member: member)));
+              } else if (index == 2) {
+                Navigator.pushReplacement(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => Schedule(member: member)));
+              } else if (index == 3) {
+                Navigator.pushReplacement(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => certPage(member: member)));
+              }
 
-            // if (_selectedIndex != index && index == 0) {
-            //   globalKey.currentState.openDrawer();
-            // } else if (index == 1 && pageName != 'home') {
-            //   Navigator.of(context)
-            //     ..pushReplacement(
-            //       CupertinoPageRoute(
-            //         builder: (context) => HomePage(
-            //           id: id,
-            //           pass: pass,
-            //           member: member,
-            //         ),
-            //       ),
-            //     );
-            //   _selectedIndex = index;
-            // } else if (_selectedIndex != index && index == 2) {
-            //   Navigator.of(context)
-            //     ..pushReplacement(
-            //       CupertinoPageRoute(
-            //         builder: (context) => ProfilePage(
-            //           id: id,
-            //           pass: pass,
-            //           member: member,
-            //         ),
-            //       ),
-            //     );
-            //   _selectedIndex = index;
-            // }
-          },
-          items: [
-            BottomNavigationBarItem(
-              label: 'Main',
-              icon: Icon(
-                Icons.home_filled,
-                size: 24,
+              // if (_selectedIndex != index && index == 0) {
+              //   globalKey.currentState.openDrawer();
+              // } else if (index == 1 && pageName != 'home') {
+              //   Navigator.of(context)
+              //     ..pushReplacement(
+              //       CupertinoPageRoute(
+              //         builder: (context) => HomePage(
+              //           id: id,
+              //           pass: pass,
+              //           member: member,
+              //         ),
+              //       ),
+              //     );
+              //   _selectedIndex = index;
+              // } else if (_selectedIndex != index && index == 2) {
+              //   Navigator.of(context)
+              //     ..pushReplacement(
+              //       CupertinoPageRoute(
+              //         builder: (context) => ProfilePage(
+              //           id: id,
+              //           pass: pass,
+              //           member: member,
+              //         ),
+              //       ),
+              //     );
+              //   _selectedIndex = index;
+              // }
+            },
+            items: [
+              BottomNavigationBarItem(
+                label: 'Main',
+                icon: Icon(
+                  Icons.home_filled,
+                  size: 24,
+                ),
               ),
-            ),
-            BottomNavigationBarItem(
-              label: 'History',
-              icon: Icon(
-                Icons.history,
-                size: 24,
+              BottomNavigationBarItem(
+                label: 'History',
+                icon: Icon(
+                  Icons.history,
+                  size: 24,
+                ),
               ),
-            ),
-            BottomNavigationBarItem(
-              label: 'Schedule',
-              icon: Icon(
-                Icons.calendar_today_outlined,
-                size: 24,
+              BottomNavigationBarItem(
+                label: 'Schedule',
+                icon: Icon(
+                  Icons.calendar_today_outlined,
+                  size: 24,
+                ),
               ),
-            ),
-            BottomNavigationBarItem(
-              label: 'Cert',
-              icon: Icon(
-                Icons.assignment_ind,
-                size: 24,
+              BottomNavigationBarItem(
+                label: 'Cert',
+                icon: Icon(
+                  Icons.assignment_ind,
+                  size: 24,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+        //   Container(
+        //     alignment: Alignment.center,
+        //     decoration: BoxDecoration(
+        //       color: Colors.white,
+        //       border: Border(
+        //         top: BorderSide(
+        //           color: Color.fromRGBO(244, 244, 244, 1.0),
+        //           width: 1.0,
+        //         ),
+        //       ),
+        //     ),
+        //     height: 50,
+        //     child: Text(
+        //       'Copyright ⓒ 2021 KULS All right reserved.',
+        //       style: TextStyle(
+        //         color: Color.fromARGB(255, 175, 175, 175),
+        //         fontSize: 12,
+        //       ),
+        //     ),
+        //   ),
+        // ],
+        // ),
       ),
-      //   Container(
-      //     alignment: Alignment.center,
-      //     decoration: BoxDecoration(
-      //       color: Colors.white,
-      //       border: Border(
-      //         top: BorderSide(
-      //           color: Color.fromRGBO(244, 244, 244, 1.0),
-      //           width: 1.0,
-      //         ),
-      //       ),
-      //     ),
-      //     height: 50,
-      //     child: Text(
-      //       'Copyright ⓒ 2021 KULS All right reserved.',
-      //       style: TextStyle(
-      //         color: Color.fromARGB(255, 175, 175, 175),
-      //         fontSize: 12,
-      //       ),
-      //     ),
-      //   ),
-      // ],
-      // ),
     );
   }
 

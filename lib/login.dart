@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
@@ -32,13 +33,14 @@ class _LoginState extends State<Login> {
 
   APIocean apiOcean = new APIocean();
   var oceanList;
+  String networkStatus = '';
   List vesselList = [];
   List properties = [];
   List imolist = [];
   List<int> mmsilist = [];
   List etalist = [];
   var map1;
-
+  String networkstatus = 'null';
   oceanApi() {
     return Container(
       child: TextButton(
@@ -93,6 +95,7 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
+    initConnect();
     auth.isDeviceSupported().then(
           (isSupported) => setState(() => _supportState = isSupported
               ? _SupportState.supported
@@ -446,7 +449,7 @@ class _LoginState extends State<Login> {
             // ),
             primary: Color.fromRGBO(66, 91, 168, 1.0),
           ),
-          onPressed: () {
+          onPressed: () async {
             login(context, idTextEditController.text,
                 passwordTextEditController.text);
             // Navigator.push(context,
@@ -557,6 +560,23 @@ class _LoginState extends State<Login> {
         },
       ),
     );
+  }
+
+  initConnect() async {
+    ConnectivityResult connectivityResult;
+    connectivityResult = await Connectivity().checkConnectivity();
+    updateStatus(connectivityResult);
+  }
+
+  updateStatus(ConnectivityResult result) async {
+    if (result == ConnectivityResult.none) {
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.error,
+        title: 'No internet connection',
+        barrierDismissible: true,
+      );
+    }
   }
 
   @override

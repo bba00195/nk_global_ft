@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_group_button/flutter_group_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
 import 'package:nk_global_ft/api/api_oceanLook.dart';
@@ -54,7 +55,7 @@ class _HomePageState extends State<HomePage> {
   List<String> BList = [];
   List<String> FList = [];
   List<String> portdrop = [];
-  String selport = 'select port';
+  String selport = '';
   String port1 = "";
   String sellist = "";
   List<String> split = [];
@@ -78,6 +79,9 @@ class _HomePageState extends State<HomePage> {
   List etalist = [];
   Map? map1;
   List eta1 = [];
+
+  String portAutomatic = "";
+  String portRequested = "";
 
   @override
   void initState() {
@@ -143,13 +147,6 @@ class _HomePageState extends State<HomePage> {
           imolist.add(oceanList[i]["properties"]["ec_imo"]);
           etalist.add(oceanList[i]["properties"]["ec_eta"]);
         }
-
-        // for (int j = 0; j < vesselList.length; j++) {
-        //   imolist.add(vesselList[j]["ec_imo"]);
-        // }
-        // for (int k = 0; k < imolist.length; k++) {
-        //   etalist.add(vesselList[k]["ec_eta"]);
-        // }
         map1 = Map.fromIterables(imolist, etalist);
       }
     });
@@ -700,11 +697,12 @@ class _HomePageState extends State<HomePage> {
                         child: AutoSizeText(
                           reqtype,
                           style: TextStyle(
-                            fontSize: 1,
+                            fontSize: 10,
                             fontWeight: FontWeight.bold,
                           ),
-                          minFontSize: 13,
-                          maxLines: 3,
+                          minFontSize: 12,
+                          maxFontSize: 15,
+                          maxLines: 5,
                         ),
                       ),
                       Expanded(
@@ -745,28 +743,47 @@ class _HomePageState extends State<HomePage> {
                               maxLines: 1,
                             )),
                         onPressed: () async {
+                          split.clear();
                           split = reqport.split('/');
 
                           if (mgtStatus == "20") {
                             CoolAlert.show(
                                 context: context,
+                                title: 'Select Port',
                                 type: CoolAlertType.custom,
-                                text: "Select Port",
                                 confirmBtnText: "On Board",
                                 confirmBtnColor: Colors.indigo,
                                 barrierDismissible: true,
-                                widget: DropDownMultiSelect(
-                                    options: split,
-                                    selectedValues: selected,
-                                    onChanged: (List<String> x) {
-                                      setState(() {
-                                        selected = x;
-                                        sellist = selected[0];
-                                        _prefs.setString('selport', sellist);
-                                      });
-                                    },
-                                    whenEmpty: 'select port'),
+                                // widget: DropDownMultiSelect(
+                                //     options: split,
+                                //     selectedValues: selected,
+                                //     onChanged: (List<String> x) {
+                                //       setState(() {
+                                //         selected = x;
+                                //         sellist = selected[0];
+                                //         _prefs.setString('selport', sellist);
+                                //       });
+                                //     },
+                                //     whenEmpty: 'select port'),
+                                widget: RadioGroup(
+                                  children: [
+                                    for (int i = 0; i < split.length; i++)
+                                      Text(split[i]),
+                                  ],
+                                  groupItemsAlignment:
+                                      GroupItemsAlignment.column,
+                                  defaultSelectedItem: -1,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  textBeforeRadio: false,
+                                  onSelectionChanged: (selection) {
+                                    setState(() {
+                                      storedPort = split[selection!];
+                                      print(storedPort);
+                                    });
+                                  },
+                                ),
                                 onConfirmBtnTap: () async {
+                                  _prefs.setString('selport', storedPort);
                                   await masterUpdate(reqNo);
                                 });
                           } else if (mgtStatus == "30") {

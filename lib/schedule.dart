@@ -4,6 +4,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_group_button/flutter_group_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
@@ -513,22 +514,27 @@ class _ScheduleState extends State<Schedule> {
           CoolAlert.show(
               context: context,
               type: CoolAlertType.custom,
-              text: "Select Port",
+              title: "Select Port",
               confirmBtnText: "On Board",
               confirmBtnColor: Colors.indigo,
-              barrierDismissible: false,
-              widget: DropDownMultiSelect(
-                  options: split,
-                  selectedValues: selected,
-                  onChanged: (List<String> x) {
-                    setState(() {
-                      selected = x;
-                      sellist = selected[0];
-                      _prefs.setString('selport', sellist);
-                    });
-                  },
-                  whenEmpty: 'select port'),
+              barrierDismissible: true,
+              widget: RadioGroup(
+                children: [
+                  for (int i = 0; i < split.length; i++) Text(split[i]),
+                ],
+                groupItemsAlignment: GroupItemsAlignment.column,
+                defaultSelectedItem: -1,
+                mainAxisAlignment: MainAxisAlignment.center,
+                textBeforeRadio: false,
+                onSelectionChanged: (selection) {
+                  setState(() {
+                    storedPort = split[selection!];
+                    print(storedPort);
+                  });
+                },
+              ),
               onConfirmBtnTap: () async {
+                _prefs.setString('selport', storedPort);
                 await masterUpdate(reqNo);
               });
           // showDialog(
@@ -575,7 +581,7 @@ class _ScheduleState extends State<Schedule> {
                           builder: (context) => ASmanagement2(
                             member: member,
                             reqNo: reqNo,
-                            split12: sellist,
+                            split12: storedPort,
                           ),
                         ),
                       )
@@ -630,7 +636,9 @@ class _ScheduleState extends State<Schedule> {
                     context,
                     CupertinoPageRoute(
                         builder: (context) => ImageConfirm(
-                            reqNo: reqNo, member: member, split12: sellist)));
+                            reqNo: reqNo,
+                            member: member,
+                            split12: storedPort)));
               });
           // showDialog(
           //     context: context,

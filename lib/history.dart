@@ -2,13 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'package:flutter/services.dart';
+import 'package:flutter_group_button/flutter_group_button.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
@@ -19,9 +18,7 @@ import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:nk_global_ft/asDetail2.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sizer/sizer.dart';
 import 'common/common.dart';
 import 'model/common_model.dart';
 import 'model/image_model.dart';
@@ -265,7 +262,7 @@ class _HistoryPageState extends State<HistoryPage> {
           builder: (context) => ASmanagement2(
                 member: member,
                 reqNo: reqNo,
-                split12: sellist,
+                split12: storedPort,
               )),
     );
   }
@@ -390,14 +387,14 @@ class _HistoryPageState extends State<HistoryPage> {
                             minHeight: 35,
                           ),
                           child: AutoSizeText(
-                            "승선취소",
+                            "Cancellation",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 13,
                               fontWeight: FontWeight.bold,
                               color: Color.fromRGBO(111, 111, 111, 1.0),
                             ),
-                            minFontSize: 14,
+                            minFontSize: 13,
                             maxLines: 1,
                           ),
                         ),
@@ -416,7 +413,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                     builder: (context) => ASmanagement2(
                                       member: member,
                                       reqNo: reqNo,
-                                      split12: sellist,
+                                      split12: storedPort,
                                     ),
                                   ),
                                 )
@@ -966,22 +963,27 @@ class _HistoryPageState extends State<HistoryPage> {
                       CoolAlert.show(
                           context: context,
                           type: CoolAlertType.custom,
-                          text: "Select Port",
+                          title: "Select Port",
                           confirmBtnText: "On Board",
                           confirmBtnColor: Colors.indigo,
-                          widget: DropDownMultiSelect(
-                              options: split,
-                              selectedValues: selected,
-                              onChanged: (List<String> x) {
-                                setState(() {
-                                  selected = x;
-                                  sellist = selected[0];
-                                  _prefs.setString('selport', sellist);
-                                  sellist = '';
-                                });
-                              },
-                              whenEmpty: 'select port'),
+                          widget: RadioGroup(
+                            children: [
+                              for (int i = 0; i < split.length; i++)
+                                Text(split[i]),
+                            ],
+                            groupItemsAlignment: GroupItemsAlignment.column,
+                            defaultSelectedItem: -1,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            textBeforeRadio: false,
+                            onSelectionChanged: (selection) {
+                              setState(() {
+                                storedPort = split[selection!];
+                                print(storedPort);
+                              });
+                            },
+                          ),
                           onConfirmBtnTap: () async {
+                            _prefs.setString('selport', storedPort);
                             await masterUpdate(reqNo);
                           });
                     } else if (mgtStatus == "30") {
@@ -1184,7 +1186,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       child: Row(
                         children: [
                           SizedBox(
-                            width: 10,
+                            width: 5,
                           ),
                           Container(
                             margin: EdgeInsets.symmetric(
@@ -1234,7 +1236,7 @@ class _HistoryPageState extends State<HistoryPage> {
                           ),
                           Container(
                             margin: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
+                                vertical: 10, horizontal: 5),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
                                 border: Border.all(
