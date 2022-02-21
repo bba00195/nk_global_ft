@@ -12,8 +12,8 @@ import 'package:flutter_group_button/flutter_group_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
 import 'package:nk_global_ft/api/api_oceanLook.dart';
-import 'package:nk_global_ft/asDetail2.dart';
-import 'package:nk_global_ft/imageConfirm.dart';
+import 'package:nk_global_ft/asDetail_page.dart';
+import 'package:nk_global_ft/imageConfirm_page.dart';
 import 'package:nk_global_ft/main.dart';
 import 'package:nk_global_ft/model/image_model.dart';
 import 'package:nk_global_ft/model/mainSchedule_model.dart';
@@ -85,6 +85,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    //initState는 최초로 한번 실행됨.
     oceanApi();
     member = widget.member;
     mainSchSearch();

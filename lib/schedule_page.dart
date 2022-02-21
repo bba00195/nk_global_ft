@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_group_button/flutter_group_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:multiselect/multiselect.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
-import 'package:nk_global_ft/asDetail.dart';
-import 'package:nk_global_ft/asDetail2.dart';
-import 'package:nk_global_ft/imageConfirm.dart';
+import 'package:nk_global_ft/asDetail_page.dart';
+import 'package:nk_global_ft/imageConfirm_page.dart';
 import 'package:nk_global_ft/model/schedule_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -537,30 +535,6 @@ class _ScheduleState extends State<Schedule> {
                 _prefs.setString('selport', storedPort);
                 await masterUpdate(reqNo);
               });
-          // showDialog(
-          //     context: context,
-          //     builder: (context) {
-          //       return CupertinoAlertDialog(
-          //         title: Text("Would you like to register for boarding?"),
-          //         actions: [
-          //           CupertinoDialogAction(
-          //             child: Text("Allow"),
-          //             onPressed: () async {
-          //               value[index].isSelected = true;
-          //               await masterUpdate(reqNo);
-          //               Navigator.of(context).pop();
-          //             },
-          //           ),
-          //           CupertinoDialogAction(
-          //             child: Text("Deny"),
-          //             onPressed: () {
-          //               value[index].isSelected = false;
-          //               Navigator.of(context).pop();
-          //             },
-          //           )
-          //         ],
-          //       );
-          //     });
         } else if (sText == "Proceeding") {
           CoolAlert.show(
               context: context,
@@ -594,38 +568,6 @@ class _ScheduleState extends State<Schedule> {
               onCancelBtnTap: () {
                 boardCancelUpdate(reqNo);
               });
-          // showDialog(
-          //     context: context,
-          //     builder: (context) {
-          //       return CupertinoAlertDialog(
-          //         title: Text("Cancel the on board? Or A/S Report register"),
-          //         actions: [
-          //           CupertinoDialogAction(
-          //             child: Text("Cancel onboard"),
-          //             onPressed: () {
-          //               boardCancelUpdate(reqNo);
-          //             },
-          //           ),
-          //           CupertinoDialogAction(
-          //             child: Text("Register"),
-          //             onPressed: () {
-          //               Navigator.push(
-          //                   context,
-          //                   CupertinoPageRoute(
-          //                       builder: (context) => ASmanagement2(
-          //                           member: member, reqNo: reqNo)));
-          //             },
-          //           )
-          //         ],
-          //       );
-          //     });
-          // Navigator.push(
-          //     context,
-          //     CupertinoPageRoute(
-          //         builder: (context) => ASmanagement2(
-          //               member: member,
-          //               reqNo: reqNo,
-          //             )));
         } else if (sText == "Finish") {
           CoolAlert.show(
               context: context,
@@ -640,31 +582,6 @@ class _ScheduleState extends State<Schedule> {
                             member: member,
                             split12: storedPort)));
               });
-          // showDialog(
-          //     context: context,
-          //     builder: (context) {
-          //       return CupertinoAlertDialog(
-          //         title: Text("Route A/S Result page"),
-          //         actions: [
-          //           CupertinoDialogAction(
-          //             child: Text("yes"),
-          //             onPressed: () {
-          //               Navigator.pushReplacement(
-          //                   context,
-          //                   CupertinoPageRoute(
-          //                       builder: (context) => ImageConfirm(
-          //                           reqNo: reqNo, member: member)));
-          //             },
-          //           ),
-          //           CupertinoDialogAction(
-          //             child: Text("No"),
-          //             onPressed: () {
-          //               Navigator.pop(context);
-          //             }, // 수정
-          //           ),
-          //         ],
-          //       );
-          //     });
         }
       },
       child: Text(sText),
@@ -858,25 +775,7 @@ class _ScheduleState extends State<Schedule> {
                     itemCount: value.length,
                     itemBuilder: (context, index) {
                       return InkWell(
-                          onTap: () {
-                            // if (int.parse(
-                            //         _selectedMgtEvents.value[index].toString()) <
-                            //     30) {
-                            //   setState(() {
-                            //     onBoardAlert(context, value, index);
-                            //   });
-                            // } else {
-                            //   Navigator.push(
-                            //     context,
-                            //     CupertinoPageRoute(
-                            //       builder: (context) => ASmanagement2(
-                            //         member: member,
-                            //         reqNo: reqNo,
-                            //       ),
-                            //     ),
-                            //   );
-                            // }
-                          },
+                          onTap: () {},
                           child: Container(
                               width: 200,
                               height: 150,
@@ -910,24 +809,7 @@ class _ScheduleState extends State<Schedule> {
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18),
-                                      )
-                                      // trailing: (int.parse(_selectedMgtEvents
-                                      //             .value[index]
-                                      //             .toString()) <
-                                      //         30)
-                                      //     ? ElevatedButton(
-                                      //         onPressed: null,
-                                      //         child: Text("Onboard"),
-                                      //         style: ElevatedButton.styleFrom(
-                                      //             onSurface: Colors.indigo),
-                                      //       )
-                                      //     : ElevatedButton(
-                                      //         onPressed: null,
-                                      //         child: Text("Proceeding"),
-                                      //         style: ElevatedButton.styleFrom(
-                                      //             onSurface: Colors.green),
-                                      //       ),
-                                      ),
+                                      )),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,

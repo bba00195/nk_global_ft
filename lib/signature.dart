@@ -5,18 +5,19 @@ import 'dart:ui' as ui;
 import 'package:cool_alert/cool_alert.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
-import 'package:nk_global_ft/asDetail2.dart';
-import 'package:nk_global_ft/asModify.dart';
+import 'package:nk_global_ft/asDetail_page.dart';
+import 'package:nk_global_ft/asModify_page.dart';
 import 'package:nk_global_ft/common/common.dart';
 import 'package:nk_global_ft/home_page.dart';
-import 'package:nk_global_ft/imageConfirm.dart';
+import 'package:nk_global_ft/imageConfirm_page.dart';
 import 'package:nk_global_ft/model/common_model.dart';
-import 'package:nk_global_ft/history.dart';
+import 'package:nk_global_ft/history_page.dart';
 import 'package:nk_global_ft/main.dart';
 import 'package:nk_global_ft/model/image_model.dart';
 import 'package:nk_global_ft/model/master_model.dart';
@@ -252,12 +253,15 @@ class _SignaturePageState extends State<SignaturePage> {
                     style: ElevatedButton.styleFrom(primary: Colors.indigo),
                     onPressed: () async {
                       if (_picksign.isNotEmpty) {
+                        // 사인이 없을 경우
                         setState(() {
                           signsrc = sign64;
-                          signname =
-                              member.user.userId + "_" + "signature" + ".png";
+                          signname = member.user.userId +
+                              "_" +
+                              "signature" +
+                              ".png"; // db 에 저장될 sign이미지 이름 정의
                           as_Signature_upload(reqNo, signCode,
-                              member.user.userId, signname, sign64);
+                              member.user.userId, signname, sign64); //업로드 api
                         });
                       } else {
                         final sign = _sign.currentState;
@@ -268,14 +272,15 @@ class _SignaturePageState extends State<SignaturePage> {
                         List<int> encode = data!.buffer.asUint8List();
                         setState(() {
                           _signimg = data;
-                          signsrc = "${base64Encode(encode)}";
+                          signsrc = "${base64Encode(encode)}"; // base64 변환
                           signname =
                               member.user.userId + "_" + "signature" + ".png";
                           as_Signature_upload(reqNo, signCode,
                               member.user.userId, signname, signsrc);
                         });
                       }
-                      masterUpdate2(reqNo);
+                      masterUpdate2(reqNo); //상태 업데이트
+
                       Navigator.push(
                           context,
                           CupertinoPageRoute(

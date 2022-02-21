@@ -12,7 +12,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:nk_global_ft/home_page.dart';
-import 'package:nk_global_ft/imageConfirm.dart';
+import 'package:nk_global_ft/imageConfirm_page.dart';
 import 'package:nk_global_ft/model/master_model.dart';
 import 'package:nk_global_ft/model/common_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
@@ -50,6 +50,7 @@ class _ASmodifyState2 extends State<ASmodify> {
   late String filename = '';
   late String filename2 = '';
   late String filesrc = '';
+
   late String filesrc2 = '';
 
   late String signdata;
@@ -1078,7 +1079,7 @@ class _ASmodifyState2 extends State<ASmodify> {
                                                 ByteData byteData2 =
                                                     await Imagelist2![i]
                                                         .getByteData(
-                                                            quality: 30);
+                                                            quality: 50);
                                                 List<int> imgData2 = byteData2
                                                     .buffer
                                                     .asUint8List();
@@ -1101,7 +1102,7 @@ class _ASmodifyState2 extends State<ASmodify> {
                                                 ByteData byteData =
                                                     await Imagelist![i]
                                                         .getByteData(
-                                                            quality: 30);
+                                                            quality: 50);
                                                 List<int> imgData = byteData
                                                     .buffer
                                                     .asUint8List();

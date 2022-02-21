@@ -1,20 +1,23 @@
 import 'dart:convert';
-
+import 'package:connectivity_wrapper/connectivity_wrapper.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
 import 'package:nk_global_ft/api/api_oceanLook.dart';
-import 'package:nk_global_ft/noNetWorkSign.dart';
+import 'package:nk_global_ft/signToGallery.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:nk_global_ft/model/Local_auth_api.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 import 'dart:ui' as ui;
-import 'noNetWorkSign.dart';
+import 'signToGallery.dart';
 import 'home_page.dart';
 import 'common/common.dart';
 
@@ -33,6 +36,7 @@ class _LoginState extends State<Login> {
 
   APIocean apiOcean = new APIocean();
   var oceanList;
+  DateTime? backpressbtntime;
   String networkStatus = '';
   List vesselList = [];
   List properties = [];
@@ -41,41 +45,6 @@ class _LoginState extends State<Login> {
   List etalist = [];
   var map1;
   String networkstatus = 'null';
-  oceanApi() {
-    return Container(
-      child: TextButton(
-        child: Text("ocean Api"),
-        onPressed: () {
-          imolist.clear();
-          etalist.clear();
-          vesselList.clear();
-          apiOcean.getOcean().then((value) {
-            oceanList = value["features"];
-            if (value["features"].isNotEmpty) {
-              vesselList.clear();
-              //print(oceanList[0]["properties"]);
-              for (int i = 0; i < oceanList.length; i++) {
-                vesselList.add(oceanList[i]["properties"]);
-              }
-              for (int j = 0; j < vesselList.length; j++) {
-                imolist.add(vesselList[j]["ec_imo"]);
-              }
-              for (int q = 0; q < imolist.length; q++) {
-                print(imolist[q]);
-              }
-              for (int w = 0; w < imolist.length; w++) {
-                etalist.add(vesselList[w]["ec_eta"]);
-              }
-            }
-            setState(() {
-              var map1 = Map.fromIterables(imolist, etalist);
-              print(map1);
-            });
-          });
-        },
-      ),
-    );
-  }
 
   GlobalKey<FormState> idFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> pwFormKey = GlobalKey<FormState>();
@@ -94,13 +63,13 @@ class _LoginState extends State<Login> {
 
   @override
   void initState() {
-    super.initState();
-    initConnect();
+    startconnchk();
     auth.isDeviceSupported().then(
           (isSupported) => setState(() => _supportState = isSupported
               ? _SupportState.supported
               : _SupportState.unsupported),
         );
+    super.initState();
   }
 
   @override
@@ -119,7 +88,9 @@ class _LoginState extends State<Login> {
       //   },
       // );
       CoolAlert.show(
-          context: context, type: CoolAlertType.error, text: "아이디를 입력해주세요.");
+          context: context,
+          type: CoolAlertType.error,
+          text: "Please enter your ID.");
       return;
     }
     if (sPassword == '') {
@@ -130,7 +101,9 @@ class _LoginState extends State<Login> {
       //   },
       // );
       CoolAlert.show(
-          context: context, type: CoolAlertType.error, text: "비밀번호를 입력해주세요.");
+          context: context,
+          type: CoolAlertType.error,
+          text: "Please enter your Password.");
       return;
     }
     List<String> sParam = [sUserId];
@@ -149,7 +122,7 @@ class _LoginState extends State<Login> {
           CoolAlert.show(
               context: context,
               type: CoolAlertType.error,
-              text: "비밀번호가 일치하지 않습니다..");
+              text: "The password is wrong.");
         } else {
           // tokenUpdate(sUserId, token);
           var member = UserManager();
@@ -181,103 +154,9 @@ class _LoginState extends State<Login> {
             context: context,
             type: CoolAlertType.error,
             text: "등록되지 않은 아이디 입니다.");
-        // showDialog(
-        //   context: context,
-        //   builder: (_) {
-        //     return Show(message: "등록되지 않는 아이디입니다."); // 비밀번호 불일치
-        //   },
-        // );
       }
     });
   }
-
-  // Future<void> _getAvailableBiometrics() async {
-  //   late List<BiometricType> ListofBiometrics;
-  //   try {
-  //     ListofBiometrics = await auth.getAvailableBiometrics();
-  //   } on PlatformException catch (e) {
-  //     print(e);
-  //   }
-  //   if (!mounted) return;
-
-  //   setState(() {
-  //     _availableBiomatrics = ListofBiometrics;
-  //   });
-  // }
-
-  // Future<void> _checkBiometrics() async {
-  //   //생체인증수단 체크
-  //   late bool canCheckBiometrics;
-  //   try {
-  //     canCheckBiometrics = await auth.canCheckBiometrics;
-  //   } on PlatformException catch (e) {
-  //     canCheckBiometrics = false;
-  //     print(e);
-  //   }
-  //   if (!mounted) return;
-
-  //   setState(() {
-  //     _canCheckBiometrics = canCheckBiometrics;
-  //   });
-  // }
-
-  // Future<void> _authenticate() async {
-  //   bool authenicated = false;
-  //   try {
-  //     setState(() {
-  //       _isAuthenticating = true;
-  //       _authorized = '인증중';
-  //     });
-  //     authenicated = await auth.authenticate(
-  //         localizedReason: 'os determine authentication method',
-  //         useErrorDialogs: true,
-  //         stickyAuth: true);
-  //     setState(() {
-  //       _isAuthenticating = false;
-  //     });
-  //   } on PlatformException catch (e) {
-  //     print(e);
-  //     setState(() {
-  //       _isAuthenticating = false;
-  //       _authorized = "error - ${e.message}";
-  //     });
-  //     return;
-  //   }
-  //   if (!mounted) return;
-
-  //   setState(
-  //       () => _authorized = authenicated ? 'Authorized' : 'Not Authorized');
-  // }
-
-  // Future<void> _authenticateWithBiometrics() async {
-  //   bool authenticated = false;
-  //   try {
-  //     setState(() {
-  //       _isAuthenticating = true;
-  //       _authorized = '인증중';
-  //     });
-  //     authenticated = await auth.authenticate(
-  //         localizedReason: "Scan your fingerprint (or face or whatever)",
-  //         useErrorDialogs: true,
-  //         biometricOnly: true);
-  //     setState(() {
-  //       _isAuthenticating = false;
-  //       _authorized = 'Authenticating';
-  //     });
-  //   } on PlatformException catch (e) {
-  //     print(e);
-  //     setState(() {
-  //       _isAuthenticating = false;
-  //       _authorized = "Error - ${e.message}";
-  //     });
-  //     return;
-  //   }
-  // }
-
-  // void _cancelAuthentication() async {
-  //   await auth.stopAuthentication();
-  //   setState(() => _isAuthenticating = false);
-  // }
 
   FocusNode idFocusNode = FocusNode();
   FocusNode pwFocusNode = FocusNode();
@@ -411,6 +290,7 @@ class _LoginState extends State<Login> {
   }
 
   pnlUserName() {
+    //txtUserId 를 자식으로 하는 ID 위젯함수
     return Container(
       margin: EdgeInsets.fromLTRB(15, 5, 15, 5),
       height: 65,
@@ -424,6 +304,7 @@ class _LoginState extends State<Login> {
   }
 
   pnlPassword() {
+    //txtPassword 를 자식으로 하는 pw위젯 함수
     return Container(
       margin: EdgeInsets.fromLTRB(15, 5, 15, 5),
       height: 65,
@@ -450,8 +331,9 @@ class _LoginState extends State<Login> {
             primary: Color.fromRGBO(66, 91, 168, 1.0),
           ),
           onPressed: () async {
-            login(context, idTextEditController.text,
-                passwordTextEditController.text);
+            initConnect();
+            // login(context, idTextEditController.text,
+            //     passwordTextEditController.text);
             // Navigator.push(context,
             //     CupertinoPageRoute(builder: (context) => HomePage()));
           },
@@ -468,6 +350,7 @@ class _LoginState extends State<Login> {
     );
   }
 
+//Local auth 생체인식 부분.
   faceIdOrLoginTxt() {
     return Container(
       height: 40,
@@ -562,6 +445,7 @@ class _LoginState extends State<Login> {
     );
   }
 
+//연결상태 체크 (연결상태가 none일시 설정창으로 갈수있는 다이얼로그 생성)
   initConnect() async {
     ConnectivityResult connectivityResult;
     connectivityResult = await Connectivity().checkConnectivity();
@@ -571,6 +455,44 @@ class _LoginState extends State<Login> {
   updateStatus(ConnectivityResult result) async {
     if (result == ConnectivityResult.none) {
       CoolAlert.show(
+          context: context,
+          type: CoolAlertType.warning,
+          text:
+              "No internet connection,                                        Check Wi-Fi and Cellular Data",
+          barrierDismissible: true,
+          confirmBtnText: "Settings",
+          cancelBtnText: "Cancel",
+          onCancelBtnTap: () {
+            Navigator.pop(context);
+          },
+          onConfirmBtnTap: () {
+            AppSettings.openDeviceSettings(); // 기기 설정메뉴로 이동
+          });
+    } else if (result == ConnectivityResult.mobile) {
+      setState(() {
+        login(context, idTextEditController.text,
+            passwordTextEditController.text);
+      });
+      //
+
+    } else if (result == ConnectivityResult.wifi) {
+      setState(() {
+        login(context, idTextEditController.text,
+            passwordTextEditController.text);
+      });
+      //
+    }
+  }
+
+  startconnchk() async {
+    ConnectivityResult connResult;
+    connResult = await Connectivity().checkConnectivity();
+    updateStatus2(connResult);
+  }
+
+  updateStatus2(ConnectivityResult result2) async {
+    if (result2 == ConnectivityResult.none) {
+      CoolAlert.show(
         context: context,
         type: CoolAlertType.error,
         title: 'No internet connection',
@@ -579,72 +501,186 @@ class _LoginState extends State<Login> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Sizer(builder: (context, orientation, deviceType) {
-      return Scaffold(
-        backgroundColor: Color.fromRGBO(255, 255, 255, 1.0),
-        body: GestureDetector(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(),
+  Future<bool> _onwillPop() async {
+    DateTime now = DateTime.now();
+    if (backpressbtntime == null ||
+        now.difference(backpressbtntime!) > Duration(seconds: 2)) {
+      backpressbtntime = now;
+      Fluttertoast.showToast(msg: 'One more tap to Exit app Alert');
+      return Future.value(false);
+    }
+    return (await showDialog(
+      context: context,
+      builder: (context) => Material(
+        type: MaterialType.transparency,
+        child: Center(
+          child: Container(
+            height: 250,
+            margin: EdgeInsets.only(
+              left: 35,
+              right: 35,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(25),
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
+                Container(
                   height: 150,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Stack(
-                  children: [
-                    Positioned(
-                      child: logo(),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(25),
+                      topRight: Radius.circular(25),
                     ),
-                    Positioned(
-                      child: logo2(),
-                      left: 200,
-                      bottom: 0,
-                    )
+                    image: DecorationImage(
+                      image: AssetImage('assets/nk_logo.jpg'),
+                      fit: BoxFit.none,
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  decoration: BoxDecoration(),
+                  child: Text(
+                    'Close the Application?',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontFamily: 'NotoSansKR',
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[400],
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(25),
+                          ),
+                        ),
+                        height: 50,
+                        child: TextButton(
+                          child: Text(
+                            "No",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: 'NotoSansKR',
+                            ),
+                          ),
+                          onPressed: () => Navigator.pop(context, false),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 6,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(63, 81, 181, 1.0),
+                          borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(25),
+                          ),
+                        ),
+                        height: 50,
+                        child: TextButton(
+                          child: Text(
+                            "Yes",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: 'NotoSansKR',
+                            ),
+                          ),
+                          onPressed: () => SystemNavigator.pop(),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                pnlUserName(),
-                SizedBox(
-                  height: 5,
-                ),
-                pnlPassword(),
-                SizedBox(
-                  height: 30,
-                ),
-                loginButton(),
-                SizedBox(
-                  height: 10,
-                ),
-                faceIdOrLoginTxt(),
-                SizedBox(
-                  height: 10,
-                ),
-                Center(
-                  child: noNetworkSign(),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                // oceanApi(),
               ],
             ),
           ),
-          onTap: () {
-            idFocusNode.unfocus();
-            pwFocusNode.unfocus();
-          },
         ),
-      );
-    });
+      ),
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      child: Sizer(builder: (context, orientation, deviceType) {
+        return Scaffold(
+          backgroundColor: Color.fromRGBO(255, 255, 255, 1.0),
+          body: GestureDetector(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 150,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Stack(
+                    children: [
+                      Positioned(
+                        child: logo(),
+                      ),
+                      Positioned(
+                        child: logo2(),
+                        left: 200,
+                        bottom: 0,
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  pnlUserName(),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  pnlPassword(),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  loginButton(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  faceIdOrLoginTxt(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Center(
+                    child: noNetworkSign(),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  // oceanApi(),
+                ],
+              ),
+            ),
+            onTap: () {
+              idFocusNode.unfocus();
+              pwFocusNode.unfocus();
+            },
+          ),
+        );
+      }),
+      onWillPop: _onwillPop,
+    );
   }
 }
 

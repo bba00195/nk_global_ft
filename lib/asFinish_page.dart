@@ -1,25 +1,17 @@
-import 'dart:convert';
 import 'dart:typed_data';
-import 'dart:ui';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
-import 'package:loading_overlay/loading_overlay.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
-import 'package:nk_global_ft/asModify.dart';
 import 'package:nk_global_ft/common/common.dart';
 import 'package:nk_global_ft/home_page.dart';
 import 'package:nk_global_ft/model/common_model.dart';
-import 'package:nk_global_ft/history.dart';
-import 'package:nk_global_ft/main.dart';
 import 'package:nk_global_ft/model/image_model.dart';
 import 'package:nk_global_ft/model/master_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
+import 'package:pinch_zoom_image_last/pinch_zoom_image_last.dart';
 import 'package:sizer/sizer.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -107,6 +99,7 @@ class _AsFinishState extends State<AsFinish> with TickerProviderStateMixin {
   //   }
   // }
 
+  // #region API 관련 메소드
   as_Signature_upload(String reqNo, String filetype, String userid,
       String signname, String filesrc) async {
     List<String> sParam = [
@@ -274,6 +267,7 @@ class _AsFinishState extends State<AsFinish> with TickerProviderStateMixin {
       });
     });
   }
+  // #endregion
 
   Widget asTable(String reqName, String shipCust, String vesselName,
       String mmsiNo, String reqComment, String reqDate) {
@@ -468,21 +462,25 @@ class _AsFinishState extends State<AsFinish> with TickerProviderStateMixin {
     );
   }
 
-  // var image = BASE64.
+  // #region 이미지 관련 위젯
 
   testImage(int seq) {
     imgs = BList[seq];
     if (imgs != "") {
       return Row(
         children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.memory(
-                Uri.parse(imgs).data!.contentAsBytes(),
-                fit: BoxFit.cover,
-                height: 200,
-                width: 200,
-              )),
+          InkWell(
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.memory(
+                    Uri.parse(imgs).data!.contentAsBytes(),
+                    fit: BoxFit.fill,
+                    height: 250,
+                    width: 200,
+                  )),
+              onTap: () {
+                ontapImage(seq);
+              }),
           SizedBox(
             width: 10,
           ),
@@ -493,37 +491,80 @@ class _AsFinishState extends State<AsFinish> with TickerProviderStateMixin {
     }
   }
 
-  testImage2(int seq) {
-    imgs2 = FList[seq];
+  testImage2(int seq2) {
+    imgs2 = FList[seq2];
     if (imgs2 != "") {
-      return Row(
-        children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.memory(
-                Uri.parse(imgs2).data!.contentAsBytes(),
-                fit: BoxFit.cover,
-                height: 200,
-                width: 200,
-              )),
-          SizedBox(
-            width: 10,
-          ),
-        ],
+      return InkWell(
+        child: Row(
+          children: [
+            InkWell(
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.memory(
+                    Uri.parse(imgs2).data!.contentAsBytes(),
+                    fit: BoxFit.fill,
+                    height: 250,
+                    width: 200,
+                  )),
+              onTap: () {
+                ontapImage2(seq2);
+              },
+            ),
+            SizedBox(
+              width: 10,
+            ),
+          ],
+        ),
       );
     } else {
       return Container();
     }
   }
 
-  // setImage() {
-  //   if (img != "") {
-  //     return Image.memory(Uri.parse(img).data!.contentAsBytes());
-  //   } else {
-  //     return Container();
-  //   }
-  // }
+  void ontapImage(int seq) async {
+    imgs = BList[seq];
+    await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (BuildContext context) {
+      return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+          ),
+          backgroundColor: Colors.black,
+          body: Container(
+            child: Center(
+              child: PinchZoomImage(
+                image: Image.memory(
+                  Uri.parse(imgs).data!.contentAsBytes(),
+                ),
+              ),
+            ),
+          ));
+    }));
+  }
 
+  void ontapImage2(int seq2) async {
+    imgs2 = FList[seq2];
+    await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (BuildContext context) {
+      return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+          ),
+          backgroundColor: Colors.black,
+          body: Container(
+            child: Center(
+              child: PinchZoomImage(
+                image: Image.memory(
+                  Uri.parse(imgs2).data!.contentAsBytes(),
+                ),
+              ),
+            ),
+          ));
+    }));
+  }
+  // #endregion
+
+// Build region
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
@@ -667,36 +708,6 @@ class _AsFinishState extends State<AsFinish> with TickerProviderStateMixin {
                                                     member: member,
                                                   )));
                                     });
-                                // showDialog(
-                                //     context: context,
-                                //     builder: (context) {
-                                //       return CupertinoAlertDialog(
-                                //         title: Text("Waring!!!"),
-                                //         content:
-                                //             Text("업로드된 서명과 사진을 새로 등록하시겠습니까?"),
-                                //         actions: [
-                                //           CupertinoDialogAction(
-                                //             child: Text("yes"),
-                                //             onPressed: () async {
-                                //               histroyDelete(reqNo);
-                                //               Navigator.pushReplacement(
-                                //                   context,
-                                //                   CupertinoPageRoute(
-                                //                       builder: (context) =>
-                                //                           ASmodify(
-                                //                               member: member,
-                                //                               reqNo: reqNo)));
-                                //             },
-                                //           ),
-                                //           CupertinoDialogAction(
-                                //             child: Text("No"),
-                                //             onPressed: () {
-                                //               Navigator.pop(context);
-                                //             },
-                                //           ),
-                                //         ],
-                                //       );
-                                //     });
                               },
                               child: Text("Rework"),
                               style: ElevatedButton.styleFrom(
@@ -728,9 +739,3 @@ class _AsFinishState extends State<AsFinish> with TickerProviderStateMixin {
     });
   }
 }
-
-
-
-
-// if (imgList.length > 0)
-//                   for (int i = 0; i < imgList.length; i++) testImage(i),

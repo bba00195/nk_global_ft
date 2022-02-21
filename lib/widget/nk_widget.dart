@@ -1,15 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nk_global_ft/asModify.dart';
-import 'package:nk_global_ft/asdetail.dart';
-import 'package:nk_global_ft/history.dart';
+import 'package:nk_global_ft/asModify_page.dart';
+import 'package:nk_global_ft/history_page.dart';
 import 'package:nk_global_ft/home_page.dart';
 import 'package:nk_global_ft/certPage.dart';
 import 'package:nk_global_ft/common/common.dart';
-import 'package:nk_global_ft/login.dart';
-import 'package:nk_global_ft/calendar_schedule.dart';
+import 'package:nk_global_ft/login_page.dart';
 import 'package:nk_global_ft/qulifyPage.dart';
-import 'package:nk_global_ft/schedule.dart';
+import 'package:nk_global_ft/schedule_page.dart';
 
 class NkAppBar extends StatelessWidget implements PreferredSizeWidget {
   final GlobalKey<ScaffoldState> globalKey;
@@ -282,7 +280,7 @@ class nkNaviBottomBar extends StatelessWidget implements PreferredSizeWidget {
             //   crossAxisAlignment: CrossAxisAlignment.end,
             //   children: [
             Container(
-          height: 90,
+          height: 65,
           child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.white,

@@ -6,14 +6,11 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'dart:math';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:nk_global_ft/home_page.dart';
-import 'package:nk_global_ft/imageConfirm.dart';
+import 'package:nk_global_ft/imageConfirm_page.dart';
 import 'package:nk_global_ft/model/master_model.dart';
 import 'package:nk_global_ft/model/common_model.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
@@ -21,7 +18,6 @@ import 'package:nk_global_ft/api/api_Service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
-import 'package:http/http.dart' as http;
 import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'common/common.dart';
 import 'model/image_model.dart';
@@ -89,6 +85,8 @@ class _ASmanagementState2 extends State<ASmanagement2> {
   String reqquantity = '';
 
   bool isload = false;
+  bool BeforeCHK = false;
+  bool AfterCHK = false;
 
   String errmsg = 'Error Uploading Image';
   String uri = 'http://www.kuls.co.kr/NK/flutter/DBHelper.php';
@@ -120,6 +118,8 @@ class _ASmanagementState2 extends State<ASmanagement2> {
   void dispose() {
     super.dispose();
   }
+
+  // #region  API 및 위젯 선언
 
   portSelSeref() async {
     _prefs = await SharedPreferences.getInstance();
@@ -401,8 +401,12 @@ class _ASmanagementState2 extends State<ASmanagement2> {
       });
     });
   }
+  // #endregion
 
-  getImage() async {
+// #region IMAGE 업로드 및 선택관련
+
+// A/S AFTER
+  getImageAF() async {
     List<Asset> resultList = <Asset>[];
     String err = "error";
     try {
@@ -423,7 +427,8 @@ class _ASmanagementState2 extends State<ASmanagement2> {
     });
   }
 
-  getImage2() async {
+//A/S BEFORE
+  getImageBF() async {
     List<Asset> resultList2 = <Asset>[];
     String err = "error";
     try {
@@ -514,7 +519,23 @@ class _ASmanagementState2 extends State<ASmanagement2> {
     });
   }
 
-  //Information
+  void checkList() {
+    if (Imagelist!.isEmpty) {
+      AfterCHK = false;
+    } else {}
+  }
+
+  void checkList2() {
+    if (Imagelist2!.isEmpty) {
+      BeforeCHK = false;
+    } else {}
+  }
+
+// #endregion
+
+  // #region 상단 인포메이션 위젯
+
+  //Information Table 위젯
   Widget asTable(String reqName, String shipCust, String vesselName,
       String mmsiNo, String reqComment, String reqDate, String split12) {
     return Padding(
@@ -708,6 +729,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
     );
   }
 
+  // #endregion
   Widget detailContainer(String reqNo, String categoryName, String type,
       String quantity, String vesselName, String imono) {
     return Container(
@@ -808,6 +830,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
     );
   }
 
+// Build region
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
@@ -888,7 +911,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                               child: Center(
                                                 child: IconButton(
                                                   onPressed: () {
-                                                    getImage2();
+                                                    getImageBF();
                                                   },
                                                   icon: Icon(
                                                       CupertinoIcons.camera),
@@ -924,6 +947,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                                     asset: asset,
                                                     width: 200,
                                                     height: 200,
+                                                    quality: 50,
                                                   ),
                                                 ),
                                                 Positioned(
@@ -980,7 +1004,7 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                                   child: Center(
                                                     child: IconButton(
                                                       onPressed: () {
-                                                        getImage();
+                                                        getImageAF();
                                                       },
                                                       icon: Icon(CupertinoIcons
                                                           .camera),
@@ -1017,9 +1041,11 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                                           BorderRadius.circular(
                                                               8.0),
                                                       child: AssetThumb(
-                                                          asset: asset,
-                                                          width: 200,
-                                                          height: 200),
+                                                        asset: asset,
+                                                        width: 200,
+                                                        height: 200,
+                                                        quality: 50,
+                                                      ),
                                                     ),
                                                     Positioned(
                                                         right: -2,
@@ -1065,78 +1091,98 @@ class _ASmanagementState2 extends State<ASmanagement2> {
                                           style: ElevatedButton.styleFrom(
                                               primary: Colors.indigo),
                                           onPressed: () async {
-                                            CoolAlert.show(
-                                                context: context,
-                                                type: CoolAlertType.confirm,
-                                                text:
-                                                    "Do you want to complete the task?",
-                                                confirmBtnText: "Allow",
-                                                confirmBtnColor: Colors.indigo,
-                                                cancelBtnText: "Deny",
-                                                cancelBtnTextStyle: TextStyle(
-                                                    color: Colors.black),
-                                                onConfirmBtnTap: () async {
-                                                  setState(() {
-                                                    isload = true;
-                                                    Navigator.pop(context);
-                                                  });
-                                                  for (int i = 0;
-                                                      i < Imagelist2!.length;
-                                                      i++) {
-                                                    ByteData byteData2 =
-                                                        await Imagelist2![i]
-                                                            .getByteData(
-                                                                quality: 5);
-                                                    List<int> imgData2 =
-                                                        byteData2.buffer
-                                                            .asUint8List();
-                                                    filename2 =
-                                                        Imagelist2![i].name!;
-                                                    filesrc2 =
-                                                        "${base64Encode(imgData2)}";
+                                            Imagelist!.isEmpty &&
+                                                    Imagelist2!.isEmpty
+                                                ? CoolAlert.show(
+                                                    context: context,
+                                                    type: CoolAlertType.warning,
+                                                    text: "A/S Image not added",
+                                                    confirmBtnText: "Check",
+                                                    confirmBtnColor:
+                                                        Colors.indigo,
+                                                  )
+                                                : CoolAlert.show(
+                                                    context: context,
+                                                    type: CoolAlertType.confirm,
+                                                    text:
+                                                        "Do you want to complete the task?",
+                                                    confirmBtnText: "Allow",
+                                                    confirmBtnColor:
+                                                        Colors.indigo,
+                                                    cancelBtnText: "Deny",
+                                                    cancelBtnTextStyle:
+                                                        TextStyle(
+                                                            color:
+                                                                Colors.black),
+                                                    onConfirmBtnTap: () async {
+                                                      setState(() {
+                                                        isload = true;
+                                                        Navigator.pop(context);
+                                                      });
+                                                      for (int i = 0;
+                                                          i <
+                                                              Imagelist2!
+                                                                  .length;
+                                                          i++) {
+                                                        ByteData byteData2 =
+                                                            await Imagelist2![i]
+                                                                .getByteData(
+                                                                    quality:
+                                                                        30);
+                                                        List<int> imgData2 =
+                                                            byteData2.buffer
+                                                                .asUint8List();
+                                                        filename2 =
+                                                            Imagelist2![i]
+                                                                .name!;
+                                                        filesrc2 =
+                                                            "${base64Encode(imgData2)}";
 
-                                                    await as_Before_fileUpload(
-                                                        reqNo,
-                                                        asBefore,
-                                                        member.user.userId,
-                                                        filename2,
-                                                        filesrc2);
-                                                  }
+                                                        await as_Before_fileUpload(
+                                                            reqNo,
+                                                            asBefore,
+                                                            member.user.userId,
+                                                            filename2,
+                                                            filesrc2);
+                                                      }
 
-                                                  for (int i = 0;
-                                                      i < Imagelist!.length;
-                                                      i++) {
-                                                    ByteData byteData =
-                                                        await Imagelist![i]
-                                                            .getByteData(
-                                                                quality: 5);
-                                                    List<int> imgData = byteData
-                                                        .buffer
-                                                        .asUint8List();
-                                                    filename =
-                                                        Imagelist![i].name!;
-                                                    filesrc =
-                                                        "${base64Encode(imgData)}";
+                                                      for (int i = 0;
+                                                          i < Imagelist!.length;
+                                                          i++) {
+                                                        ByteData byteData =
+                                                            await Imagelist![i]
+                                                                .getByteData(
+                                                                    quality:
+                                                                        30);
+                                                        List<int> imgData =
+                                                            byteData.buffer
+                                                                .asUint8List();
+                                                        filename =
+                                                            Imagelist![i].name!;
+                                                        filesrc =
+                                                            "${base64Encode(imgData)}";
 
-                                                    await as_After_fileUpload(
-                                                        reqNo,
-                                                        asAfter,
-                                                        member.user.userId,
-                                                        filename,
-                                                        filesrc);
-                                                  }
+                                                        await as_After_fileUpload(
+                                                            reqNo,
+                                                            asAfter,
+                                                            member.user.userId,
+                                                            filename,
+                                                            filesrc);
+                                                      }
 
-                                                  Navigator.push(
-                                                      context,
-                                                      CupertinoPageRoute(
-                                                          builder: (context) =>
-                                                              ImageConfirm(
-                                                                member: member,
-                                                                reqNo: reqNo,
-                                                                split12:
-                                                                    split12,
-                                                              )));
-                                                });
+                                                      Navigator.push(
+                                                          context,
+                                                          CupertinoPageRoute(
+                                                              builder: (context) =>
+                                                                  ImageConfirm(
+                                                                    member:
+                                                                        member,
+                                                                    reqNo:
+                                                                        reqNo,
+                                                                    split12:
+                                                                        split12,
+                                                                  )));
+                                                    });
                                           }))),
                               SizedBox(
                                 width: 10,

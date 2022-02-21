@@ -4,18 +4,20 @@ import 'dart:typed_data';
 import 'dart:ui';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'package:nk_global_ft/api/api_Service.dart';
-import 'package:nk_global_ft/asDetail2.dart';
-import 'package:nk_global_ft/asModify.dart';
+import 'package:nk_global_ft/asDetail_page.dart';
+import 'package:nk_global_ft/asModify_page.dart';
 import 'package:nk_global_ft/common/common.dart';
 import 'package:nk_global_ft/home_page.dart';
 import 'package:nk_global_ft/model/common_model.dart';
-import 'package:nk_global_ft/history.dart';
+import 'package:nk_global_ft/history_page.dart';
 import 'package:nk_global_ft/main.dart';
 import 'package:nk_global_ft/model/image_model.dart';
 import 'package:nk_global_ft/model/master_model.dart';
@@ -23,8 +25,10 @@ import 'package:nk_global_ft/signature.dart';
 import 'package:nk_global_ft/widget/nk_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pinch_zoom_image_last/pinch_zoom_image_last.dart';
 import 'package:sizer/sizer.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:flutter_swiper_plus/flutter_swiper_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -45,10 +49,11 @@ class _ImageConfirmState extends State<ImageConfirm> {
   late String split12;
 
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  final pagecontroller = PageController(viewportFraction: 0.8, keepPage: true);
   APIService apiService = new APIService();
   RefreshController _refreshCOntroller =
       RefreshController(initialRefresh: false);
-
+  DateTime? backpressbtntime;
   List<ImageResponseModel> imgVal = [];
   List<ImageResponseModel> imgVal2 = [];
   List<responseModel> result = [];
@@ -80,7 +85,7 @@ class _ImageConfirmState extends State<ImageConfirm> {
   var picksign;
   final ImagePicker _picker = ImagePicker();
   List<XFile> _picksign = [];
-
+  late PageController _pageController;
   final _sign = GlobalKey<SignatureState>();
   ByteData _signimg = ByteData(0);
   late AnimationController controller;
@@ -106,11 +111,11 @@ class _ImageConfirmState extends State<ImageConfirm> {
   }
 
   void _init() async {
-    mainSchSearch();
+    ImgSearch();
   }
 
   void _init2() async {
-    mainSch2Search();
+    Img2Search();
   }
 
   // void loadData() async {
@@ -170,7 +175,7 @@ class _ImageConfirmState extends State<ImageConfirm> {
     });
   }
 
-  mainSchSearch() async {
+  ImgSearch() async {
     List<String> sParam = [reqNo, member.user.userId];
 
     await apiService.getSelect("IMAGE_S1", sParam).then((value) {
@@ -188,7 +193,7 @@ class _ImageConfirmState extends State<ImageConfirm> {
     });
   }
 
-  mainSch2Search() async {
+  Img2Search() async {
     List<String> sParam = [reqNo, member.user.userId];
 
     await apiService.getSelect("IMAGE_S2", sParam).then((value) {
@@ -501,20 +506,25 @@ class _ImageConfirmState extends State<ImageConfirm> {
   }
 
   // var image = BASE64.
+  // 업로드 이미지 위젯
 
   testImage(int seq) {
     imgs = BList[seq];
     if (imgs != "") {
       return Row(
         children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.memory(
-                Uri.parse(imgs).data!.contentAsBytes(),
-                fit: BoxFit.cover,
-                height: 200,
-                width: 200,
-              )),
+          InkWell(
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.memory(
+                    Uri.parse(imgs).data!.contentAsBytes(),
+                    fit: BoxFit.fill,
+                    height: 250,
+                    width: 200,
+                  )),
+              onTap: () {
+                ontapImage(seq);
+              }),
           SizedBox(
             width: 10,
           ),
@@ -528,33 +538,106 @@ class _ImageConfirmState extends State<ImageConfirm> {
   testImage2(int seq2) {
     imgs2 = FList[seq2];
     if (imgs2 != "") {
-      return Row(
-        children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.memory(
-                Uri.parse(imgs2).data!.contentAsBytes(),
-                fit: BoxFit.cover,
-                height: 200,
-                width: 200,
-              )),
-          SizedBox(
-            width: 10,
-          ),
-        ],
+      return InkWell(
+        child: Row(
+          children: [
+            InkWell(
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.memory(
+                    Uri.parse(imgs2).data!.contentAsBytes(),
+                    fit: BoxFit.fill,
+                    height: 250,
+                    width: 200,
+                  )),
+              onTap: () {
+                ontapImage2(seq2);
+              },
+            ),
+            SizedBox(
+              width: 10,
+            ),
+          ],
+        ),
       );
     } else {
       return Container();
     }
   }
 
-  // setImage() {
-  //   if (img != "") {
-  //     return Image.memory(Uri.parse(img).data!.contentAsBytes());
-  //   } else {
-  //     return Container();
-  //   }
-  // }
+  testImage3(int seq2) {
+    imgs2 = FList[seq2];
+    if (imgs2 != "") {
+      return InkWell(
+        child: Row(
+          children: [
+            InkWell(
+              child: Swiper(
+                  itemBuilder: (BuildContext context, int index) {
+                    return Image.memory(
+                        Uri.parse(imgs2).data!.contentAsBytes());
+                  },
+                  itemHeight: 250,
+                  itemWidth: 200,
+                  itemCount: FList.length,
+                  pagination: SwiperPagination(),
+                  control: SwiperControl()),
+              onTap: () {
+                ontapImage2(seq2);
+              },
+            ),
+            SizedBox(
+              width: 10,
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  void ontapImage(int seq) async {
+    imgs = BList[seq];
+    await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (BuildContext context) {
+      return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+          ),
+          backgroundColor: Colors.black,
+          body: Container(
+            child: Center(
+              child: PinchZoomImage(
+                image: Image.memory(
+                  Uri.parse(imgs).data!.contentAsBytes(),
+                ),
+              ),
+            ),
+          ));
+    }));
+  }
+
+  void ontapImage2(int seq2) async {
+    imgs2 = FList[seq2];
+    await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (BuildContext context) {
+      return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+          ),
+          backgroundColor: Colors.black,
+          body: Container(
+            child: Center(
+              child: PinchZoomImage(
+                image: Image.memory(
+                  Uri.parse(imgs2).data!.contentAsBytes(),
+                ),
+              ),
+            ),
+          ));
+    }));
+  }
 
   box2() {
     return Column(
@@ -586,15 +669,144 @@ class _ImageConfirmState extends State<ImageConfirm> {
     );
   }
 
+// 뒤로가기 버튼 연속 터치시 앱 종료여부 선택 다이얼로그 위젯
+  Future<bool> _onwillPop() async {
+    DateTime now = DateTime.now();
+    if (backpressbtntime == null ||
+        now.difference(backpressbtntime!) > Duration(seconds: 2)) {
+      backpressbtntime = now;
+      Fluttertoast.showToast(msg: 'One more tap to Exit app Alert');
+      return Future.value(false);
+    }
+    return (await showDialog(
+      context: context,
+      builder: (context) => Material(
+        type: MaterialType.transparency,
+        child: Center(
+          child: Container(
+            height: 250,
+            margin: EdgeInsets.only(
+              left: 35,
+              right: 35,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(25),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  height: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(25),
+                      topRight: Radius.circular(25),
+                    ),
+                    image: DecorationImage(
+                      image: AssetImage('assets/nk_logo.jpg'),
+                      fit: BoxFit.none,
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  decoration: BoxDecoration(),
+                  child: Text(
+                    'Close the Application?',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontFamily: 'NotoSansKR',
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[400],
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(25),
+                          ),
+                        ),
+                        height: 50,
+                        child: TextButton(
+                          child: Text(
+                            "No",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: 'NotoSansKR',
+                            ),
+                          ),
+                          onPressed: () => Navigator.pop(context, false),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 6,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(63, 81, 181, 1.0),
+                          borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(25),
+                          ),
+                        ),
+                        height: 50,
+                        child: TextButton(
+                          child: Text(
+                            "Yes",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: 'NotoSansKR',
+                            ),
+                          ),
+                          onPressed: () => SystemNavigator.pop(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ));
+  }
+
+//위젯 빌드 부분
   @override
   Widget build(BuildContext context) {
     //  ImageConfirm imageConfirm=
     //     context.findAncestorStateOfType<_ImageConfirmState>();
+    final Bfpages = List.generate(
+        FList.length,
+        (index) => Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.grey.shade300,
+            ),
+            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            child: Container(
+              height: 280,
+              child: Center(
+                child: Image.memory(
+                  Uri.parse(FList[index]).data!.contentAsBytes(),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )));
+
     return Sizer(builder: (context, orientation, deviceType) {
       return WillPopScope(
-        onWillPop: () {
-          return Future(() => false);
-        },
+        onWillPop: _onwillPop,
         child: isloading
             ? Container(
                 decoration: BoxDecoration(color: Colors.white),
@@ -691,18 +903,21 @@ class _ImageConfirmState extends State<ImageConfirm> {
                             SizedBox(
                               height: 10,
                             ),
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  Row(
-                                    children: [
-                                      if (FList.length > 0)
-                                        for (int j = 0; j < FList.length; j++)
-                                          testImage2(j),
-                                    ],
-                                  )
-                                ],
+                            InkWell(
+                              onTap: () {},
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        if (FList.length > 0)
+                                          for (int j = 0; j < FList.length; j++)
+                                            testImage2(j),
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                             SizedBox(
@@ -733,36 +948,6 @@ class _ImageConfirmState extends State<ImageConfirm> {
                                                         HomePage(
                                                             member: member)));
                                           });
-                                      // showDialog(
-                                      //     context: context,
-                                      //     builder: (context) {
-                                      //       return CupertinoAlertDialog(
-                                      //         title: Text("Waring!!!"),
-                                      //         content:
-                                      //             Text("업로드된 서명과 사진을 새로 등록하시겠습니까?"),
-                                      //         actions: [
-                                      //           CupertinoDialogAction(
-                                      //             child: Text("yes"),
-                                      //             onPressed: () async {
-                                      //               histroyDelete(reqNo);
-                                      //               Navigator.pushReplacement(
-                                      //                   context,
-                                      //                   CupertinoPageRoute(
-                                      //                       builder: (context) =>
-                                      //                           ASmodify(
-                                      //                               member: member,
-                                      //                               reqNo: reqNo)));
-                                      //             },
-                                      //           ),
-                                      //           CupertinoDialogAction(
-                                      //             child: Text("No"),
-                                      //             onPressed: () {
-                                      //               Navigator.pop(context);
-                                      //             },
-                                      //           ),
-                                      //         ],
-                                      //       );
-                                      //     });
                                     },
                                     child: Text("Reset"),
                                     style: ElevatedButton.styleFrom(

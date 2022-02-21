@@ -6,9 +6,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
+//로그인 불가능 할시 서명 이미지를 갤러리에 저장하는 페이지.
 class SignPage extends StatefulWidget {
   @override
   _SignPageState createState() => _SignPageState();
@@ -27,6 +29,11 @@ class _SignPageState extends State<SignPage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   void _handleClearButton() {
     signatureGlobalKey.currentState!.clear();
   }
@@ -38,7 +45,12 @@ class _SignPageState extends State<SignPage> {
     if (bytes != null) {
       final result =
           await ImageGallerySaver.saveImage(bytes.buffer.asUint8List());
+      Fluttertoast.showToast(
+        msg: "Saved to photo or gallery",
+        backgroundColor: Colors.greenAccent,
+      );
     }
+
     await Navigator.of(context)
         .push(MaterialPageRoute(builder: (BuildContext context) {
       return Scaffold(
@@ -64,6 +76,26 @@ class _SignPageState extends State<SignPage> {
         ),
       );
     }));
+  }
+
+  showToast() {
+    Widget Toast = Container(
+      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25),
+        color: Colors.greenAccent,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.check),
+          SizedBox(
+            width: 12,
+          ),
+          Text("Saved to photo or gallery"),
+        ],
+      ),
+    );
   }
 
   @override
